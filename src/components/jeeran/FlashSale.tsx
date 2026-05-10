@@ -1,12 +1,20 @@
 import { useEffect, useState } from "react";
 import { Flame } from "lucide-react";
-import { products } from "./products";
 import { ProductCard } from "./ProductCard";
+import { supabase } from "@/integrations/supabase/client";
+import type { DBProduct } from "@/types/db";
 
 function pad(n: number) { return n.toString().padStart(2, "0"); }
 
 export function FlashSale() {
   const [time, setTime] = useState({ h: 5, m: 42, s: 18 });
+  const [items, setItems] = useState<DBProduct[]>([]);
+
+  useEffect(() => {
+    supabase.from("products").select("*").not("sale_price", "is", null).order("reviews_count", { ascending: false }).limit(4)
+      .then(({ data }) => setItems((data as DBProduct[]) || []));
+  }, []);
+
   useEffect(() => {
     const id = setInterval(() => {
       setTime((t) => {
@@ -43,7 +51,7 @@ export function FlashSale() {
           </div>
         </div>
         <div className="grid grid-cols-2 md:grid-cols-4 gap-3 md:gap-4">
-          {products.slice(0, 4).map((p) => <ProductCard key={p.id} p={p} />)}
+          {items.map((p) => <ProductCard key={p.id} p={p} />)}
         </div>
       </div>
     </section>
