@@ -1,3 +1,4 @@
+import { Link } from "@tanstack/react-router";
 import heroAbaya from "@/assets/hero-abaya.jpg";
 import heroThobe from "@/assets/hero-thobe.jpg";
 
