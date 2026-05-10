@@ -19,12 +19,12 @@ export function Hero() {
               تشكيلة موسم الخريف من جيران — عبايات، ثياب، وحجابات بلمسة شامية أصيلة، مصنوعة بإتقان لتنتقل بين الأجيال.
             </p>
             <div className="flex flex-wrap gap-3 pt-4">
-              <button className="bg-cream text-deep px-8 py-3.5 font-bold text-sm tracking-wide hover:bg-gold transition">
+              <Link to="/shop" className="bg-cream text-deep px-8 py-3.5 font-bold text-sm tracking-wide hover:bg-gold transition">
                 تسوقي الآن
-              </button>
-              <button className="border border-cream/40 text-cream px-8 py-3.5 font-medium text-sm hover:bg-cream/10 transition">
-                اكتشف القصة
-              </button>
+              </Link>
+              <Link to="/shop/$slug" params={{ slug: "abayas" }} className="border border-cream/40 text-cream px-8 py-3.5 font-medium text-sm hover:bg-cream/10 transition">
+                اكتشف العبايات
+              </Link>
             </div>
           </div>
           <div className="flex items-center gap-6 text-xs text-cream/60">
