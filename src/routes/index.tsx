@@ -1,4 +1,5 @@
 import { createFileRoute } from "@tanstack/react-router";
+import { useEffect, useState } from "react";
 import { TopBar } from "@/components/jeeran/TopBar";
 import { Header } from "@/components/jeeran/Header";
 import { Hero } from "@/components/jeeran/Hero";
@@ -10,7 +11,8 @@ import { Features } from "@/components/jeeran/Features";
 import { Reviews } from "@/components/jeeran/Reviews";
 import { Footer } from "@/components/jeeran/Footer";
 import { MobileNav } from "@/components/jeeran/MobileNav";
-import { products } from "@/components/jeeran/products";
+import { supabase } from "@/integrations/supabase/client";
+import type { DBProduct } from "@/types/db";
 
 export const Route = createFileRoute("/")({
   component: Index,
@@ -25,6 +27,16 @@ export const Route = createFileRoute("/")({
 });
 
 function Index() {
+  const [newArrivals, setNewArrivals] = useState<DBProduct[]>([]);
+  const [bestSellers, setBestSellers] = useState<DBProduct[]>([]);
+
+  useEffect(() => {
+    supabase.from("products").select("*").order("created_at", { ascending: false }).limit(8)
+      .then(({ data }) => setNewArrivals((data as DBProduct[]) || []));
+    supabase.from("products").select("*").order("reviews_count", { ascending: false }).limit(8)
+      .then(({ data }) => setBestSellers((data as DBProduct[]) || []));
+  }, []);
+
   return (
     <div className="min-h-screen pb-16 md:pb-0">
       <TopBar />
@@ -33,9 +45,9 @@ function Index() {
         <Hero />
         <CategoryCircles />
         <FlashSale />
-        <ProductRow title="وصل حديثاً يا ربيع" subtitle="آخر التشكيلات اللي وصلت لمستودعنا — قبل ما تخلص" items={[...products].reverse()} />
+        <ProductRow title="وصل حديثاً يا ربيع" subtitle="آخر التشكيلات اللي وصلت لمستودعنا — قبل ما تخلص" items={newArrivals} />
         <HeritageStory />
-        <ProductRow title="الأكثر طلباً عندنا" subtitle="القطع اللي بناتنا اختاروها أكتر هالأسبوع" />
+        <ProductRow title="الأكثر طلباً عندنا" subtitle="القطع اللي بناتنا اختاروها أكتر هالأسبوع" items={bestSellers} />
         <Features />
         <Reviews />
       </main>
