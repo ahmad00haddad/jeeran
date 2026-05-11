@@ -150,8 +150,10 @@ export type Database = {
         Row: {
           active: boolean | null
           badge: string | null
+          brand: string | null
           category_id: string | null
           colors: Json | null
+          condition: string | null
           created_at: string | null
           description_ar: string | null
           gender: string | null
@@ -159,18 +161,23 @@ export type Database = {
           image_url: string
           images: Json | null
           name_ar: string
+          original_price: number | null
           price: number
           rating: number | null
           reviews_count: number | null
           sale_price: number | null
+          seller_notes: string | null
           sizes: Json | null
           stock: number
+          worn_times: string | null
         }
         Insert: {
           active?: boolean | null
           badge?: string | null
+          brand?: string | null
           category_id?: string | null
           colors?: Json | null
+          condition?: string | null
           created_at?: string | null
           description_ar?: string | null
           gender?: string | null
@@ -178,18 +185,23 @@ export type Database = {
           image_url: string
           images?: Json | null
           name_ar: string
+          original_price?: number | null
           price: number
           rating?: number | null
           reviews_count?: number | null
           sale_price?: number | null
+          seller_notes?: string | null
           sizes?: Json | null
           stock?: number
+          worn_times?: string | null
         }
         Update: {
           active?: boolean | null
           badge?: string | null
+          brand?: string | null
           category_id?: string | null
           colors?: Json | null
+          condition?: string | null
           created_at?: string | null
           description_ar?: string | null
           gender?: string | null
@@ -197,12 +209,15 @@ export type Database = {
           image_url?: string
           images?: Json | null
           name_ar?: string
+          original_price?: number | null
           price?: number
           rating?: number | null
           reviews_count?: number | null
           sale_price?: number | null
+          seller_notes?: string | null
           sizes?: Json | null
           stock?: number
+          worn_times?: string | null
         }
         Relationships: [
           {
