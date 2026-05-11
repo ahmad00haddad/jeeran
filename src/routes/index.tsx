@@ -45,9 +45,9 @@ function Index() {
         <Hero />
         <CategoryCircles />
         <FlashSale />
-        <ProductRow title="وصل حديثاً يا ربيع" subtitle="آخر التشكيلات اللي وصلت لمستودعنا — قبل ما تخلص" items={newArrivals} />
+        <ProductRow title="وصل حديثاً للسوق" subtitle="آخر القطع اللي عرضوها جيراننا" items={newArrivals} />
         <HeritageStory />
-        <ProductRow title="الأكثر طلباً عندنا" subtitle="القطع اللي بناتنا اختاروها أكتر هالأسبوع" items={bestSellers} />
+        <ProductRow title="الأكثر طلباً" subtitle="القطع اللي بتطير من السوق بسرعة" items={bestSellers} />
         <Features />
         <Reviews />
       </main>
