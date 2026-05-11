@@ -57,8 +57,8 @@ export function Footer() {
           </div>
         </div>
         <div className="pt-6 flex flex-wrap items-center justify-between gap-3 text-xs text-cream/50">
-          <span>© ٢٠٢٥ جيران — كل الحقوق محفوظة.</span>
-          <span className="text-gold">حيث تلتقي الفخامة بالانتماء ✦</span>
+          <span>© ٢٠٢٥ جيران — سوق الملابس المستعملة الأردني</span>
+          <span className="text-gold">ملابسك القديمة إلها قيمة ✦</span>
         </div>
       </div>
     </footer>
