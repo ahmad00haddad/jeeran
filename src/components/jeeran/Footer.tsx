@@ -3,14 +3,13 @@ import { Instagram, Facebook, Twitter } from "lucide-react";
 
 export function Footer() {
   return (
-    <footer className="bg-deep text-cream pt-16 pb-6 relative overflow-hidden">
-      <div className="absolute inset-0 arabesque opacity-20" />
-      <div className="relative max-w-7xl mx-auto px-4">
-        <div className="grid md:grid-cols-4 gap-10 pb-10 border-b border-cream/10">
+    <footer className="bg-deep text-cream pt-14 pb-6">
+      <div className="max-w-7xl mx-auto px-4">
+        <div className="grid md:grid-cols-4 gap-8 pb-8 border-b border-cream/10">
           <div className="space-y-4">
             <Logo className="text-cream" />
-            <p className="text-sm text-cream/70 font-serif-ar leading-relaxed">
-              ملابس محتشمة بإحساس شامي أصيل — تنتقل بين الأجيال، وتكبر معك.
+            <p className="text-sm text-cream/70 leading-relaxed">
+              سوق أردني للملابس المحتشمة المستعملة — قطع نظيفة بسعر يناسب جيبك.
             </p>
             <div className="flex gap-3">
               <a href="#" className="w-9 h-9 rounded-full border border-cream/20 flex items-center justify-center hover:bg-gold hover:text-gold-foreground hover:border-gold transition">
@@ -58,8 +57,8 @@ export function Footer() {
           </div>
         </div>
         <div className="pt-6 flex flex-wrap items-center justify-between gap-3 text-xs text-cream/50">
-          <span>© ٢٠٢٥ جيران — كل الحقوق محفوظة.</span>
-          <span className="text-gold">حيث تلتقي الفخامة بالانتماء ✦</span>
+          <span>© ٢٠٢٥ جيران — سوق الملابس المستعملة الأردني</span>
+          <span className="text-gold">ملابسك القديمة إلها قيمة ✦</span>
         </div>
       </div>
     </footer>

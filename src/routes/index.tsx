@@ -18,10 +18,10 @@ export const Route = createFileRoute("/")({
   component: Index,
   head: () => ({
     meta: [
-      { title: "جيران — حيث تلتقي الفخامة بالانتماء | ملابس محتشمة أردنية" },
-      { name: "description", content: "جيران: عبايات، حجابات، ثياب رجالي وملابس أطفال محتشمة بلمسة شامية أردنية. شحن مجاني والدفع عند الاستلام داخل الأردن." },
+      { title: "جيران — سوق الملابس المحتشمة المستعملة في الأردن" },
+      { name: "description", content: "سوق أردني للملابس المحتشمة المستعملة بحالة ممتازة — عبايات، حجابات، ثياب رجالي وملابس أطفال بأسعار تناسب جيبك. الدفع عند الاستلام." },
       { property: "og:title", content: "جيران — Jeeran" },
-      { property: "og:description", content: "ملابس محتشمة تنتقل بين الأجيال — صناعة أردنية أصيلة." },
+      { property: "og:description", content: "ملابس مستعملة نظيفة من بيوتنا الأردنية. وفّري على جيبك وقللي الهدر." },
     ],
   }),
 });
@@ -45,9 +45,9 @@ function Index() {
         <Hero />
         <CategoryCircles />
         <FlashSale />
-        <ProductRow title="وصل حديثاً يا ربيع" subtitle="آخر التشكيلات اللي وصلت لمستودعنا — قبل ما تخلص" items={newArrivals} />
+        <ProductRow title="وصل حديثاً للسوق" subtitle="آخر القطع اللي عرضوها جيراننا" items={newArrivals} />
         <HeritageStory />
-        <ProductRow title="الأكثر طلباً عندنا" subtitle="القطع اللي بناتنا اختاروها أكتر هالأسبوع" items={bestSellers} />
+        <ProductRow title="الأكثر طلباً" subtitle="القطع اللي بتطير من السوق بسرعة" items={bestSellers} />
         <Features />
         <Reviews />
       </main>

@@ -10,9 +10,9 @@ const nav = [
   { label: "رجالي", to: "/shop/$slug", slug: "men" },
   { label: "أطفال", to: "/shop/$slug", slug: "kids" },
   { label: "حجابات", to: "/shop/$slug", slug: "hijabs" },
-  { label: "إكسسوارات", to: "/shop/$slug", slug: "accessories" },
-  { label: "تخفيضات", to: "/shop", hot: true },
-  { label: "وصل حديثاً", to: "/shop" },
+  { label: "عبايات", to: "/shop/$slug", slug: "abayas" },
+  { label: "جديد بالعلاقة", to: "/shop", hot: true },
+  { label: "تحت ١٠ د.أ", to: "/shop" },
 ];
 
 export function Header() {
@@ -39,7 +39,7 @@ export function Header() {
               value={q}
               onChange={(e) => setQ(e.target.value)}
               type="text"
-              placeholder="دوّر على عباية، حجاب، ثوب..."
+              placeholder="دوّر على قطعة، براند، أو نوع..."
               className="w-full bg-secondary border border-border rounded-full pr-11 pl-4 py-2.5 text-sm focus:outline-none focus:border-primary transition"
             />
           </form>

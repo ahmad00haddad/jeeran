@@ -30,15 +30,14 @@ export function FlashSale() {
   }, []);
 
   return (
-    <section className="py-12 bg-deep text-cream relative overflow-hidden">
-      <div className="absolute inset-0 arabesque opacity-30" />
-      <div className="relative max-w-7xl mx-auto px-4">
-        <div className="flex flex-wrap items-center justify-between gap-4 mb-8">
+    <section className="py-10 bg-deep text-cream">
+      <div className="max-w-7xl mx-auto px-4">
+        <div className="flex flex-wrap items-center justify-between gap-4 mb-6">
           <div className="flex items-center gap-3">
-            <Flame className="w-7 h-7 text-gold" />
+            <Flame className="w-6 h-6 text-gold" />
             <div>
-              <h2 className="font-display text-2xl md:text-3xl font-bold">تخفيضات فلاش</h2>
-              <p className="text-cream/70 text-xs mt-0.5">عروض محدودة — لا تفوّتي الفرصة يا حلوة</p>
+              <h2 className="font-display text-xl md:text-2xl font-bold">عروض اليوم</h2>
+              <p className="text-cream/65 text-xs mt-0.5">قطع مختارة بأسعار خاصة — لفترة محدودة</p>
             </div>
           </div>
           <div className="flex items-center gap-2">
