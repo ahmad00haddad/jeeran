@@ -39,7 +39,7 @@ export function Header() {
               value={q}
               onChange={(e) => setQ(e.target.value)}
               type="text"
-              placeholder="دوّر على عباية، حجاب، ثوب..."
+              placeholder="دوّر على قطعة، براند، أو نوع..."
               className="w-full bg-secondary border border-border rounded-full pr-11 pl-4 py-2.5 text-sm focus:outline-none focus:border-primary transition"
             />
           </form>
