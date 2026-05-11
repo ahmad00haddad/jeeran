@@ -41,15 +41,15 @@
 
 :root {
   --radius: 0.5rem;
-  /* Persian carpet red */
-  --primary: oklch(0.42 0.17 25);
+  /* Burgundy / wine — deeper, no bright red */
+  --primary: oklch(0.34 0.11 18);
   --primary-foreground: oklch(0.98 0.01 80);
   /* Gold */
-  --gold: oklch(0.76 0.13 85);
+  --gold: oklch(0.74 0.12 82);
   --gold-foreground: oklch(0.2 0.05 30);
   /* Cream */
-  --cream: oklch(0.96 0.02 85);
-  --deep: oklch(0.18 0.05 25);
+  --cream: oklch(0.97 0.012 85);
+  --deep: oklch(0.22 0.06 22);
 
   --background: oklch(0.98 0.012 85);
   --foreground: oklch(0.2 0.04 25);
