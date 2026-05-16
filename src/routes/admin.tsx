@@ -81,15 +81,29 @@ function Admin() {
       description_ar: form.description_ar,
       seller_notes: form.seller_notes,
       stock: Number(form.stock),
+      verified_clean: form.verified_clean,
     });
     if (error) toast.error(error.message);
     else {
       toast.success("تم إضافة القطعة");
       setShowForm(false);
-      setForm({ name_ar: "", brand: "", price: "", original_price: "", sale_price: "", image_url: "", category_id: "", condition: "like_new", description_ar: "", seller_notes: "", stock: "1" });
+      setForm({ name_ar: "", brand: "", price: "", original_price: "", sale_price: "", image_url: "", category_id: "", condition: "like_new", description_ar: "", seller_notes: "", stock: "1", verified_clean: false });
       const { data } = await supabase.from("products").select("*").order("created_at", { ascending: false }).limit(500);
       setProducts(data || []);
     }
+  }
+
+  async function toggleVerified(id: string, current: boolean) {
+    const { error } = await supabase.from("products").update({ verified_clean: !current }).eq("id", id);
+    if (error) { toast.error(error.message); return; }
+    setProducts((p) => p.map((x) => x.id === id ? { ...x, verified_clean: !current } : x));
+  }
+
+  async function updateOfferStatus(id: string, status: string) {
+    const { error } = await supabase.from("offers").update({ status }).eq("id", id);
+    if (error) { toast.error(error.message); return; }
+    setOffers((p) => p.map((o) => o.id === id ? { ...o, status } : o));
+    toast.success("تم التحديث");
   }
 
   async function updateOrderStatus(id: string, status: string) {
