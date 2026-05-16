@@ -11,7 +11,8 @@ export function FlashSale() {
   const [items, setItems] = useState<DBProduct[]>([]);
 
   useEffect(() => {
-    supabase.from("products").select("*").not("sale_price", "is", null).order("reviews_count", { ascending: false }).limit(4)
+    const nowIso = new Date().toISOString();
+    supabase.from("products").select("*").eq("sold", false).or(`reserved_until.is.null,reserved_until.lt.${nowIso}`).not("sale_price", "is", null).order("reviews_count", { ascending: false }).limit(4)
       .then(({ data }) => setItems((data as DBProduct[]) || []));
   }, []);
 
