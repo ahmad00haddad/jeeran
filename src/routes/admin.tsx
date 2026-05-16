@@ -248,6 +248,43 @@ function Admin() {
             {orders.length === 0 && <div className="text-center text-muted-foreground py-12">ما في طلبات بعد.</div>}
           </div>
         )}
+
+        {tab === "offers" && (
+          <div className="space-y-3">
+            {offers.map((o) => (
+              <div key={o.id} className="bg-card border border-border p-4">
+                <div className="flex flex-wrap items-start justify-between gap-3 mb-2">
+                  <div>
+                    <span className={`text-[10px] font-bold px-2 py-0.5 ${o.type === "offer" ? "bg-gold text-gold-foreground" : "bg-deep text-cream"}`}>
+                      {o.type === "offer" ? "🏷️ عرض سعر" : "⏰ حجز 24س"}
+                    </span>
+                    <div className="font-bold mt-1">{o.products?.name_ar || "قطعة محذوفة"}</div>
+                    <div className="text-xs text-muted-foreground">السعر الحالي: {o.products?.price ? Number(o.products.price).toFixed(2) : "—"} د.أ</div>
+                  </div>
+                  {o.amount && (
+                    <div className="text-right">
+                      <div className="text-xs text-muted-foreground">العرض</div>
+                      <div className="text-2xl font-bold text-primary">{Number(o.amount).toFixed(2)} <span className="text-xs">د.أ</span></div>
+                    </div>
+                  )}
+                </div>
+                <div className="text-sm grid md:grid-cols-2 gap-2 mb-3 bg-secondary p-2">
+                  <div><strong>{o.full_name}</strong> — <a href={`https://wa.me/962${o.phone.replace(/^0/, "")}`} target="_blank" rel="noreferrer" className="text-green-700 font-bold">{o.phone}</a></div>
+                  <div className="text-muted-foreground">{o.message || "—"}</div>
+                </div>
+                <div className="flex items-center justify-between gap-2 flex-wrap">
+                  <span className="text-xs text-muted-foreground">{new Date(o.created_at).toLocaleString("ar-JO")}</span>
+                  <div className="flex gap-2">
+                    <button onClick={() => updateOfferStatus(o.id, "accepted")} disabled={o.status !== "pending"} className={`px-3 py-1 text-xs font-bold ${o.status === "accepted" ? "bg-green-700 text-white" : "bg-secondary hover:bg-green-700 hover:text-white"} disabled:opacity-50`}>قبول</button>
+                    <button onClick={() => updateOfferStatus(o.id, "rejected")} disabled={o.status !== "pending"} className={`px-3 py-1 text-xs font-bold ${o.status === "rejected" ? "bg-red-700 text-white" : "bg-secondary hover:bg-red-700 hover:text-white"} disabled:opacity-50`}>رفض</button>
+                    <span className="text-xs px-2 py-1 bg-cream border border-border">{o.status === "pending" ? "بانتظار" : o.status === "accepted" ? "مقبول" : o.status === "rejected" ? "مرفوض" : "منتهي"}</span>
+                  </div>
+                </div>
+              </div>
+            ))}
+            {offers.length === 0 && <div className="text-center text-muted-foreground py-12">ما في عروض بعد.</div>}
+          </div>
+        )}
       </main>
       <Footer />
     </div>
