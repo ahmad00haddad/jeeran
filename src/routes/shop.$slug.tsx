@@ -20,7 +20,8 @@ function CatPage() {
       const { data: c } = await supabase.from("categories").select("*").eq("slug", slug).maybeSingle();
       setCat(c as Category);
       if (c) {
-        const { data } = await supabase.from("products").select("*").eq("category_id", c.id).eq("active", true).limit(200);
+        const nowIso = new Date().toISOString();
+        const { data } = await supabase.from("products").select("*").eq("category_id", c.id).eq("active", true).eq("sold", false).or(`reserved_until.is.null,reserved_until.lt.${nowIso}`).limit(200);
         setProducts((data as DBProduct[]) || []);
       }
     })();
