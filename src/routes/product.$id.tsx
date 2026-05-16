@@ -85,12 +85,14 @@ function PDP() {
                 <button onClick={() => setQty(qty + 1)} className="px-3 py-2"><Plus className="w-4 h-4" /></button>
               </div>
               <button
+                disabled={unavailable}
                 onClick={() => {
+                  if (unavailable) return;
                   add({ id: p.id, name_ar: p.name_ar, price: effective, image_url: p.image_url, size, quantity: qty });
                   toast.success("انضافت للسلة 🛍️");
                 }}
-                className="flex-1 bg-primary text-primary-foreground py-3.5 font-bold hover:bg-primary/90 transition"
-              >أضيفي للسلة</button>
+                className="flex-1 bg-primary text-primary-foreground py-3.5 font-bold hover:bg-primary/90 transition disabled:opacity-50 disabled:cursor-not-allowed"
+              >{isSold ? "تم البيع" : isReserved ? "محجوزة حالياً" : "أضيفي للسلة"}</button>
               <button onClick={() => toggleWish(p.id)} className={`p-3 border ${wished ? "border-primary bg-primary text-primary-foreground" : "border-border"}`}>
                 <Heart className={`w-5 h-5 ${wished ? "fill-current" : ""}`} />
               </button>
