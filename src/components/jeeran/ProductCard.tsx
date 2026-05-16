@@ -1,4 +1,4 @@
-import { Heart, Star } from "lucide-react";
+import { Heart, Star, BadgeCheck, Eye } from "lucide-react";
 import { Link } from "@tanstack/react-router";
 import type { DBProduct } from "@/types/db";
 import { resolveImg } from "@/lib/imageMap";
