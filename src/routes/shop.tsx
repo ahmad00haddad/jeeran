@@ -26,7 +26,8 @@ function ShopPage() {
   }, []);
 
   useEffect(() => {
-    let query = supabase.from("products").select("*").eq("active", true);
+    const nowIso = new Date().toISOString();
+    let query = supabase.from("products").select("*").eq("active", true).eq("sold", false).or(`reserved_until.is.null,reserved_until.lt.${nowIso}`);
     if (activeCat) query = query.eq("category_id", activeCat);
     if (q) query = query.ilike("name_ar", `%${q}%`);
     if (onSale) query = query.not("sale_price", "is", null);
