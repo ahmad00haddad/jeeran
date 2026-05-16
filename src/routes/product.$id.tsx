@@ -26,7 +26,8 @@ function PDP() {
     supabase.from("products").select("*").eq("id", id).maybeSingle().then(({ data }) => {
       setP(data as DBProduct);
       if (data?.category_id) {
-        supabase.from("products").select("*").eq("category_id", data.category_id).neq("id", id).limit(4)
+        const nowIso = new Date().toISOString();
+        supabase.from("products").select("*").eq("category_id", data.category_id).neq("id", id).eq("sold", false).or(`reserved_until.is.null,reserved_until.lt.${nowIso}`).limit(4)
           .then(({ data: r }) => setRelated((r as DBProduct[]) || []));
       }
     });
