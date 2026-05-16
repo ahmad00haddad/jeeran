@@ -164,10 +164,13 @@ export type Database = {
           original_price: number | null
           price: number
           rating: number | null
+          reserved_order_id: string | null
+          reserved_until: string | null
           reviews_count: number | null
           sale_price: number | null
           seller_notes: string | null
           sizes: Json | null
+          sold: boolean
           stock: number
           worn_times: string | null
         }
@@ -188,10 +191,13 @@ export type Database = {
           original_price?: number | null
           price: number
           rating?: number | null
+          reserved_order_id?: string | null
+          reserved_until?: string | null
           reviews_count?: number | null
           sale_price?: number | null
           seller_notes?: string | null
           sizes?: Json | null
+          sold?: boolean
           stock?: number
           worn_times?: string | null
         }
@@ -212,10 +218,13 @@ export type Database = {
           original_price?: number | null
           price?: number
           rating?: number | null
+          reserved_order_id?: string | null
+          reserved_until?: string | null
           reviews_count?: number | null
           sale_price?: number | null
           seller_notes?: string | null
           sizes?: Json | null
+          sold?: boolean
           stock?: number
           worn_times?: string | null
         }
@@ -324,6 +333,7 @@ export type Database = {
         | "shipped"
         | "delivered"
         | "cancelled"
+        | "rejected"
     }
     CompositeTypes: {
       [_ in never]: never
@@ -458,6 +468,7 @@ export const Constants = {
         "shipped",
         "delivered",
         "cancelled",
+        "rejected",
       ],
     },
   },

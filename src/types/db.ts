@@ -15,6 +15,9 @@ export type DBProduct = {
   reviews_count?: number | null;
   gender?: string | null;
   active?: boolean;
+  sold?: boolean;
+  reserved_until?: string | null;
+  reserved_order_id?: string | null;
 };
 
 export type Category = {

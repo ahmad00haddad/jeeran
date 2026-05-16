@@ -26,7 +26,8 @@ function PDP() {
     supabase.from("products").select("*").eq("id", id).maybeSingle().then(({ data }) => {
       setP(data as DBProduct);
       if (data?.category_id) {
-        supabase.from("products").select("*").eq("category_id", data.category_id).neq("id", id).limit(4)
+        const nowIso = new Date().toISOString();
+        supabase.from("products").select("*").eq("category_id", data.category_id).neq("id", id).eq("sold", false).or(`reserved_until.is.null,reserved_until.lt.${nowIso}`).limit(4)
           .then(({ data: r }) => setRelated((r as DBProduct[]) || []));
       }
     });
@@ -36,6 +37,10 @@ function PDP() {
   const effective = p.sale_price ?? p.price;
   const sizes = Array.isArray(p.sizes) ? p.sizes : ["S", "M", "L", "XL"];
   const wished = wishlist.includes(p.id);
+  const reservedUntil = (p as any).reserved_until ? new Date((p as any).reserved_until) : null;
+  const isReserved = !!(reservedUntil && reservedUntil.getTime() > Date.now());
+  const isSold = (p as any).sold === true;
+  const unavailable = isSold || isReserved;
 
   return (
     <div className="min-h-screen pb-16 md:pb-0">
@@ -80,12 +85,14 @@ function PDP() {
                 <button onClick={() => setQty(qty + 1)} className="px-3 py-2"><Plus className="w-4 h-4" /></button>
               </div>
               <button
+                disabled={unavailable}
                 onClick={() => {
+                  if (unavailable) return;
                   add({ id: p.id, name_ar: p.name_ar, price: effective, image_url: p.image_url, size, quantity: qty });
                   toast.success("انضافت للسلة 🛍️");
                 }}
-                className="flex-1 bg-primary text-primary-foreground py-3.5 font-bold hover:bg-primary/90 transition"
-              >أضيفي للسلة</button>
+                className="flex-1 bg-primary text-primary-foreground py-3.5 font-bold hover:bg-primary/90 transition disabled:opacity-50 disabled:cursor-not-allowed"
+              >{isSold ? "تم البيع" : isReserved ? "محجوزة حالياً" : "أضيفي للسلة"}</button>
               <button onClick={() => toggleWish(p.id)} className={`p-3 border ${wished ? "border-primary bg-primary text-primary-foreground" : "border-border"}`}>
                 <Heart className={`w-5 h-5 ${wished ? "fill-current" : ""}`} />
               </button>

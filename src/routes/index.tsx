@@ -31,10 +31,12 @@ function Index() {
   const [bestSellers, setBestSellers] = useState<DBProduct[]>([]);
 
   useEffect(() => {
-    supabase.from("products").select("*").order("created_at", { ascending: false }).limit(8)
-      .then(({ data }) => setNewArrivals((data as DBProduct[]) || []));
-    supabase.from("products").select("*").order("reviews_count", { ascending: false }).limit(8)
-      .then(({ data }) => setBestSellers((data as DBProduct[]) || []));
+    const nowIso = new Date().toISOString();
+    const avail = (q: any) => q.eq("sold", false).or(`reserved_until.is.null,reserved_until.lt.${nowIso}`);
+    avail(supabase.from("products").select("*")).order("created_at", { ascending: false }).limit(8)
+      .then(({ data }: any) => setNewArrivals((data as DBProduct[]) || []));
+    avail(supabase.from("products").select("*")).order("reviews_count", { ascending: false }).limit(8)
+      .then(({ data }: any) => setBestSellers((data as DBProduct[]) || []));
   }, []);
 
   return (
