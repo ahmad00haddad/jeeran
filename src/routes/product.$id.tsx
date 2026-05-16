@@ -37,6 +37,10 @@ function PDP() {
   const effective = p.sale_price ?? p.price;
   const sizes = Array.isArray(p.sizes) ? p.sizes : ["S", "M", "L", "XL"];
   const wished = wishlist.includes(p.id);
+  const reservedUntil = (p as any).reserved_until ? new Date((p as any).reserved_until) : null;
+  const isReserved = reservedUntil && reservedUntil.getTime() > Date.now();
+  const isSold = (p as any).sold === true;
+  const unavailable = isSold || isReserved;
 
   return (
     <div className="min-h-screen pb-16 md:pb-0">
