@@ -20,15 +20,16 @@ const CONDITIONS = [
 function Admin() {
   const { user, isAdmin, loading } = useAuth();
   const nav = useNavigate();
-  const [tab, setTab] = useState<"stats" | "products" | "orders">("stats");
+  const [tab, setTab] = useState<"stats" | "products" | "orders" | "offers">("stats");
   const [products, setProducts] = useState<any[]>([]);
   const [orders, setOrders] = useState<any[]>([]);
+  const [offers, setOffers] = useState<any[]>([]);
   const [cats, setCats] = useState<any[]>([]);
   const [showForm, setShowForm] = useState(false);
   const [form, setForm] = useState({
     name_ar: "", brand: "", price: "", original_price: "", sale_price: "",
     image_url: "", category_id: "", condition: "like_new",
-    description_ar: "", seller_notes: "", stock: "1",
+    description_ar: "", seller_notes: "", stock: "1", verified_clean: false,
   });
 
   useEffect(() => {
@@ -36,6 +37,7 @@ function Admin() {
       supabase.from("products").select("*").order("created_at", { ascending: false }).limit(500).then(({ data }) => setProducts(data || []));
       supabase.from("orders").select("*").order("created_at", { ascending: false }).limit(500).then(({ data }) => setOrders(data || []));
       supabase.from("categories").select("*").order("display_order").then(({ data }) => setCats(data || []));
+      supabase.from("offers").select("*, products(name_ar, price, image_url)").order("created_at", { ascending: false }).limit(200).then(({ data }) => setOffers(data || []));
     }
   }, [isAdmin]);
 
@@ -79,15 +81,29 @@ function Admin() {
       description_ar: form.description_ar,
       seller_notes: form.seller_notes,
       stock: Number(form.stock),
+      verified_clean: form.verified_clean,
     });
     if (error) toast.error(error.message);
     else {
       toast.success("تم إضافة القطعة");
       setShowForm(false);
-      setForm({ name_ar: "", brand: "", price: "", original_price: "", sale_price: "", image_url: "", category_id: "", condition: "like_new", description_ar: "", seller_notes: "", stock: "1" });
+      setForm({ name_ar: "", brand: "", price: "", original_price: "", sale_price: "", image_url: "", category_id: "", condition: "like_new", description_ar: "", seller_notes: "", stock: "1", verified_clean: false });
       const { data } = await supabase.from("products").select("*").order("created_at", { ascending: false }).limit(500);
       setProducts(data || []);
     }
+  }
+
+  async function toggleVerified(id: string, current: boolean) {
+    const { error } = await supabase.from("products").update({ verified_clean: !current }).eq("id", id);
+    if (error) { toast.error(error.message); return; }
+    setProducts((p) => p.map((x) => x.id === id ? { ...x, verified_clean: !current } : x));
+  }
+
+  async function updateOfferStatus(id: string, status: string) {
+    const { error } = await supabase.from("offers").update({ status }).eq("id", id);
+    if (error) { toast.error(error.message); return; }
+    setOffers((p) => p.map((o) => o.id === id ? { ...o, status } : o));
+    toast.success("تم التحديث");
   }
 
   async function updateOrderStatus(id: string, status: string) {
@@ -112,6 +128,7 @@ function Admin() {
           <button onClick={() => setTab("stats")} className={`px-4 py-2 font-bold whitespace-nowrap ${tab === "stats" ? "border-b-2 border-primary text-primary" : "text-muted-foreground"}`}><TrendingUp className="w-4 h-4 inline ml-1" /> الإحصائيات</button>
           <button onClick={() => setTab("products")} className={`px-4 py-2 font-bold whitespace-nowrap ${tab === "products" ? "border-b-2 border-primary text-primary" : "text-muted-foreground"}`}><Package className="w-4 h-4 inline ml-1" /> القطع ({products.length})</button>
           <button onClick={() => setTab("orders")} className={`px-4 py-2 font-bold whitespace-nowrap ${tab === "orders" ? "border-b-2 border-primary text-primary" : "text-muted-foreground"}`}><ShoppingCart className="w-4 h-4 inline ml-1" /> الطلبات ({orders.length})</button>
+          <button onClick={() => setTab("offers")} className={`px-4 py-2 font-bold whitespace-nowrap ${tab === "offers" ? "border-b-2 border-primary text-primary" : "text-muted-foreground"}`}>🏷️ العروض ({offers.filter(o => o.status === "pending").length})</button>
         </div>
 
         {tab === "stats" && (
@@ -164,12 +181,16 @@ function Admin() {
                 <input placeholder="رابط الصورة" value={form.image_url} onChange={(e) => setForm({ ...form, image_url: e.target.value })} className="border border-border px-3 py-2 md:col-span-2" />
                 <textarea placeholder="الوصف (المقاس، اللون، التفاصيل)" value={form.description_ar} onChange={(e) => setForm({ ...form, description_ar: e.target.value })} className="border border-border px-3 py-2 md:col-span-2" rows={2} />
                 <textarea placeholder="ملاحظات عن الحالة (مثل: ملبوس مرة وحدة بالعرس، بدون أي عيوب)" value={form.seller_notes} onChange={(e) => setForm({ ...form, seller_notes: e.target.value })} className="border border-border px-3 py-2 md:col-span-2" rows={2} />
+                <label className="flex items-center gap-2 md:col-span-2 text-sm font-bold bg-green-50 border border-green-200 px-3 py-2">
+                  <input type="checkbox" checked={form.verified_clean} onChange={(e) => setForm({ ...form, verified_clean: e.target.checked })} />
+                  ✓ موثّقة نظيفة (مغسولة + مكوية + معقّمة)
+                </label>
                 <button className="bg-primary text-primary-foreground py-2 font-bold md:col-span-2">حفظ القطعة</button>
               </form>
             )}
             <div className="overflow-x-auto">
               <table className="w-full text-sm border border-border bg-card">
-                <thead className="bg-secondary"><tr><th className="p-2 text-right">الاسم</th><th className="p-2">البراند</th><th className="p-2">الحالة</th><th className="p-2">السعر</th><th className="p-2">التوفر</th><th className="p-2">إجراءات</th></tr></thead>
+                <thead className="bg-secondary"><tr><th className="p-2 text-right">الاسم</th><th className="p-2">البراند</th><th className="p-2">الحالة</th><th className="p-2">السعر</th><th className="p-2">التوفر</th><th className="p-2">موثّقة</th><th className="p-2">إجراءات</th></tr></thead>
                 <tbody>
                   {products.map((p) => {
                     const reserved = p.reserved_until && new Date(p.reserved_until).getTime() > Date.now();
@@ -181,6 +202,11 @@ function Admin() {
                         <td className="p-2 text-center text-xs">{CONDITIONS.find((c) => c.v === p.condition)?.l || "—"}</td>
                         <td className="p-2 text-center">{Number(p.price).toFixed(2)}</td>
                         <td className="p-2 text-center"><span className={`text-[10px] font-bold px-2 py-1 rounded ${avail.c}`}>{avail.l}</span></td>
+                        <td className="p-2 text-center">
+                          <button onClick={() => toggleVerified(p.id, !!p.verified_clean)} className={`text-xs font-bold px-2 py-1 ${p.verified_clean ? "bg-green-700 text-white" : "bg-secondary text-muted-foreground"}`}>
+                            {p.verified_clean ? "✓ نعم" : "لا"}
+                          </button>
+                        </td>
                         <td className="p-2 text-center">
                           <button onClick={() => deleteProduct(p.id)} className="text-primary hover:underline"><Trash2 className="w-4 h-4 inline" /></button>
                         </td>
@@ -220,6 +246,43 @@ function Admin() {
               </div>
             ))}
             {orders.length === 0 && <div className="text-center text-muted-foreground py-12">ما في طلبات بعد.</div>}
+          </div>
+        )}
+
+        {tab === "offers" && (
+          <div className="space-y-3">
+            {offers.map((o) => (
+              <div key={o.id} className="bg-card border border-border p-4">
+                <div className="flex flex-wrap items-start justify-between gap-3 mb-2">
+                  <div>
+                    <span className={`text-[10px] font-bold px-2 py-0.5 ${o.type === "offer" ? "bg-gold text-gold-foreground" : "bg-deep text-cream"}`}>
+                      {o.type === "offer" ? "🏷️ عرض سعر" : "⏰ حجز 24س"}
+                    </span>
+                    <div className="font-bold mt-1">{o.products?.name_ar || "قطعة محذوفة"}</div>
+                    <div className="text-xs text-muted-foreground">السعر الحالي: {o.products?.price ? Number(o.products.price).toFixed(2) : "—"} د.أ</div>
+                  </div>
+                  {o.amount && (
+                    <div className="text-right">
+                      <div className="text-xs text-muted-foreground">العرض</div>
+                      <div className="text-2xl font-bold text-primary">{Number(o.amount).toFixed(2)} <span className="text-xs">د.أ</span></div>
+                    </div>
+                  )}
+                </div>
+                <div className="text-sm grid md:grid-cols-2 gap-2 mb-3 bg-secondary p-2">
+                  <div><strong>{o.full_name}</strong> — <a href={`https://wa.me/962${o.phone.replace(/^0/, "")}`} target="_blank" rel="noreferrer" className="text-green-700 font-bold">{o.phone}</a></div>
+                  <div className="text-muted-foreground">{o.message || "—"}</div>
+                </div>
+                <div className="flex items-center justify-between gap-2 flex-wrap">
+                  <span className="text-xs text-muted-foreground">{new Date(o.created_at).toLocaleString("ar-JO")}</span>
+                  <div className="flex gap-2">
+                    <button onClick={() => updateOfferStatus(o.id, "accepted")} disabled={o.status !== "pending"} className={`px-3 py-1 text-xs font-bold ${o.status === "accepted" ? "bg-green-700 text-white" : "bg-secondary hover:bg-green-700 hover:text-white"} disabled:opacity-50`}>قبول</button>
+                    <button onClick={() => updateOfferStatus(o.id, "rejected")} disabled={o.status !== "pending"} className={`px-3 py-1 text-xs font-bold ${o.status === "rejected" ? "bg-red-700 text-white" : "bg-secondary hover:bg-red-700 hover:text-white"} disabled:opacity-50`}>رفض</button>
+                    <span className="text-xs px-2 py-1 bg-cream border border-border">{o.status === "pending" ? "بانتظار" : o.status === "accepted" ? "مقبول" : o.status === "rejected" ? "مرفوض" : "منتهي"}</span>
+                  </div>
+                </div>
+              </div>
+            ))}
+            {offers.length === 0 && <div className="text-center text-muted-foreground py-12">ما في عروض بعد.</div>}
           </div>
         )}
       </main>

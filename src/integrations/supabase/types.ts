@@ -44,6 +44,53 @@ export type Database = {
         }
         Relationships: []
       }
+      offers: {
+        Row: {
+          amount: number | null
+          created_at: string
+          full_name: string
+          id: string
+          message: string | null
+          phone: string
+          product_id: string
+          status: string
+          type: string
+          user_id: string | null
+        }
+        Insert: {
+          amount?: number | null
+          created_at?: string
+          full_name: string
+          id?: string
+          message?: string | null
+          phone: string
+          product_id: string
+          status?: string
+          type?: string
+          user_id?: string | null
+        }
+        Update: {
+          amount?: number | null
+          created_at?: string
+          full_name?: string
+          id?: string
+          message?: string | null
+          phone?: string
+          product_id?: string
+          status?: string
+          type?: string
+          user_id?: string | null
+        }
+        Relationships: [
+          {
+            foreignKeyName: "offers_product_id_fkey"
+            columns: ["product_id"]
+            isOneToOne: false
+            referencedRelation: "products"
+            referencedColumns: ["id"]
+          },
+        ]
+      }
       order_items: {
         Row: {
           color: string | null
@@ -172,6 +219,10 @@ export type Database = {
           sizes: Json | null
           sold: boolean
           stock: number
+          verified_clean: boolean
+          views_day: string
+          views_today: number
+          views_total: number
           worn_times: string | null
         }
         Insert: {
@@ -199,6 +250,10 @@ export type Database = {
           sizes?: Json | null
           sold?: boolean
           stock?: number
+          verified_clean?: boolean
+          views_day?: string
+          views_today?: number
+          views_total?: number
           worn_times?: string | null
         }
         Update: {
@@ -226,6 +281,10 @@ export type Database = {
           sizes?: Json | null
           sold?: boolean
           stock?: number
+          verified_clean?: boolean
+          views_day?: string
+          views_today?: number
+          views_total?: number
           worn_times?: string | null
         }
         Relationships: [
@@ -323,6 +382,10 @@ export type Database = {
           _user_id: string
         }
         Returns: boolean
+      }
+      increment_product_view: {
+        Args: { _product_id: string }
+        Returns: undefined
       }
     }
     Enums: {
