@@ -23,17 +23,27 @@ export function ProductCard({ p }: { p: DBProduct & { brand?: string | null; con
   const wished = wishlist.includes(p.id);
   const img = resolveImg(p.image_url);
   const condLabel = p.condition ? CONDITION_LABEL[p.condition] : null;
+  const verified = (p as any).verified_clean === true;
+  const viewsToday = Number((p as any).views_today ?? 0);
 
   return (
     <article className="group relative bg-card border border-border/60 overflow-hidden">
       <Link to="/product/$id" params={{ id: p.id }} className="block">
         <div className="relative aspect-[4/5] overflow-hidden bg-secondary">
           <img src={img} alt={p.name_ar} loading="lazy" className="w-full h-full object-cover group-hover:scale-105 transition-transform duration-500" />
-          {condLabel && (
-            <span className="absolute top-2 right-2 bg-deep/85 text-cream text-[10px] font-bold px-2 py-1">{condLabel}</span>
-          )}
+          <div className="absolute top-2 right-2 flex flex-col gap-1 items-end">
+            {condLabel && (
+              <span className="bg-deep/85 text-cream text-[10px] font-bold px-2 py-1">{condLabel}</span>
+            )}
+            {verified && (
+              <span className="bg-green-700 text-white text-[10px] font-bold px-2 py-1 flex items-center gap-0.5"><BadgeCheck className="w-3 h-3" /> موثّقة</span>
+            )}
+          </div>
           {discount > 0 && (
             <span className="absolute top-2 left-2 bg-gold text-gold-foreground text-[10px] font-bold px-2 py-1">-{discount}٪</span>
+          )}
+          {viewsToday >= 5 && (
+            <span className="absolute bottom-2 right-2 bg-black/70 text-white text-[10px] font-medium px-2 py-0.5 flex items-center gap-1"><Eye className="w-3 h-3" /> {viewsToday}</span>
           )}
           <button
             onClick={(e) => { e.preventDefault(); toggleWish(p.id); }}
