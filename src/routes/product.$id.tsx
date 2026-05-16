@@ -1,14 +1,16 @@
 import { createFileRoute, useParams, Link } from "@tanstack/react-router";
 import { useEffect, useState } from "react";
-import { Heart, Star, Truck, ShieldCheck, RotateCcw, Minus, Plus } from "lucide-react";
+import { Heart, Star, Truck, ShieldCheck, RotateCcw, Minus, Plus, BadgeCheck, MessageCircle, Tag, Clock, Eye } from "lucide-react";
 import { TopBar } from "@/components/jeeran/TopBar";
 import { Header } from "@/components/jeeran/Header";
 import { Footer } from "@/components/jeeran/Footer";
 import { MobileNav } from "@/components/jeeran/MobileNav";
 import { ProductCard } from "@/components/jeeran/ProductCard";
+import { OfferDialog } from "@/components/jeeran/OfferDialog";
 import { supabase } from "@/integrations/supabase/client";
 import { resolveImg } from "@/lib/imageMap";
 import { useCart } from "@/store/cart";
+import { whatsappLink } from "@/lib/config";
 import type { DBProduct } from "@/types/db";
 import { toast } from "sonner";
 
@@ -20,6 +22,7 @@ function PDP() {
   const [related, setRelated] = useState<DBProduct[]>([]);
   const [size, setSize] = useState("M");
   const [qty, setQty] = useState(1);
+  const [dialog, setDialog] = useState<null | "offer" | "hold24h">(null);
   const { add, toggleWish, wishlist } = useCart();
 
   useEffect(() => {
@@ -31,6 +34,7 @@ function PDP() {
           .then(({ data: r }) => setRelated((r as DBProduct[]) || []));
       }
     });
+    supabase.rpc("increment_product_view", { _product_id: id });
   }, [id]);
 
   if (!p) return <div className="min-h-screen flex items-center justify-center">جارٍ التحميل...</div>;
@@ -41,6 +45,10 @@ function PDP() {
   const isReserved = !!(reservedUntil && reservedUntil.getTime() > Date.now());
   const isSold = (p as any).sold === true;
   const unavailable = isSold || isReserved;
+  const verified = (p as any).verified_clean === true;
+  const viewsToday = Number((p as any).views_today ?? 0);
+
+  const waMsg = `مرحبا 👋\nبستفسر عن قطعة: *${p.name_ar}*\nالسعر: ${effective.toFixed(2)} د.أ\nرابط: ${typeof window !== "undefined" ? window.location.href : ""}`;
 
   return (
     <div className="min-h-screen pb-16 md:pb-0">
@@ -51,11 +59,28 @@ function PDP() {
           <Link to="/" className="hover:text-primary">الرئيسية</Link> ← <Link to="/shop" className="hover:text-primary">المتجر</Link> ← <span>{p.name_ar}</span>
         </nav>
         <div className="grid md:grid-cols-2 gap-8">
-          <div className="bg-secondary aspect-[4/5] overflow-hidden">
+          <div className="bg-secondary aspect-[4/5] overflow-hidden relative">
             <img src={resolveImg(p.image_url)} alt={p.name_ar} className="w-full h-full object-cover" />
+            {verified && (
+              <span className="absolute top-3 right-3 bg-green-700 text-white text-xs font-bold px-2.5 py-1 flex items-center gap-1 shadow">
+                <BadgeCheck className="w-4 h-4" /> موثّقة نظيفة
+              </span>
+            )}
           </div>
           <div className="space-y-5">
-            {p.badge && <span className="inline-block bg-primary text-primary-foreground text-xs font-bold px-3 py-1">{p.badge}</span>}
+            <div className="flex items-center gap-2 flex-wrap">
+              {p.badge && <span className="inline-block bg-primary text-primary-foreground text-xs font-bold px-3 py-1">{p.badge}</span>}
+              {verified && (
+                <span className="inline-flex items-center gap-1 bg-green-50 text-green-800 text-xs font-bold px-2 py-1 border border-green-200">
+                  <BadgeCheck className="w-3.5 h-3.5" /> Verified Clean
+                </span>
+              )}
+              {viewsToday > 0 && (
+                <span className="inline-flex items-center gap-1 bg-secondary text-foreground text-xs px-2 py-1">
+                  <Eye className="w-3.5 h-3.5" /> شُفت {viewsToday} مرة اليوم
+                </span>
+              )}
+            </div>
             <h1 className="font-display text-3xl md:text-4xl font-bold">{p.name_ar}</h1>
             <div className="flex items-center gap-2 text-sm">
               <Star className="w-4 h-4 fill-gold text-gold" />
@@ -98,6 +123,31 @@ function PDP() {
               </button>
             </div>
 
+            {!unavailable && (
+              <div className="grid grid-cols-3 gap-2">
+                <a
+                  href={whatsappLink(waMsg)}
+                  target="_blank"
+                  rel="noreferrer"
+                  className="flex items-center justify-center gap-1.5 bg-green-600 text-white py-2.5 text-sm font-bold hover:bg-green-700 transition"
+                >
+                  <MessageCircle className="w-4 h-4" /> واتساب
+                </a>
+                <button
+                  onClick={() => setDialog("offer")}
+                  className="flex items-center justify-center gap-1.5 bg-gold text-gold-foreground py-2.5 text-sm font-bold hover:opacity-90 transition"
+                >
+                  <Tag className="w-4 h-4" /> اعرضي سعر
+                </button>
+                <button
+                  onClick={() => setDialog("hold24h")}
+                  className="flex items-center justify-center gap-1.5 bg-deep text-cream py-2.5 text-sm font-bold hover:opacity-90 transition"
+                >
+                  <Clock className="w-4 h-4" /> احجزيها 24س
+                </button>
+              </div>
+            )}
+
             <div className="grid grid-cols-3 gap-3 pt-4 border-t border-border text-xs">
               <div className="flex flex-col items-center gap-1 text-center"><Truck className="w-5 h-5 text-primary" /> شحن لكل الأردن</div>
               <div className="flex flex-col items-center gap-1 text-center"><ShieldCheck className="w-5 h-5 text-primary" /> دفع عند الاستلام</div>
@@ -115,6 +165,14 @@ function PDP() {
           </section>
         )}
       </main>
+      <OfferDialog
+        open={!!dialog}
+        onClose={() => setDialog(null)}
+        productId={p.id}
+        productName={p.name_ar}
+        type={dialog || "offer"}
+        currentPrice={effective}
+      />
       <Footer />
       <MobileNav />
     </div>
