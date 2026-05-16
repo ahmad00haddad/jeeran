@@ -190,7 +190,7 @@ function Admin() {
             )}
             <div className="overflow-x-auto">
               <table className="w-full text-sm border border-border bg-card">
-                <thead className="bg-secondary"><tr><th className="p-2 text-right">الاسم</th><th className="p-2">البراند</th><th className="p-2">الحالة</th><th className="p-2">السعر</th><th className="p-2">التوفر</th><th className="p-2">إجراءات</th></tr></thead>
+                <thead className="bg-secondary"><tr><th className="p-2 text-right">الاسم</th><th className="p-2">البراند</th><th className="p-2">الحالة</th><th className="p-2">السعر</th><th className="p-2">التوفر</th><th className="p-2">موثّقة</th><th className="p-2">إجراءات</th></tr></thead>
                 <tbody>
                   {products.map((p) => {
                     const reserved = p.reserved_until && new Date(p.reserved_until).getTime() > Date.now();
@@ -202,6 +202,11 @@ function Admin() {
                         <td className="p-2 text-center text-xs">{CONDITIONS.find((c) => c.v === p.condition)?.l || "—"}</td>
                         <td className="p-2 text-center">{Number(p.price).toFixed(2)}</td>
                         <td className="p-2 text-center"><span className={`text-[10px] font-bold px-2 py-1 rounded ${avail.c}`}>{avail.l}</span></td>
+                        <td className="p-2 text-center">
+                          <button onClick={() => toggleVerified(p.id, !!p.verified_clean)} className={`text-xs font-bold px-2 py-1 ${p.verified_clean ? "bg-green-700 text-white" : "bg-secondary text-muted-foreground"}`}>
+                            {p.verified_clean ? "✓ نعم" : "لا"}
+                          </button>
+                        </td>
                         <td className="p-2 text-center">
                           <button onClick={() => deleteProduct(p.id)} className="text-primary hover:underline"><Trash2 className="w-4 h-4 inline" /></button>
                         </td>
