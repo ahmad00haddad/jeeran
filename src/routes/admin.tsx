@@ -214,7 +214,8 @@ function Admin() {
                   <option value="confirmed">مؤكد</option>
                   <option value="shipped">في الطريق</option>
                   <option value="delivered">تم التسليم</option>
-                  <option value="cancelled">ملغي</option>
+                  <option value="cancelled">ملغي (ترجع القطعة للعرض)</option>
+                  <option value="rejected">مرفوض (ترجع القطعة للعرض)</option>
                 </select>
               </div>
             ))}
