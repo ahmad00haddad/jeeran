@@ -62,7 +62,7 @@ export function ProductCard({ p }: { p: DBProduct & { brand?: string | null; con
         }}
         className="w-full bg-primary text-primary-foreground py-2 text-xs font-bold tracking-wider hover:bg-deep transition"
       >
-        أضف للسلة +
+        أضيفيها للسلة +
       </button>
       <div className="p-3 space-y-1">
         {p.brand && <div className="text-[10px] uppercase tracking-wider text-muted-foreground font-bold">{p.brand}</div>}

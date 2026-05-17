@@ -72,7 +72,7 @@ function PDP() {
               {p.badge && <span className="inline-block bg-primary text-primary-foreground text-xs font-bold px-3 py-1">{p.badge}</span>}
               {verified && (
                 <span className="inline-flex items-center gap-1 bg-green-50 text-green-800 text-xs font-bold px-2 py-1 border border-green-200">
-                  <BadgeCheck className="w-3.5 h-3.5" /> Verified Clean
+                  <BadgeCheck className="w-3.5 h-3.5" /> موثّقة نظيفة
                 </span>
               )}
               {viewsToday > 0 && (
