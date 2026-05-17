@@ -18,8 +18,8 @@ export function Hero() {
             <Link to="/shop" className="bg-gold text-gold-foreground px-7 py-3 font-bold text-sm tracking-wide hover:bg-cream transition">
               تصفّحي السوق
             </Link>
-            <Link to="/shop" className="border border-cream/30 text-cream px-7 py-3 font-medium text-sm hover:bg-cream/10 transition">
-              كيف بنشتغل؟
+            <Link to="/shop" search={{ q: "", sort: "new" }} className="border border-cream/30 text-cream px-7 py-3 font-medium text-sm hover:bg-cream/10 transition">
+              شوفي وصل حديثاً
             </Link>
           </div>
         </div>
