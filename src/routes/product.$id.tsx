@@ -82,11 +82,6 @@ function PDP() {
               )}
             </div>
             <h1 className="font-display text-3xl md:text-4xl font-bold">{p.name_ar}</h1>
-            <div className="flex items-center gap-2 text-sm">
-              <Star className="w-4 h-4 fill-gold text-gold" />
-              <span className="font-bold">{(p.rating ?? 4.8).toFixed(1)}</span>
-              <span className="text-muted-foreground">({p.reviews_count ?? 0} تقييم)</span>
-            </div>
             <div className="flex items-baseline gap-3">
               <span className="text-primary font-bold text-4xl">{effective.toFixed(2)}</span>
               <span className="text-sm text-muted-foreground">د.أ</span>
