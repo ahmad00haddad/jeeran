@@ -12,7 +12,7 @@ export function FlashSale() {
 
   useEffect(() => {
     const nowIso = new Date().toISOString();
-    supabase.from("products").select("*").eq("sold", false).or(`reserved_until.is.null,reserved_until.lt.${nowIso}`).not("sale_price", "is", null).order("reviews_count", { ascending: false }).limit(4)
+    supabase.from("products").select("*").eq("sold", false).or(`reserved_until.is.null,reserved_until.lt.${nowIso}`).not("sale_price", "is", null).order("created_at", { ascending: false }).limit(4)
       .then(({ data }) => setItems((data as DBProduct[]) || []));
   }, []);
 

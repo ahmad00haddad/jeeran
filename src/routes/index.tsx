@@ -35,7 +35,7 @@ function Index() {
     const avail = (q: any) => q.eq("sold", false).or(`reserved_until.is.null,reserved_until.lt.${nowIso}`);
     avail(supabase.from("products").select("*")).order("created_at", { ascending: false }).limit(8)
       .then(({ data }: any) => setNewArrivals((data as DBProduct[]) || []));
-    avail(supabase.from("products").select("*")).order("reviews_count", { ascending: false }).limit(8)
+    avail(supabase.from("products").select("*")).order("views_total", { ascending: false }).limit(8)
       .then(({ data }: any) => setBestSellers((data as DBProduct[]) || []));
   }, []);
 

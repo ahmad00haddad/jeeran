@@ -37,7 +37,6 @@ function ShopPage() {
     if (verifiedOnly) query = query.eq("verified_clean", true);
     if (sort === "price_asc") query = query.order("price", { ascending: true });
     else if (sort === "price_desc") query = query.order("price", { ascending: false });
-    else if (sort === "popular") query = query.order("reviews_count", { ascending: false });
     else query = query.order("created_at", { ascending: false });
     query.limit(200).then(({ data }) => setProducts((data as DBProduct[]) || []));
   }, [activeCat, q, sort, onSale, maxPrice, verifiedOnly]);

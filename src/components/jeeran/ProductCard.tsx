@@ -1,4 +1,4 @@
-import { Heart, Star, BadgeCheck, Eye } from "lucide-react";
+import { Heart, BadgeCheck, Eye } from "lucide-react";
 import { Link } from "@tanstack/react-router";
 import type { DBProduct } from "@/types/db";
 import { resolveImg } from "@/lib/imageMap";
@@ -67,11 +67,7 @@ export function ProductCard({ p }: { p: DBProduct & { brand?: string | null; con
       <div className="p-3 space-y-1">
         {p.brand && <div className="text-[10px] uppercase tracking-wider text-muted-foreground font-bold">{p.brand}</div>}
         <h3 className="text-sm leading-snug line-clamp-2 min-h-[2.5rem]">{p.name_ar}</h3>
-        <div className="flex items-center gap-1 text-xs text-muted-foreground">
-          <Star className="w-3 h-3 fill-gold text-gold" />
-          <span className="font-medium">{(p.rating ?? 4.8).toFixed(1)}</span>
-          <span>({p.reviews_count ?? 0})</span>
-        </div>
+        {condLabel && <div className="text-xs text-muted-foreground">{condLabel}</div>}
         <div className="flex items-baseline gap-2 pt-1 flex-wrap">
           <span className="text-primary font-bold text-lg">{effective.toFixed(2)}</span>
           <span className="text-[11px] text-muted-foreground">د.أ</span>
