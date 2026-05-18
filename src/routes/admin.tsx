@@ -85,12 +85,16 @@ function Admin() {
       seller_notes: form.seller_notes,
       stock: Number(form.stock),
       verified_clean: form.verified_clean,
-    });
+      rentable: form.rentable,
+      rental_price: form.rentable && form.rental_price ? Number(form.rental_price) : null,
+      rental_duration_days: form.rentable && form.rental_duration_days ? Number(form.rental_duration_days) : null,
+      rental_deposit: form.rentable && form.rental_deposit ? Number(form.rental_deposit) : null,
+    } as any);
     if (error) toast.error(error.message);
     else {
       toast.success("تم إضافة القطعة");
       setShowForm(false);
-      setForm({ name_ar: "", brand: "", price: "", original_price: "", sale_price: "", image_url: "", category_id: "", condition: "like_new", description_ar: "", seller_notes: "", stock: "1", verified_clean: false });
+      setForm({ name_ar: "", brand: "", price: "", original_price: "", sale_price: "", image_url: "", category_id: "", condition: "like_new", description_ar: "", seller_notes: "", stock: "1", verified_clean: false, rentable: false, rental_price: "", rental_duration_days: "", rental_deposit: "" });
       const { data } = await supabase.from("products").select("*").order("created_at", { ascending: false }).limit(500);
       setProducts(data || []);
     }
