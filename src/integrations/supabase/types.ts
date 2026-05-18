@@ -211,6 +211,10 @@ export type Database = {
           original_price: number | null
           price: number
           rating: number | null
+          rentable: boolean
+          rental_deposit: number | null
+          rental_duration_days: number | null
+          rental_price: number | null
           reserved_order_id: string | null
           reserved_until: string | null
           reviews_count: number | null
@@ -242,6 +246,10 @@ export type Database = {
           original_price?: number | null
           price: number
           rating?: number | null
+          rentable?: boolean
+          rental_deposit?: number | null
+          rental_duration_days?: number | null
+          rental_price?: number | null
           reserved_order_id?: string | null
           reserved_until?: string | null
           reviews_count?: number | null
@@ -273,6 +281,10 @@ export type Database = {
           original_price?: number | null
           price?: number
           rating?: number | null
+          rentable?: boolean
+          rental_deposit?: number | null
+          rental_duration_days?: number | null
+          rental_price?: number | null
           reserved_order_id?: string | null
           reserved_until?: string | null
           reviews_count?: number | null
@@ -321,6 +333,42 @@ export type Database = {
           full_name?: string | null
           id?: string
           phone?: string | null
+        }
+        Relationships: []
+      }
+      rental_requests: {
+        Row: {
+          created_at: string
+          event_date: string | null
+          full_name: string
+          id: string
+          message: string | null
+          phone: string
+          product_id: string
+          status: string
+          user_id: string | null
+        }
+        Insert: {
+          created_at?: string
+          event_date?: string | null
+          full_name: string
+          id?: string
+          message?: string | null
+          phone: string
+          product_id: string
+          status?: string
+          user_id?: string | null
+        }
+        Update: {
+          created_at?: string
+          event_date?: string | null
+          full_name?: string
+          id?: string
+          message?: string | null
+          phone?: string
+          product_id?: string
+          status?: string
+          user_id?: string | null
         }
         Relationships: []
       }

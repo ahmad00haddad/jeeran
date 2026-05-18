@@ -20,16 +20,18 @@ const CONDITIONS = [
 function Admin() {
   const { user, isAdmin, loading } = useAuth();
   const nav = useNavigate();
-  const [tab, setTab] = useState<"stats" | "products" | "orders" | "offers">("stats");
+  const [tab, setTab] = useState<"stats" | "products" | "orders" | "offers" | "rentals">("stats");
   const [products, setProducts] = useState<any[]>([]);
   const [orders, setOrders] = useState<any[]>([]);
   const [offers, setOffers] = useState<any[]>([]);
+  const [rentals, setRentals] = useState<any[]>([]);
   const [cats, setCats] = useState<any[]>([]);
   const [showForm, setShowForm] = useState(false);
   const [form, setForm] = useState({
     name_ar: "", brand: "", price: "", original_price: "", sale_price: "",
     image_url: "", category_id: "", condition: "like_new",
     description_ar: "", seller_notes: "", stock: "1", verified_clean: false,
+    rentable: false, rental_price: "", rental_duration_days: "", rental_deposit: "",
   });
 
   useEffect(() => {
@@ -38,6 +40,7 @@ function Admin() {
       supabase.from("orders").select("*").order("created_at", { ascending: false }).limit(500).then(({ data }) => setOrders(data || []));
       supabase.from("categories").select("*").order("display_order").then(({ data }) => setCats(data || []));
       supabase.from("offers").select("*, products(name_ar, price, image_url)").order("created_at", { ascending: false }).limit(200).then(({ data }) => setOffers(data || []));
+      supabase.from("rental_requests").select("*, products(name_ar, rental_price, image_url)").order("created_at", { ascending: false }).limit(200).then(({ data }: any) => setRentals(data || []));
     }
   }, [isAdmin]);
 
@@ -82,12 +85,16 @@ function Admin() {
       seller_notes: form.seller_notes,
       stock: Number(form.stock),
       verified_clean: form.verified_clean,
-    });
+      rentable: form.rentable,
+      rental_price: form.rentable && form.rental_price ? Number(form.rental_price) : null,
+      rental_duration_days: form.rentable && form.rental_duration_days ? Number(form.rental_duration_days) : null,
+      rental_deposit: form.rentable && form.rental_deposit ? Number(form.rental_deposit) : null,
+    } as any);
     if (error) toast.error(error.message);
     else {
       toast.success("تم إضافة القطعة");
       setShowForm(false);
-      setForm({ name_ar: "", brand: "", price: "", original_price: "", sale_price: "", image_url: "", category_id: "", condition: "like_new", description_ar: "", seller_notes: "", stock: "1", verified_clean: false });
+      setForm({ name_ar: "", brand: "", price: "", original_price: "", sale_price: "", image_url: "", category_id: "", condition: "like_new", description_ar: "", seller_notes: "", stock: "1", verified_clean: false, rentable: false, rental_price: "", rental_duration_days: "", rental_deposit: "" });
       const { data } = await supabase.from("products").select("*").order("created_at", { ascending: false }).limit(500);
       setProducts(data || []);
     }
@@ -129,6 +136,7 @@ function Admin() {
           <button onClick={() => setTab("products")} className={`px-4 py-2 font-bold whitespace-nowrap ${tab === "products" ? "border-b-2 border-primary text-primary" : "text-muted-foreground"}`}><Package className="w-4 h-4 inline ml-1" /> القطع ({products.length})</button>
           <button onClick={() => setTab("orders")} className={`px-4 py-2 font-bold whitespace-nowrap ${tab === "orders" ? "border-b-2 border-primary text-primary" : "text-muted-foreground"}`}><ShoppingCart className="w-4 h-4 inline ml-1" /> الطلبات ({orders.length})</button>
           <button onClick={() => setTab("offers")} className={`px-4 py-2 font-bold whitespace-nowrap ${tab === "offers" ? "border-b-2 border-primary text-primary" : "text-muted-foreground"}`}>🏷️ العروض ({offers.filter(o => o.status === "pending").length})</button>
+          <button onClick={() => setTab("rentals")} className={`px-4 py-2 font-bold whitespace-nowrap ${tab === "rentals" ? "border-b-2 border-primary text-primary" : "text-muted-foreground"}`}>✨ الإيجار ({rentals.filter(r => r.status === "pending").length})</button>
         </div>
 
         {tab === "stats" && (
@@ -185,6 +193,19 @@ function Admin() {
                   <input type="checkbox" checked={form.verified_clean} onChange={(e) => setForm({ ...form, verified_clean: e.target.checked })} />
                   ✓ موثّقة نظيفة (مغسولة + مكوية + معقّمة)
                 </label>
+                <div className="md:col-span-2 border border-gold bg-gold/5 p-3 space-y-2">
+                  <label className="flex items-center gap-2 text-sm font-bold">
+                    <input type="checkbox" checked={form.rentable} onChange={(e) => setForm({ ...form, rentable: e.target.checked })} />
+                    ✨ متوفرة للإيجار كمان (للمناسبات)
+                  </label>
+                  {form.rentable && (
+                    <div className="grid grid-cols-3 gap-2">
+                      <input type="number" step="0.01" placeholder="سعر الإيجار (د.أ)" value={form.rental_price} onChange={(e) => setForm({ ...form, rental_price: e.target.value })} className="border border-border px-3 py-2 text-sm" />
+                      <input type="number" placeholder="المدة (أيام)" value={form.rental_duration_days} onChange={(e) => setForm({ ...form, rental_duration_days: e.target.value })} className="border border-border px-3 py-2 text-sm" />
+                      <input type="number" step="0.01" placeholder="تأمين مسترد (اختياري)" value={form.rental_deposit} onChange={(e) => setForm({ ...form, rental_deposit: e.target.value })} className="border border-border px-3 py-2 text-sm" />
+                    </div>
+                  )}
+                </div>
                 <button className="bg-primary text-primary-foreground py-2 font-bold md:col-span-2">حفظ القطعة</button>
               </form>
             )}
@@ -283,6 +304,48 @@ function Admin() {
               </div>
             ))}
             {offers.length === 0 && <div className="text-center text-muted-foreground py-12">ما في عروض بعد.</div>}
+          </div>
+        )}
+
+        {tab === "rentals" && (
+          <div className="space-y-3">
+            {rentals.map((r) => {
+              const updateRentalStatus = async (status: string) => {
+                const { error } = await supabase.from("rental_requests").update({ status }).eq("id", r.id);
+                if (error) { toast.error(error.message); return; }
+                setRentals((p) => p.map((x) => x.id === r.id ? { ...x, status } : x));
+                toast.success("تم التحديث");
+              };
+              return (
+                <div key={r.id} className="bg-card border border-border p-4">
+                  <div className="flex flex-wrap items-start justify-between gap-3 mb-2">
+                    <div>
+                      <span className="text-[10px] font-bold px-2 py-0.5 bg-gold text-gold-foreground">✨ طلب إيجار</span>
+                      <div className="font-bold mt-1">{r.products?.name_ar || "قطعة محذوفة"}</div>
+                      <div className="text-xs text-muted-foreground">سعر الإيجار: {r.products?.rental_price ? Number(r.products.rental_price).toFixed(2) : "—"} د.أ</div>
+                    </div>
+                    <div className="text-right">
+                      <div className="text-xs text-muted-foreground">تاريخ المناسبة</div>
+                      <div className="text-lg font-bold text-primary">{r.event_date ? new Date(r.event_date).toLocaleDateString("ar-JO") : "—"}</div>
+                    </div>
+                  </div>
+                  <div className="text-sm grid md:grid-cols-2 gap-2 mb-3 bg-secondary p-2">
+                    <div><strong>{r.full_name}</strong> — <a href={`https://wa.me/962${r.phone.replace(/^0/, "")}`} target="_blank" rel="noreferrer" className="text-green-700 font-bold">{r.phone}</a></div>
+                    <div className="text-muted-foreground">{r.message || "—"}</div>
+                  </div>
+                  <div className="flex items-center justify-between gap-2 flex-wrap">
+                    <span className="text-xs text-muted-foreground">{new Date(r.created_at).toLocaleString("ar-JO")}</span>
+                    <div className="flex gap-2">
+                      <button onClick={() => updateRentalStatus("accepted")} disabled={r.status !== "pending"} className={`px-3 py-1 text-xs font-bold ${r.status === "accepted" ? "bg-green-700 text-white" : "bg-secondary hover:bg-green-700 hover:text-white"} disabled:opacity-50`}>قبول</button>
+                      <button onClick={() => updateRentalStatus("rejected")} disabled={r.status !== "pending"} className={`px-3 py-1 text-xs font-bold ${r.status === "rejected" ? "bg-red-700 text-white" : "bg-secondary hover:bg-red-700 hover:text-white"} disabled:opacity-50`}>رفض</button>
+                      <button onClick={() => updateRentalStatus("returned")} disabled={r.status !== "accepted"} className={`px-3 py-1 text-xs font-bold ${r.status === "returned" ? "bg-deep text-cream" : "bg-secondary hover:bg-deep hover:text-cream"} disabled:opacity-50`}>تم الإرجاع</button>
+                      <span className="text-xs px-2 py-1 bg-cream border border-border">{r.status === "pending" ? "بانتظار" : r.status === "accepted" ? "مقبول" : r.status === "rejected" ? "مرفوض" : r.status === "returned" ? "رجعت" : r.status}</span>
+                    </div>
+                  </div>
+                </div>
+              );
+            })}
+            {rentals.length === 0 && <div className="text-center text-muted-foreground py-12">ما في طلبات إيجار بعد.</div>}
           </div>
         )}
       </main>

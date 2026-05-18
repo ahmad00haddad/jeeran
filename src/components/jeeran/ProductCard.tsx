@@ -1,4 +1,4 @@
-import { Heart, BadgeCheck, Eye } from "lucide-react";
+import { Heart, BadgeCheck, Eye, Sparkles } from "lucide-react";
 import { Link } from "@tanstack/react-router";
 import type { DBProduct } from "@/types/db";
 import { resolveImg } from "@/lib/imageMap";
@@ -37,6 +37,9 @@ export function ProductCard({ p }: { p: DBProduct & { brand?: string | null; con
             )}
             {verified && (
               <span className="bg-green-700 text-white text-[10px] font-bold px-2 py-1 flex items-center gap-0.5"><BadgeCheck className="w-3 h-3" /> موثّقة</span>
+            )}
+            {(p as any).rentable && Number((p as any).rental_price ?? 0) > 0 && (
+              <span className="bg-gold text-gold-foreground text-[10px] font-bold px-2 py-1 flex items-center gap-0.5"><Sparkles className="w-3 h-3" /> للإيجار</span>
             )}
           </div>
           {discount > 0 && (

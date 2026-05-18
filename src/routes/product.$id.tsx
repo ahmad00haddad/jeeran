@@ -1,12 +1,13 @@
 import { createFileRoute, useParams, Link } from "@tanstack/react-router";
 import { useEffect, useState } from "react";
-import { Heart, Truck, ShieldCheck, RotateCcw, Minus, Plus, BadgeCheck, MessageCircle, Tag, Clock, Eye } from "lucide-react";
+import { Heart, Truck, ShieldCheck, RotateCcw, Minus, Plus, BadgeCheck, MessageCircle, Tag, Clock, Eye, Sparkles } from "lucide-react";
 import { TopBar } from "@/components/jeeran/TopBar";
 import { Header } from "@/components/jeeran/Header";
 import { Footer } from "@/components/jeeran/Footer";
 import { MobileNav } from "@/components/jeeran/MobileNav";
 import { ProductCard } from "@/components/jeeran/ProductCard";
 import { OfferDialog } from "@/components/jeeran/OfferDialog";
+import { RentalDialog } from "@/components/jeeran/RentalDialog";
 import { supabase } from "@/integrations/supabase/client";
 import { resolveImg } from "@/lib/imageMap";
 import { useCart } from "@/store/cart";
@@ -23,6 +24,7 @@ function PDP() {
   const [size, setSize] = useState("M");
   const [qty, setQty] = useState(1);
   const [dialog, setDialog] = useState<null | "offer" | "hold24h">(null);
+  const [rentOpen, setRentOpen] = useState(false);
   const { add, toggleWish, wishlist } = useCart();
 
   useEffect(() => {
@@ -47,6 +49,10 @@ function PDP() {
   const unavailable = isSold || isReserved;
   const verified = (p as any).verified_clean === true;
   const viewsToday = Number((p as any).views_today ?? 0);
+  const rentable = (p as any).rentable === true && Number((p as any).rental_price ?? 0) > 0;
+  const rentalPrice = Number((p as any).rental_price ?? 0);
+  const rentalDays = (p as any).rental_duration_days as number | null;
+  const rentalDeposit = (p as any).rental_deposit as number | null;
 
   const waMsg = `مرحبا 👋\nبستفسر عن قطعة: *${p.name_ar}*\nالسعر: ${effective.toFixed(2)} د.أ\nرابط: ${typeof window !== "undefined" ? window.location.href : ""}`;
 
@@ -88,6 +94,22 @@ function PDP() {
               {p.sale_price && <span className="text-lg text-muted-foreground line-through">{p.price.toFixed(2)}</span>}
             </div>
             <p className="text-muted-foreground leading-relaxed">{p.description_ar}</p>
+
+            {rentable && !unavailable && (
+              <div className="border-2 border-gold bg-gold/5 p-4 space-y-2">
+                <div className="flex items-center gap-2 font-bold text-deep">
+                  <Sparkles className="w-4 h-4 text-gold" /> متوفرة للإيجار كمان!
+                </div>
+                <div className="text-sm text-muted-foreground">
+                  استأجريها لمناسبتك بـ <strong className="text-primary text-base">{rentalPrice.toFixed(2)} د.أ</strong>
+                  {rentalDays ? ` لمدة ${rentalDays} ${rentalDays === 1 ? "يوم" : "أيام"}` : ""}
+                  {rentalDeposit ? ` + تأمين ${rentalDeposit.toFixed(2)} د.أ (مسترد)` : ""}
+                </div>
+                <button onClick={() => setRentOpen(true)} className="w-full bg-gold text-gold-foreground py-2.5 font-bold hover:opacity-90 transition flex items-center justify-center gap-2">
+                  <Sparkles className="w-4 h-4" /> استأجريها لمناسبتك
+                </button>
+              </div>
+            )}
 
             <div>
               <div className="text-sm font-bold mb-2">المقاس:</div>
@@ -167,6 +189,15 @@ function PDP() {
         productName={p.name_ar}
         type={dialog || "offer"}
         currentPrice={effective}
+      />
+      <RentalDialog
+        open={rentOpen}
+        onClose={() => setRentOpen(false)}
+        productId={p.id}
+        productName={p.name_ar}
+        rentalPrice={rentalPrice}
+        rentalDays={rentalDays}
+        rentalDeposit={rentalDeposit}
       />
       <Footer />
       <MobileNav />
