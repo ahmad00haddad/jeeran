@@ -190,6 +190,15 @@ function PDP() {
         type={dialog || "offer"}
         currentPrice={effective}
       />
+      <RentalDialog
+        open={rentOpen}
+        onClose={() => setRentOpen(false)}
+        productId={p.id}
+        productName={p.name_ar}
+        rentalPrice={rentalPrice}
+        rentalDays={rentalDays}
+        rentalDeposit={rentalDeposit}
+      />
       <Footer />
       <MobileNav />
     </div>
