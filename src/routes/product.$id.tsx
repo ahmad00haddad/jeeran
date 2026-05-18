@@ -95,6 +95,22 @@ function PDP() {
             </div>
             <p className="text-muted-foreground leading-relaxed">{p.description_ar}</p>
 
+            {rentable && !unavailable && (
+              <div className="border-2 border-gold bg-gold/5 p-4 space-y-2">
+                <div className="flex items-center gap-2 font-bold text-deep">
+                  <Sparkles className="w-4 h-4 text-gold" /> متوفرة للإيجار كمان!
+                </div>
+                <div className="text-sm text-muted-foreground">
+                  استأجريها لمناسبتك بـ <strong className="text-primary text-base">{rentalPrice.toFixed(2)} د.أ</strong>
+                  {rentalDays ? ` لمدة ${rentalDays} ${rentalDays === 1 ? "يوم" : "أيام"}` : ""}
+                  {rentalDeposit ? ` + تأمين ${rentalDeposit.toFixed(2)} د.أ (مسترد)` : ""}
+                </div>
+                <button onClick={() => setRentOpen(true)} className="w-full bg-gold text-gold-foreground py-2.5 font-bold hover:opacity-90 transition flex items-center justify-center gap-2">
+                  <Sparkles className="w-4 h-4" /> استأجريها لمناسبتك
+                </button>
+              </div>
+            )}
+
             <div>
               <div className="text-sm font-bold mb-2">المقاس:</div>
               <div className="flex gap-2 flex-wrap">
