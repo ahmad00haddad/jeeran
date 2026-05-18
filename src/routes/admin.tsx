@@ -306,6 +306,48 @@ function Admin() {
             {offers.length === 0 && <div className="text-center text-muted-foreground py-12">ما في عروض بعد.</div>}
           </div>
         )}
+
+        {tab === "rentals" && (
+          <div className="space-y-3">
+            {rentals.map((r) => {
+              const updateRentalStatus = async (status: string) => {
+                const { error } = await supabase.from("rental_requests").update({ status }).eq("id", r.id);
+                if (error) { toast.error(error.message); return; }
+                setRentals((p) => p.map((x) => x.id === r.id ? { ...x, status } : x));
+                toast.success("تم التحديث");
+              };
+              return (
+                <div key={r.id} className="bg-card border border-border p-4">
+                  <div className="flex flex-wrap items-start justify-between gap-3 mb-2">
+                    <div>
+                      <span className="text-[10px] font-bold px-2 py-0.5 bg-gold text-gold-foreground">✨ طلب إيجار</span>
+                      <div className="font-bold mt-1">{r.products?.name_ar || "قطعة محذوفة"}</div>
+                      <div className="text-xs text-muted-foreground">سعر الإيجار: {r.products?.rental_price ? Number(r.products.rental_price).toFixed(2) : "—"} د.أ</div>
+                    </div>
+                    <div className="text-right">
+                      <div className="text-xs text-muted-foreground">تاريخ المناسبة</div>
+                      <div className="text-lg font-bold text-primary">{r.event_date ? new Date(r.event_date).toLocaleDateString("ar-JO") : "—"}</div>
+                    </div>
+                  </div>
+                  <div className="text-sm grid md:grid-cols-2 gap-2 mb-3 bg-secondary p-2">
+                    <div><strong>{r.full_name}</strong> — <a href={`https://wa.me/962${r.phone.replace(/^0/, "")}`} target="_blank" rel="noreferrer" className="text-green-700 font-bold">{r.phone}</a></div>
+                    <div className="text-muted-foreground">{r.message || "—"}</div>
+                  </div>
+                  <div className="flex items-center justify-between gap-2 flex-wrap">
+                    <span className="text-xs text-muted-foreground">{new Date(r.created_at).toLocaleString("ar-JO")}</span>
+                    <div className="flex gap-2">
+                      <button onClick={() => updateRentalStatus("accepted")} disabled={r.status !== "pending"} className={`px-3 py-1 text-xs font-bold ${r.status === "accepted" ? "bg-green-700 text-white" : "bg-secondary hover:bg-green-700 hover:text-white"} disabled:opacity-50`}>قبول</button>
+                      <button onClick={() => updateRentalStatus("rejected")} disabled={r.status !== "pending"} className={`px-3 py-1 text-xs font-bold ${r.status === "rejected" ? "bg-red-700 text-white" : "bg-secondary hover:bg-red-700 hover:text-white"} disabled:opacity-50`}>رفض</button>
+                      <button onClick={() => updateRentalStatus("returned")} disabled={r.status !== "accepted"} className={`px-3 py-1 text-xs font-bold ${r.status === "returned" ? "bg-deep text-cream" : "bg-secondary hover:bg-deep hover:text-cream"} disabled:opacity-50`}>تم الإرجاع</button>
+                      <span className="text-xs px-2 py-1 bg-cream border border-border">{r.status === "pending" ? "بانتظار" : r.status === "accepted" ? "مقبول" : r.status === "rejected" ? "مرفوض" : r.status === "returned" ? "رجعت" : r.status}</span>
+                    </div>
+                  </div>
+                </div>
+              );
+            })}
+            {rentals.length === 0 && <div className="text-center text-muted-foreground py-12">ما في طلبات إيجار بعد.</div>}
+          </div>
+        )}
       </main>
       <Footer />
     </div>
