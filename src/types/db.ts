@@ -18,6 +18,10 @@ export type DBProduct = {
   sold?: boolean;
   reserved_until?: string | null;
   reserved_order_id?: string | null;
+  rentable?: boolean;
+  rental_price?: number | null;
+  rental_duration_days?: number | null;
+  rental_deposit?: number | null;
 };
 
 export type Category = {
