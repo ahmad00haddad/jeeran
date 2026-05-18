@@ -24,6 +24,7 @@ function PDP() {
   const [size, setSize] = useState("M");
   const [qty, setQty] = useState(1);
   const [dialog, setDialog] = useState<null | "offer" | "hold24h">(null);
+  const [rentOpen, setRentOpen] = useState(false);
   const { add, toggleWish, wishlist } = useCart();
 
   useEffect(() => {
