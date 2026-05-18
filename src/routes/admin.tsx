@@ -136,6 +136,7 @@ function Admin() {
           <button onClick={() => setTab("products")} className={`px-4 py-2 font-bold whitespace-nowrap ${tab === "products" ? "border-b-2 border-primary text-primary" : "text-muted-foreground"}`}><Package className="w-4 h-4 inline ml-1" /> القطع ({products.length})</button>
           <button onClick={() => setTab("orders")} className={`px-4 py-2 font-bold whitespace-nowrap ${tab === "orders" ? "border-b-2 border-primary text-primary" : "text-muted-foreground"}`}><ShoppingCart className="w-4 h-4 inline ml-1" /> الطلبات ({orders.length})</button>
           <button onClick={() => setTab("offers")} className={`px-4 py-2 font-bold whitespace-nowrap ${tab === "offers" ? "border-b-2 border-primary text-primary" : "text-muted-foreground"}`}>🏷️ العروض ({offers.filter(o => o.status === "pending").length})</button>
+          <button onClick={() => setTab("rentals")} className={`px-4 py-2 font-bold whitespace-nowrap ${tab === "rentals" ? "border-b-2 border-primary text-primary" : "text-muted-foreground"}`}>✨ الإيجار ({rentals.filter(r => r.status === "pending").length})</button>
         </div>
 
         {tab === "stats" && (
