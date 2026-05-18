@@ -49,6 +49,10 @@ function PDP() {
   const unavailable = isSold || isReserved;
   const verified = (p as any).verified_clean === true;
   const viewsToday = Number((p as any).views_today ?? 0);
+  const rentable = (p as any).rentable === true && Number((p as any).rental_price ?? 0) > 0;
+  const rentalPrice = Number((p as any).rental_price ?? 0);
+  const rentalDays = (p as any).rental_duration_days as number | null;
+  const rentalDeposit = (p as any).rental_deposit as number | null;
 
   const waMsg = `مرحبا 👋\nبستفسر عن قطعة: *${p.name_ar}*\nالسعر: ${effective.toFixed(2)} د.أ\nرابط: ${typeof window !== "undefined" ? window.location.href : ""}`;
 
