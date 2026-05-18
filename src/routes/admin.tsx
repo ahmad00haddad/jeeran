@@ -20,16 +20,18 @@ const CONDITIONS = [
 function Admin() {
   const { user, isAdmin, loading } = useAuth();
   const nav = useNavigate();
-  const [tab, setTab] = useState<"stats" | "products" | "orders" | "offers">("stats");
+  const [tab, setTab] = useState<"stats" | "products" | "orders" | "offers" | "rentals">("stats");
   const [products, setProducts] = useState<any[]>([]);
   const [orders, setOrders] = useState<any[]>([]);
   const [offers, setOffers] = useState<any[]>([]);
+  const [rentals, setRentals] = useState<any[]>([]);
   const [cats, setCats] = useState<any[]>([]);
   const [showForm, setShowForm] = useState(false);
   const [form, setForm] = useState({
     name_ar: "", brand: "", price: "", original_price: "", sale_price: "",
     image_url: "", category_id: "", condition: "like_new",
     description_ar: "", seller_notes: "", stock: "1", verified_clean: false,
+    rentable: false, rental_price: "", rental_duration_days: "", rental_deposit: "",
   });
 
   useEffect(() => {
