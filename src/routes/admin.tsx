@@ -193,6 +193,19 @@ function Admin() {
                   <input type="checkbox" checked={form.verified_clean} onChange={(e) => setForm({ ...form, verified_clean: e.target.checked })} />
                   ✓ موثّقة نظيفة (مغسولة + مكوية + معقّمة)
                 </label>
+                <div className="md:col-span-2 border border-gold bg-gold/5 p-3 space-y-2">
+                  <label className="flex items-center gap-2 text-sm font-bold">
+                    <input type="checkbox" checked={form.rentable} onChange={(e) => setForm({ ...form, rentable: e.target.checked })} />
+                    ✨ متوفرة للإيجار كمان (للمناسبات)
+                  </label>
+                  {form.rentable && (
+                    <div className="grid grid-cols-3 gap-2">
+                      <input type="number" step="0.01" placeholder="سعر الإيجار (د.أ)" value={form.rental_price} onChange={(e) => setForm({ ...form, rental_price: e.target.value })} className="border border-border px-3 py-2 text-sm" />
+                      <input type="number" placeholder="المدة (أيام)" value={form.rental_duration_days} onChange={(e) => setForm({ ...form, rental_duration_days: e.target.value })} className="border border-border px-3 py-2 text-sm" />
+                      <input type="number" step="0.01" placeholder="تأمين مسترد (اختياري)" value={form.rental_deposit} onChange={(e) => setForm({ ...form, rental_deposit: e.target.value })} className="border border-border px-3 py-2 text-sm" />
+                    </div>
+                  )}
+                </div>
                 <button className="bg-primary text-primary-foreground py-2 font-bold md:col-span-2">حفظ القطعة</button>
               </form>
             )}
