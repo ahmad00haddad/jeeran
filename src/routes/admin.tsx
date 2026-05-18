@@ -40,6 +40,7 @@ function Admin() {
       supabase.from("orders").select("*").order("created_at", { ascending: false }).limit(500).then(({ data }) => setOrders(data || []));
       supabase.from("categories").select("*").order("display_order").then(({ data }) => setCats(data || []));
       supabase.from("offers").select("*, products(name_ar, price, image_url)").order("created_at", { ascending: false }).limit(200).then(({ data }) => setOffers(data || []));
+      supabase.from("rental_requests").select("*, products(name_ar, rental_price, image_url)").order("created_at", { ascending: false }).limit(200).then(({ data }: any) => setRentals(data || []));
     }
   }, [isAdmin]);
 
