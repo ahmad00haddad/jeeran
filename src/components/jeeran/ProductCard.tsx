@@ -38,6 +38,9 @@ export function ProductCard({ p }: { p: DBProduct & { brand?: string | null; con
             {verified && (
               <span className="bg-green-700 text-white text-[10px] font-bold px-2 py-1 flex items-center gap-0.5"><BadgeCheck className="w-3 h-3" /> موثّقة</span>
             )}
+            {(p as any).rentable && Number((p as any).rental_price ?? 0) > 0 && (
+              <span className="bg-gold text-gold-foreground text-[10px] font-bold px-2 py-1 flex items-center gap-0.5"><Sparkles className="w-3 h-3" /> للإيجار</span>
+            )}
           </div>
           {discount > 0 && (
             <span className="absolute top-2 left-2 bg-gold text-gold-foreground text-[10px] font-bold px-2 py-1">-{discount}٪</span>
