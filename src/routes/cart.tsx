@@ -5,7 +5,7 @@ import { Footer } from "@/components/jeeran/Footer";
 import { MobileNav } from "@/components/jeeran/MobileNav";
 import { useCart, cartTotals } from "@/store/cart";
 import { resolveImg } from "@/lib/imageMap";
-import { Minus, Plus, Trash2 } from "lucide-react";
+import { Trash2 } from "lucide-react";
 
 export const Route = createFileRoute("/cart")({ component: CartPage });
 
