@@ -1,6 +1,6 @@
 import { createFileRoute, useParams, Link } from "@tanstack/react-router";
 import { useEffect, useState } from "react";
-import { Heart, Truck, ShieldCheck, RotateCcw, Minus, Plus, BadgeCheck, MessageCircle, Tag, Clock, Eye, Sparkles } from "lucide-react";
+import { Heart, Truck, ShieldCheck, RotateCcw, BadgeCheck, MessageCircle, Tag, Clock, Eye, Sparkles } from "lucide-react";
 import { TopBar } from "@/components/jeeran/TopBar";
 import { Header } from "@/components/jeeran/Header";
 import { Footer } from "@/components/jeeran/Footer";
