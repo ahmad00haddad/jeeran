@@ -35,11 +35,7 @@ function CartPage() {
                       {i.size && <div className="text-xs text-muted-foreground">المقاس: {i.size}</div>}
                     </div>
                     <div className="flex items-center justify-between">
-                      <div className="flex items-center border border-border">
-                        <button onClick={() => setQty(i.id, i.quantity - 1, i.size)} className="px-2 py-1"><Minus className="w-3 h-3" /></button>
-                        <span className="px-3">{i.quantity}</span>
-                        <button onClick={() => setQty(i.id, i.quantity + 1, i.size)} className="px-2 py-1"><Plus className="w-3 h-3" /></button>
-                      </div>
+                      <span className="text-xs text-muted-foreground">قطعة واحدة (فريدة)</span>
                       <span className="font-bold text-primary">{(i.price * i.quantity).toFixed(2)} د.أ</span>
                     </div>
                   </div>
