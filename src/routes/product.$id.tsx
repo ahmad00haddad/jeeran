@@ -121,16 +121,11 @@ function PDP() {
             </div>
 
             <div className="flex items-center gap-4">
-              <div className="flex items-center border border-border">
-                <button onClick={() => setQty(Math.max(1, qty - 1))} className="px-3 py-2"><Minus className="w-4 h-4" /></button>
-                <span className="px-4 font-bold">{qty}</span>
-                <button onClick={() => setQty(qty + 1)} className="px-3 py-2"><Plus className="w-4 h-4" /></button>
-              </div>
               <button
                 disabled={unavailable}
                 onClick={() => {
                   if (unavailable) return;
-                  add({ id: p.id, name_ar: p.name_ar, price: effective, image_url: p.image_url, size, quantity: qty });
+                  add({ id: p.id, name_ar: p.name_ar, price: effective, image_url: p.image_url, size, quantity: 1 });
                   toast.success("انضافت للسلة 🛍️");
                 }}
                 className="flex-1 bg-primary text-primary-foreground py-3.5 font-bold hover:bg-primary/90 transition disabled:opacity-50 disabled:cursor-not-allowed"
