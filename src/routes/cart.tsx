@@ -10,7 +10,7 @@ import { Trash2 } from "lucide-react";
 export const Route = createFileRoute("/cart")({ component: CartPage });
 
 function CartPage() {
-  const { items, setQty, remove } = useCart();
+  const { items, remove } = useCart();
   const { subtotal, shipping, total } = cartTotals(items);
 
   return (
