@@ -22,7 +22,7 @@ function PDP() {
   const [p, setP] = useState<DBProduct | null>(null);
   const [related, setRelated] = useState<DBProduct[]>([]);
   const [size, setSize] = useState("M");
-  const [qty, setQty] = useState(1);
+  // قطعة واحدة فقط - منتجات مستعملة فريدة
   const [dialog, setDialog] = useState<null | "offer" | "hold24h">(null);
   const [rentOpen, setRentOpen] = useState(false);
   const { add, toggleWish, wishlist } = useCart();
