@@ -31,8 +31,9 @@ export const useCart = create<State>()(
       add: (item) => {
         const items = [...get().items];
         const idx = items.findIndex((i) => key(i) === key(item));
-        if (idx >= 0) items[idx].quantity += item.quantity;
-        else items.push(item);
+        // قطع فريدة - قطعة واحدة فقط لكل منتج
+        if (idx >= 0) items[idx].quantity = 1;
+        else items.push({ ...item, quantity: 1 });
         set({ items });
       },
       remove: (id, size) =>

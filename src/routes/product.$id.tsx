@@ -1,6 +1,6 @@
 import { createFileRoute, useParams, Link } from "@tanstack/react-router";
 import { useEffect, useState } from "react";
-import { Heart, Truck, ShieldCheck, RotateCcw, Minus, Plus, BadgeCheck, MessageCircle, Tag, Clock, Eye, Sparkles } from "lucide-react";
+import { Heart, Truck, ShieldCheck, RotateCcw, BadgeCheck, MessageCircle, Tag, Clock, Eye, Sparkles } from "lucide-react";
 import { TopBar } from "@/components/jeeran/TopBar";
 import { Header } from "@/components/jeeran/Header";
 import { Footer } from "@/components/jeeran/Footer";
@@ -22,7 +22,7 @@ function PDP() {
   const [p, setP] = useState<DBProduct | null>(null);
   const [related, setRelated] = useState<DBProduct[]>([]);
   const [size, setSize] = useState("M");
-  const [qty, setQty] = useState(1);
+  // قطعة واحدة فقط - منتجات مستعملة فريدة
   const [dialog, setDialog] = useState<null | "offer" | "hold24h">(null);
   const [rentOpen, setRentOpen] = useState(false);
   const { add, toggleWish, wishlist } = useCart();
@@ -121,16 +121,11 @@ function PDP() {
             </div>
 
             <div className="flex items-center gap-4">
-              <div className="flex items-center border border-border">
-                <button onClick={() => setQty(Math.max(1, qty - 1))} className="px-3 py-2"><Minus className="w-4 h-4" /></button>
-                <span className="px-4 font-bold">{qty}</span>
-                <button onClick={() => setQty(qty + 1)} className="px-3 py-2"><Plus className="w-4 h-4" /></button>
-              </div>
               <button
                 disabled={unavailable}
                 onClick={() => {
                   if (unavailable) return;
-                  add({ id: p.id, name_ar: p.name_ar, price: effective, image_url: p.image_url, size, quantity: qty });
+                  add({ id: p.id, name_ar: p.name_ar, price: effective, image_url: p.image_url, size, quantity: 1 });
                   toast.success("انضافت للسلة 🛍️");
                 }}
                 className="flex-1 bg-primary text-primary-foreground py-3.5 font-bold hover:bg-primary/90 transition disabled:opacity-50 disabled:cursor-not-allowed"
