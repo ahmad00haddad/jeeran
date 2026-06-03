@@ -38,12 +38,8 @@ export function CartDrawer({ open, onClose }: { open: boolean; onClose: () => vo
               <div className="flex-1 flex flex-col justify-between text-sm">
                 <div className="line-clamp-2">{i.name_ar}</div>
                 <div className="flex items-center justify-between mt-2">
-                  <div className="flex items-center border border-border">
-                    <button onClick={() => setQty(i.id, i.quantity - 1, i.size)} className="px-2 py-1"><Minus className="w-3 h-3" /></button>
-                    <span className="px-3 text-sm">{i.quantity}</span>
-                    <button onClick={() => setQty(i.id, i.quantity + 1, i.size)} className="px-2 py-1"><Plus className="w-3 h-3" /></button>
-                  </div>
-                  <div className="text-primary font-bold">{(i.price * i.quantity).toFixed(2)} د.أ</div>
+                  <span className="text-xs text-muted-foreground">قطعة واحدة (فريدة)</span>
+                  <div className="text-primary font-bold">{i.price.toFixed(2)} د.أ</div>
                 </div>
               </div>
               <button onClick={() => remove(i.id, i.size)} className="text-muted-foreground hover:text-primary self-start"><Trash2 className="w-4 h-4" /></button>
