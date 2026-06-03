@@ -30,7 +30,7 @@ function Admin() {
   const [form, setForm] = useState({
     name_ar: "", brand: "", price: "", original_price: "", sale_price: "",
     image_url: "", category_id: "", condition: "like_new",
-    description_ar: "", seller_notes: "", stock: "1", verified_clean: false,
+    description_ar: "", seller_notes: "", verified_clean: false,
     rentable: false, rental_price: "", rental_duration_days: "", rental_deposit: "",
   });
 
@@ -50,8 +50,9 @@ function Admin() {
     const delivered = orders.filter((o) => o.status === "delivered").length;
     const today = new Date(); today.setHours(0, 0, 0, 0);
     const todayOrders = orders.filter((o) => new Date(o.created_at) >= today);
-    const lowStock = products.filter((p) => Number(p.stock) <= 1);
-    return { total, pending, delivered, todayCount: todayOrders.length, todayRevenue: todayOrders.reduce((s, o) => s + Number(o.total || 0), 0), lowStock: lowStock.length };
+    const soldCount = products.filter((p) => p.sold === true).length;
+    const availableCount = products.filter((p) => p.sold !== true).length;
+    return { total, pending, delivered, todayCount: todayOrders.length, todayRevenue: todayOrders.reduce((s, o) => s + Number(o.total || 0), 0), soldCount, availableCount };
   }, [orders, products]);
 
   if (loading) return <div className="min-h-screen flex items-center justify-center">...</div>;
@@ -83,7 +84,7 @@ function Admin() {
       condition: form.condition,
       description_ar: form.description_ar,
       seller_notes: form.seller_notes,
-      stock: Number(form.stock),
+      stock: 1,
       verified_clean: form.verified_clean,
       rentable: form.rentable,
       rental_price: form.rentable && form.rental_price ? Number(form.rental_price) : null,
@@ -94,7 +95,7 @@ function Admin() {
     else {
       toast.success("تم إضافة القطعة");
       setShowForm(false);
-      setForm({ name_ar: "", brand: "", price: "", original_price: "", sale_price: "", image_url: "", category_id: "", condition: "like_new", description_ar: "", seller_notes: "", stock: "1", verified_clean: false, rentable: false, rental_price: "", rental_duration_days: "", rental_deposit: "" });
+      setForm({ name_ar: "", brand: "", price: "", original_price: "", sale_price: "", image_url: "", category_id: "", condition: "like_new", description_ar: "", seller_notes: "", verified_clean: false, rentable: false, rental_price: "", rental_duration_days: "", rental_deposit: "" });
       const { data } = await supabase.from("products").select("*").order("created_at", { ascending: false }).limit(500);
       setProducts(data || []);
     }
@@ -146,8 +147,9 @@ function Admin() {
               <StatCard icon={<ShoppingCart />} label="مبيعات اليوم" value={`${stats.todayRevenue.toFixed(2)} د.أ`} sub={`${stats.todayCount} طلب`} />
               <StatCard icon={<Clock />} label="طلبات بانتظار" value={String(stats.pending)} highlight={stats.pending > 0} />
               <StatCard icon={<Users />} label="طلبات تمت" value={String(stats.delivered)} />
+              <StatCard icon={<Package />} label="قطع متاحة للبيع" value={String(stats.availableCount)} />
+              <StatCard icon={<TrendingUp />} label="قطع تم بيعها" value={String(stats.soldCount)} />
               <StatCard icon={<Package />} label="إجمالي القطع" value={String(products.length)} />
-              <StatCard icon={<TrendingUp />} label="مخزون منخفض" value={String(stats.lowStock)} highlight={stats.lowStock > 0} />
             </div>
             <div className="bg-card border border-border p-5">
               <h3 className="font-bold mb-3">آخر ٥ طلبات</h3>
@@ -185,7 +187,7 @@ function Admin() {
                 <input required type="number" step="0.01" placeholder="سعر البيع (د.أ)" value={form.price} onChange={(e) => setForm({ ...form, price: e.target.value })} className="border border-border px-3 py-2" />
                 <input type="number" step="0.01" placeholder="السعر الأصلي بالمحل (اختياري)" value={form.original_price} onChange={(e) => setForm({ ...form, original_price: e.target.value })} className="border border-border px-3 py-2" />
                 <input type="number" step="0.01" placeholder="سعر تخفيض إضافي (اختياري)" value={form.sale_price} onChange={(e) => setForm({ ...form, sale_price: e.target.value })} className="border border-border px-3 py-2" />
-                <input type="number" placeholder="الكمية المتوفرة" value={form.stock} onChange={(e) => setForm({ ...form, stock: e.target.value })} className="border border-border px-3 py-2" />
+                <div className="border border-border bg-secondary/30 px-3 py-2 text-xs text-muted-foreground flex items-center">قطعة واحدة فريدة — مستعملة لا تتكرر</div>
                 <input placeholder="رابط الصورة" value={form.image_url} onChange={(e) => setForm({ ...form, image_url: e.target.value })} className="border border-border px-3 py-2 md:col-span-2" />
                 <textarea placeholder="الوصف (المقاس، اللون، التفاصيل)" value={form.description_ar} onChange={(e) => setForm({ ...form, description_ar: e.target.value })} className="border border-border px-3 py-2 md:col-span-2" rows={2} />
                 <textarea placeholder="ملاحظات عن الحالة (مثل: ملبوس مرة وحدة بالعرس، بدون أي عيوب)" value={form.seller_notes} onChange={(e) => setForm({ ...form, seller_notes: e.target.value })} className="border border-border px-3 py-2 md:col-span-2" rows={2} />
