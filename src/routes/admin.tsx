@@ -50,8 +50,9 @@ function Admin() {
     const delivered = orders.filter((o) => o.status === "delivered").length;
     const today = new Date(); today.setHours(0, 0, 0, 0);
     const todayOrders = orders.filter((o) => new Date(o.created_at) >= today);
-    const lowStock = products.filter((p) => Number(p.stock) <= 1);
-    return { total, pending, delivered, todayCount: todayOrders.length, todayRevenue: todayOrders.reduce((s, o) => s + Number(o.total || 0), 0), lowStock: lowStock.length };
+    const soldCount = products.filter((p) => p.sold === true).length;
+    const availableCount = products.filter((p) => p.sold !== true).length;
+    return { total, pending, delivered, todayCount: todayOrders.length, todayRevenue: todayOrders.reduce((s, o) => s + Number(o.total || 0), 0), soldCount, availableCount };
   }, [orders, products]);
 
   if (loading) return <div className="min-h-screen flex items-center justify-center">...</div>;
