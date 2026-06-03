@@ -30,7 +30,7 @@ function Admin() {
   const [form, setForm] = useState({
     name_ar: "", brand: "", price: "", original_price: "", sale_price: "",
     image_url: "", category_id: "", condition: "like_new",
-    description_ar: "", seller_notes: "", stock: "1", verified_clean: false,
+    description_ar: "", seller_notes: "", verified_clean: false,
     rentable: false, rental_price: "", rental_duration_days: "", rental_deposit: "",
   });
 
