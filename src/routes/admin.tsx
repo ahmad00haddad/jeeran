@@ -147,9 +147,9 @@ function Admin() {
               <StatCard icon={<ShoppingCart />} label="مبيعات اليوم" value={`${stats.todayRevenue.toFixed(2)} د.أ`} sub={`${stats.todayCount} طلب`} />
               <StatCard icon={<Clock />} label="طلبات بانتظار" value={String(stats.pending)} highlight={stats.pending > 0} />
               <StatCard icon={<Users />} label="طلبات تمت" value={String(stats.delivered)} />
+              <StatCard icon={<Package />} label="قطع متاحة للبيع" value={String(stats.availableCount)} />
+              <StatCard icon={<TrendingUp />} label="قطع تم بيعها" value={String(stats.soldCount)} />
               <StatCard icon={<Package />} label="إجمالي القطع" value={String(products.length)} />
-              <StatCard icon={<TrendingUp />} label="مخزون منخفض" value={String(stats.lowStock)} highlight={stats.lowStock > 0} />
-            </div>
             <div className="bg-card border border-border p-5">
               <h3 className="font-bold mb-3">آخر ٥ طلبات</h3>
               <div className="space-y-2">
