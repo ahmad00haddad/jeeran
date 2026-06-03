@@ -83,7 +83,7 @@ function Admin() {
       condition: form.condition,
       description_ar: form.description_ar,
       seller_notes: form.seller_notes,
-      stock: Number(form.stock),
+      stock: 1,
       verified_clean: form.verified_clean,
       rentable: form.rentable,
       rental_price: form.rentable && form.rental_price ? Number(form.rental_price) : null,
