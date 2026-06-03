@@ -1,11 +1,11 @@
 import { useEffect, useState } from "react";
-import { X, Plus, Minus, ShoppingBag, Trash2 } from "lucide-react";
+import { X, ShoppingBag, Trash2 } from "lucide-react";
 import { Link } from "@tanstack/react-router";
 import { useCart, cartTotals } from "@/store/cart";
 import { resolveImg } from "@/lib/imageMap";
 
 export function CartDrawer({ open, onClose }: { open: boolean; onClose: () => void }) {
-  const { items, setQty, remove } = useCart();
+  const { items, remove } = useCart();
   const { subtotal, shipping, total, count } = cartTotals(items);
 
   useEffect(() => {
