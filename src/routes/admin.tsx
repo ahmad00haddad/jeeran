@@ -150,6 +150,7 @@ function Admin() {
               <StatCard icon={<Package />} label="قطع متاحة للبيع" value={String(stats.availableCount)} />
               <StatCard icon={<TrendingUp />} label="قطع تم بيعها" value={String(stats.soldCount)} />
               <StatCard icon={<Package />} label="إجمالي القطع" value={String(products.length)} />
+            </div>
             <div className="bg-card border border-border p-5">
               <h3 className="font-bold mb-3">آخر ٥ طلبات</h3>
               <div className="space-y-2">
