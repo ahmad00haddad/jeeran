@@ -185,7 +185,7 @@ function Admin() {
                 <input required type="number" step="0.01" placeholder="سعر البيع (د.أ)" value={form.price} onChange={(e) => setForm({ ...form, price: e.target.value })} className="border border-border px-3 py-2" />
                 <input type="number" step="0.01" placeholder="السعر الأصلي بالمحل (اختياري)" value={form.original_price} onChange={(e) => setForm({ ...form, original_price: e.target.value })} className="border border-border px-3 py-2" />
                 <input type="number" step="0.01" placeholder="سعر تخفيض إضافي (اختياري)" value={form.sale_price} onChange={(e) => setForm({ ...form, sale_price: e.target.value })} className="border border-border px-3 py-2" />
-                <input type="number" placeholder="الكمية المتوفرة" value={form.stock} onChange={(e) => setForm({ ...form, stock: e.target.value })} className="border border-border px-3 py-2" />
+                <div className="border border-border bg-secondary/30 px-3 py-2 text-xs text-muted-foreground flex items-center">قطعة واحدة فريدة — مستعملة لا تتكرر</div>
                 <input placeholder="رابط الصورة" value={form.image_url} onChange={(e) => setForm({ ...form, image_url: e.target.value })} className="border border-border px-3 py-2 md:col-span-2" />
                 <textarea placeholder="الوصف (المقاس، اللون، التفاصيل)" value={form.description_ar} onChange={(e) => setForm({ ...form, description_ar: e.target.value })} className="border border-border px-3 py-2 md:col-span-2" rows={2} />
                 <textarea placeholder="ملاحظات عن الحالة (مثل: ملبوس مرة وحدة بالعرس، بدون أي عيوب)" value={form.seller_notes} onChange={(e) => setForm({ ...form, seller_notes: e.target.value })} className="border border-border px-3 py-2 md:col-span-2" rows={2} />
