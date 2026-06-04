@@ -1,6 +1,6 @@
 export function HeritageStory() {
   return (
-    <section className="py-14 md:py-20 bg-deep text-cream">
+    <section className="py-14 md:py-20 bg-deep text-cream grain-strong">
       <div className="max-w-3xl mx-auto px-4 text-center space-y-5">
         <div className="text-gold text-xs tracking-[0.35em] uppercase">قصة جيران</div>
         <h2 className="font-display text-2xl md:text-4xl font-bold leading-tight">
