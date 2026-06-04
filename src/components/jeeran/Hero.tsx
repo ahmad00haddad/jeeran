@@ -4,7 +4,7 @@ import heroThobe from "@/assets/hero-thobe.jpg";
 
 export function Hero() {
   return (
-    <section className="relative bg-deep text-cream">
+    <section className="relative bg-deep text-cream grain-strong">
       <div className="grid md:grid-cols-2 gap-0 max-w-7xl mx-auto">
         <div className="p-8 md:p-14 flex flex-col justify-center min-h-[420px] md:min-h-[520px] order-2 md:order-1">
           <div className="text-[11px] tracking-[0.35em] text-gold uppercase mb-4">سوق جيران</div>
