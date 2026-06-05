@@ -189,7 +189,7 @@ function Admin() {
                 <input type="number" step="0.01" placeholder="سعر تخفيض إضافي (اختياري)" value={form.sale_price} onChange={(e) => setForm({ ...form, sale_price: e.target.value })} className="border border-border px-3 py-2" />
                 <div className="border border-border bg-secondary/30 px-3 py-2 text-xs text-muted-foreground flex items-center">قطعة واحدة فريدة — مستعملة لا تتكرر</div>
                 <input placeholder="رابط الصورة" value={form.image_url} onChange={(e) => setForm({ ...form, image_url: e.target.value })} className="border border-border px-3 py-2 md:col-span-2" />
-                <textarea placeholder="الوصف (المقاس، اللون، التفاصيل)" value={form.description_ar} onChange={(e) => setForm({ ...form, description_ar: e.target.value })} className="border border-border px-3 py-2 md:col-span-2" rows={2} />
+                <textarea placeholder="الوصف (القياسات بالسنتيمتر، اللون، التفاصيل) — قطعة واحدة فريدة" value={form.description_ar} onChange={(e) => setForm({ ...form, description_ar: e.target.value })} className="border border-border px-3 py-2 md:col-span-2" rows={2} />
                 <textarea placeholder="ملاحظات عن الحالة (مثل: ملبوس مرة وحدة بالعرس، بدون أي عيوب)" value={form.seller_notes} onChange={(e) => setForm({ ...form, seller_notes: e.target.value })} className="border border-border px-3 py-2 md:col-span-2" rows={2} />
                 <label className="flex items-center gap-2 md:col-span-2 text-sm font-bold bg-green-50 border border-green-200 px-3 py-2">
                   <input type="checkbox" checked={form.verified_clean} onChange={(e) => setForm({ ...form, verified_clean: e.target.checked })} />
