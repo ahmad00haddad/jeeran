@@ -41,7 +41,7 @@ function PDP() {
 
   if (!p) return <div className="min-h-screen flex items-center justify-center">جارٍ التحميل...</div>;
   const effective = p.sale_price ?? p.price;
-  const sizes = Array.isArray(p.sizes) ? p.sizes : ["S", "M", "L", "XL"];
+  // قطعة فريدة — لا مقاسات
   const wished = wishlist.includes(p.id);
   const reservedUntil = (p as any).reserved_until ? new Date((p as any).reserved_until) : null;
   const isReserved = !!(reservedUntil && reservedUntil.getTime() > Date.now());
