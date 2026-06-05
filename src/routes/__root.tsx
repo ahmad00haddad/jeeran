@@ -8,8 +8,11 @@ import {
   Scripts,
 } from "@tanstack/react-router";
 import { Toaster } from "sonner";
+import { useEffect } from "react";
+import { loadSavedFont } from "@/lib/customFont";
 
 import appCss from "../styles.css?url";
+
 
 function NotFoundComponent() {
   return (
@@ -116,6 +119,7 @@ function RootShell({ children }: { children: React.ReactNode }) {
 
 function RootComponent() {
   const { queryClient } = Route.useRouteContext();
+  useEffect(() => { loadSavedFont(); }, []);
 
   return (
     <QueryClientProvider client={queryClient}>
@@ -124,3 +128,4 @@ function RootComponent() {
     </QueryClientProvider>
   );
 }
+

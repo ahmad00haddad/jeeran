@@ -32,8 +32,9 @@ function CartPage() {
                   <div className="flex-1 flex flex-col justify-between">
                     <div>
                       <h3 className="font-medium">{i.name_ar}</h3>
-                      {i.size && <div className="text-xs text-muted-foreground">المقاس: {i.size}</div>}
+                      <div className="text-xs text-muted-foreground">قطعة واحدة (فريدة)</div>
                     </div>
+
                     <div className="flex items-center justify-between">
                       <span className="text-xs text-muted-foreground">قطعة واحدة (فريدة)</span>
                       <span className="font-bold text-primary">{(i.price * i.quantity).toFixed(2)} د.أ</span>

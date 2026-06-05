@@ -21,9 +21,9 @@ function PDP() {
   const { id } = useParams({ from: "/product/$id" });
   const [p, setP] = useState<DBProduct | null>(null);
   const [related, setRelated] = useState<DBProduct[]>([]);
-  const [size, setSize] = useState("M");
-  // قطعة واحدة فقط - منتجات مستعملة فريدة
+  // قطعة واحدة فريدة — لا مقاسات متعددة
   const [dialog, setDialog] = useState<null | "offer" | "hold24h">(null);
+
   const [rentOpen, setRentOpen] = useState(false);
   const { add, toggleWish, wishlist } = useCart();
 
@@ -41,7 +41,7 @@ function PDP() {
 
   if (!p) return <div className="min-h-screen flex items-center justify-center">جارٍ التحميل...</div>;
   const effective = p.sale_price ?? p.price;
-  const sizes = Array.isArray(p.sizes) ? p.sizes : ["S", "M", "L", "XL"];
+  // قطعة فريدة — لا مقاسات
   const wished = wishlist.includes(p.id);
   const reservedUntil = (p as any).reserved_until ? new Date((p as any).reserved_until) : null;
   const isReserved = !!(reservedUntil && reservedUntil.getTime() > Date.now());
@@ -111,13 +111,8 @@ function PDP() {
               </div>
             )}
 
-            <div>
-              <div className="text-sm font-bold mb-2">المقاس:</div>
-              <div className="flex gap-2 flex-wrap">
-                {sizes.map((s: string) => (
-                  <button key={s} onClick={() => setSize(s)} className={`w-12 h-12 border ${size === s ? "border-primary bg-primary text-primary-foreground" : "border-border"}`}>{s}</button>
-                ))}
-              </div>
+            <div className="bg-secondary/60 border border-border px-3 py-2 text-xs text-muted-foreground">
+              قطعة واحدة فريدة — مقاس واحد فقط كما هو موصوف. راجعي تفاصيل القياسات في الوصف.
             </div>
 
             <div className="flex items-center gap-4">
@@ -125,11 +120,12 @@ function PDP() {
                 disabled={unavailable}
                 onClick={() => {
                   if (unavailable) return;
-                  add({ id: p.id, name_ar: p.name_ar, price: effective, image_url: p.image_url, size, quantity: 1 });
+                  add({ id: p.id, name_ar: p.name_ar, price: effective, image_url: p.image_url, quantity: 1 });
                   toast.success("انضافت للسلة 🛍️");
                 }}
                 className="flex-1 bg-primary text-primary-foreground py-3.5 font-bold hover:bg-primary/90 transition disabled:opacity-50 disabled:cursor-not-allowed"
               >{isSold ? "تم البيع" : isReserved ? "محجوزة حالياً" : "أضيفي للسلة"}</button>
+
               <button onClick={() => toggleWish(p.id)} className={`p-3 border ${wished ? "border-primary bg-primary text-primary-foreground" : "border-border"}`}>
                 <Heart className={`w-5 h-5 ${wished ? "fill-current" : ""}`} />
               </button>
