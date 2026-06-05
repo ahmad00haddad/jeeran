@@ -354,7 +354,10 @@ function Admin() {
             {rentals.length === 0 && <div className="text-center text-muted-foreground py-12">ما في طلبات إيجار بعد.</div>}
           </div>
         )}
+
+        {tab === "fonts" && <FontsPanel />}
       </main>
+
       <Footer />
     </div>
   );
