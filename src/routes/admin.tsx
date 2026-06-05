@@ -389,3 +389,87 @@ function StatusBadge({ status }: { status: string }) {
   const s = map[status] || map.pending;
   return <span className={`text-[10px] font-bold px-2 py-0.5 rounded ${s.c}`}>{s.l}</span>;
 }
+
+function FontsPanel() {
+  const [current, setCurrent] = useState<CustomFont | null>(null);
+  const [busy, setBusy] = useState(false);
+
+  useEffect(() => { setCurrent(loadSavedFont()); }, []);
+
+  async function onFile(e: React.ChangeEvent<HTMLInputElement>) {
+    const file = e.target.files?.[0];
+    if (!file) return;
+    setBusy(true);
+    try {
+      const f = await saveCustomFont(file);
+      setCurrent(f);
+      toast.success("تم تطبيق الخط 🎨", { description: f.name });
+    } catch (err: any) {
+      toast.error(err.message || "فشل رفع الخط");
+    } finally {
+      setBusy(false);
+      e.target.value = "";
+    }
+  }
+
+  function onReset() {
+    clearCustomFont();
+    setCurrent(null);
+    toast.success("رجعنا للخط الافتراضي");
+  }
+
+  return (
+    <div className="space-y-6 max-w-3xl">
+      <div className="bg-card border border-border p-5 space-y-4">
+        <div>
+          <h3 className="font-bold text-lg mb-1">جرّبي خطوط مختلفة على الموقع</h3>
+          <p className="text-sm text-muted-foreground">
+            ارفعي ملف خط من جهازك وراح يتطبّق فوراً على كل الصفحات (للمتصفح اللي عندك فقط، مش لجميع الزوار).
+          </p>
+        </div>
+
+        <div className="bg-secondary/50 border border-border px-4 py-3 text-sm space-y-1">
+          <div className="font-bold">الصيغ المقبولة:</div>
+          <div className="text-muted-foreground">
+            <code className="bg-background px-1.5 py-0.5 text-xs">.woff2</code> (الأفضل) ،
+            <code className="bg-background px-1.5 py-0.5 text-xs mx-1">.woff</code> ،
+            <code className="bg-background px-1.5 py-0.5 text-xs">.ttf</code> ،
+            <code className="bg-background px-1.5 py-0.5 text-xs mx-1">.otf</code>
+          </div>
+          <div className="text-xs text-muted-foreground pt-1">الحد الأقصى: 4MB — يفضّل خط يدعم العربية (Arabic glyphs)</div>
+        </div>
+
+        <label className={`flex items-center justify-center gap-2 border-2 border-dashed border-primary/40 bg-primary/5 px-4 py-6 cursor-pointer hover:bg-primary/10 transition ${busy ? "opacity-50 pointer-events-none" : ""}`}>
+          <Upload className="w-5 h-5 text-primary" />
+          <span className="font-bold text-primary">{busy ? "جارٍ التحميل..." : "اختاري ملف الخط"}</span>
+          <input type="file" accept={ACCEPTED_FONT_EXT} onChange={onFile} className="hidden" disabled={busy} />
+        </label>
+
+        {current && (
+          <div className="flex items-center justify-between bg-green-50 border border-green-200 px-4 py-3">
+            <div className="text-sm">
+              <div className="font-bold text-green-800">الخط الحالي: {current.name}</div>
+              <div className="text-xs text-green-700">الصيغة: {current.format}</div>
+            </div>
+            <button onClick={onReset} className="text-xs font-bold px-3 py-1.5 bg-white border border-red-300 text-red-700 hover:bg-red-50">
+              <Trash2 className="w-3.5 h-3.5 inline ml-1" /> رجوع للأصلي
+            </button>
+          </div>
+        )}
+      </div>
+
+      <div className="bg-card border border-border p-5 space-y-3">
+        <h3 className="font-bold mb-2">معاينة الخط</h3>
+        <div className="space-y-3 border border-border p-4">
+          <h1 className="font-display text-4xl font-bold">جيران — سوق الملابس المحتشمة</h1>
+          <h2 className="font-display text-2xl font-bold">عنوان فرعي بخط العرض</h2>
+          <p className="text-base leading-relaxed">
+            هذا نص تجريبي لمعاينة الخط الجديد. القطع المعروضة في جيران كلها مستعملة بحالة ممتازة،
+            قطعة واحدة فريدة لكل عرض، والدفع عند الاستلام في كل أنحاء الأردن.
+          </p>
+          <p className="text-sm text-muted-foreground">١٢٣٤٥٦٧٨٩٠ — 1234567890 — د.أ — ٪</p>
+        </div>
+      </div>
+    </div>
+  );
+}
