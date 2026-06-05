@@ -5,15 +5,6 @@ import { Logo } from "./Logo";
 import { CartDrawer } from "./CartDrawer";
 import { useCart, cartTotals } from "@/store/cart";
 
-const nav = [
-  { label: "نسائي", to: "/shop/$slug", slug: "women" },
-  { label: "رجالي", to: "/shop/$slug", slug: "men" },
-  { label: "أطفال", to: "/shop/$slug", slug: "kids" },
-  { label: "حجابات", to: "/shop/$slug", slug: "hijabs" },
-  { label: "عبايات", to: "/shop/$slug", slug: "abayas" },
-  { label: "جديد بالعلاقة", to: "/shop", hot: true },
-  { label: "تحت ١٠ د.أ", to: "/shop" },
-];
 
 export function Header() {
   const [cartOpen, setCartOpen] = useState(false);
