@@ -22,7 +22,7 @@ const CONDITIONS = [
 function Admin() {
   const { user, isAdmin, loading } = useAuth();
   const nav = useNavigate();
-  const [tab, setTab] = useState<"stats" | "products" | "orders" | "offers" | "rentals">("stats");
+  const [tab, setTab] = useState<"stats" | "products" | "orders" | "offers" | "rentals" | "fonts">("stats");
   const [products, setProducts] = useState<any[]>([]);
   const [orders, setOrders] = useState<any[]>([]);
   const [offers, setOffers] = useState<any[]>([]);
