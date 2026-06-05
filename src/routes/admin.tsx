@@ -6,9 +6,11 @@ import { Footer } from "@/components/jeeran/Footer";
 import { supabase } from "@/integrations/supabase/client";
 import { useAuth } from "@/hooks/useAuth";
 import { toast } from "sonner";
-import { Plus, Package, ShoppingCart, Trash2, TrendingUp, DollarSign, Users, Clock } from "lucide-react";
+import { Plus, Package, ShoppingCart, Trash2, TrendingUp, DollarSign, Users, Clock, Type, Upload } from "lucide-react";
+import { ACCEPTED_FONT_EXT, saveCustomFont, clearCustomFont, loadSavedFont, type CustomFont } from "@/lib/customFont";
 
 export const Route = createFileRoute("/admin")({ component: Admin });
+
 
 const CONDITIONS = [
   { v: "new", l: "جديد بالعلاقة" },
