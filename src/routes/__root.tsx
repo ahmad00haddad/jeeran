@@ -8,8 +8,11 @@ import {
   Scripts,
 } from "@tanstack/react-router";
 import { Toaster } from "sonner";
+import { useEffect } from "react";
+import { loadSavedFont } from "@/lib/customFont";
 
 import appCss from "../styles.css?url";
+
 
 function NotFoundComponent() {
   return (
