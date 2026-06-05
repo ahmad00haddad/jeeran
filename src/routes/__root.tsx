@@ -119,6 +119,7 @@ function RootShell({ children }: { children: React.ReactNode }) {
 
 function RootComponent() {
   const { queryClient } = Route.useRouteContext();
+  useEffect(() => { loadSavedFont(); }, []);
 
   return (
     <QueryClientProvider client={queryClient}>
@@ -127,3 +128,4 @@ function RootComponent() {
     </QueryClientProvider>
   );
 }
+
