@@ -50,19 +50,6 @@ export function Header() {
             </button>
           </div>
         </div>
-        <nav className="hidden md:flex max-w-7xl mx-auto px-4 gap-8 pb-3 text-sm font-medium">
-          {nav.map((item) => (
-            <Link
-              key={item.label}
-              to={item.to as any}
-              params={item.slug ? { slug: item.slug } as any : undefined}
-              className={`relative hover:text-primary transition ${item.hot ? "text-primary font-bold" : ""}`}
-            >
-              {item.label}
-              {item.hot && <span className="absolute -top-2 -left-3 text-[9px] bg-primary text-primary-foreground px-1 rounded-sm">HOT</span>}
-            </Link>
-          ))}
-        </nav>
       </header>
       <CartDrawer open={cartOpen} onClose={() => setCartOpen(false)} />
     </>
