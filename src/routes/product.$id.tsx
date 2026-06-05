@@ -21,9 +21,9 @@ function PDP() {
   const { id } = useParams({ from: "/product/$id" });
   const [p, setP] = useState<DBProduct | null>(null);
   const [related, setRelated] = useState<DBProduct[]>([]);
-  const [size, setSize] = useState("M");
-  // قطعة واحدة فقط - منتجات مستعملة فريدة
+  // قطعة واحدة فريدة — لا مقاسات متعددة
   const [dialog, setDialog] = useState<null | "offer" | "hold24h">(null);
+
   const [rentOpen, setRentOpen] = useState(false);
   const { add, toggleWish, wishlist } = useCart();
 
