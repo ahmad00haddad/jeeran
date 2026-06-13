@@ -98,8 +98,53 @@
     background-color: var(--color-deep);
   }
 
+  /* Subtle Arabic arabesque pattern on cream surfaces */
   .pattern-cream {
     background-color: var(--color-cream);
+    background-image:
+      url("data:image/svg+xml;utf8,<svg xmlns='http://www.w3.org/2000/svg' width='80' height='80' viewBox='0 0 80 80'><g fill='none' stroke='%23a07b3a' stroke-width='0.6' opacity='0.18'><path d='M40 8 C50 18 50 28 40 40 C30 28 30 18 40 8 Z'/><path d='M40 72 C50 62 50 52 40 40 C30 52 30 62 40 72 Z'/><path d='M8 40 C18 30 28 30 40 40 C28 50 18 50 8 40 Z'/><path d='M72 40 C62 30 52 30 40 40 C52 50 62 50 72 40 Z'/><circle cx='40' cy='40' r='3'/></g></svg>");
+    background-size: 80px 80px;
+  }
+
+  /* Ornamental gold border for featured cards */
+  .ornament-border {
+    position: relative;
+    box-shadow:
+      0 0 0 1px var(--color-gold),
+      0 0 0 3px var(--color-cream),
+      0 0 0 4px color-mix(in oklab, var(--color-gold) 60%, transparent),
+      0 8px 24px -10px color-mix(in oklab, var(--color-deep) 50%, transparent);
+    transition: box-shadow 300ms ease, transform 300ms ease;
+  }
+  .ornament-border:hover {
+    transform: translateY(-2px);
+    box-shadow:
+      0 0 0 1px var(--color-gold),
+      0 0 0 3px var(--color-cream),
+      0 0 0 5px var(--color-gold),
+      0 14px 30px -10px color-mix(in oklab, var(--color-deep) 60%, transparent);
+  }
+
+  /* Vintage vignette for hero images */
+  .vignette { position: relative; isolation: isolate; }
+  .vignette::after {
+    content: "";
+    position: absolute; inset: 0;
+    pointer-events: none;
+    background:
+      radial-gradient(ellipse at center, transparent 50%, rgba(40,15,10,0.55) 100%),
+      linear-gradient(180deg, rgba(40,15,10,0.15), transparent 30%, transparent 70%, rgba(40,15,10,0.25));
+    mix-blend-mode: multiply;
+  }
+
+  /* Gold hover lift for product cards */
+  .card-hover-gold {
+    transition: transform 300ms ease, box-shadow 300ms ease, border-color 300ms ease;
+  }
+  .card-hover-gold:hover {
+    transform: translateY(-3px);
+    border-color: var(--color-gold);
+    box-shadow: 0 16px 30px -16px color-mix(in oklab, var(--color-gold) 55%, transparent);
   }
 
   .gold-text {
