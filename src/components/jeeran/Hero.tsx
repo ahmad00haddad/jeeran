@@ -24,8 +24,8 @@ export function Hero() {
           </div>
         </div>
         <div className="relative order-1 md:order-2 grid grid-cols-2 gap-1">
-          <img src={heroAbaya} alt="ملابس مستعملة محتشمة" className="w-full h-full object-cover aspect-[3/4] md:aspect-auto" />
-          <img src={heroThobe} alt="ثوب رجالي مستعمل" className="w-full h-full object-cover aspect-[3/4] md:aspect-auto" />
+          <div className="vignette"><img src={heroAbaya} alt="ملابس مستعملة محتشمة" className="w-full h-full object-cover aspect-[3/4] md:aspect-auto" /></div>
+          <div className="vignette"><img src={heroThobe} alt="ثوب رجالي مستعمل" className="w-full h-full object-cover aspect-[3/4] md:aspect-auto" /></div>
         </div>
       </div>
     </section>
