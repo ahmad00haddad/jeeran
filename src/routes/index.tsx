@@ -43,7 +43,7 @@ function Index() {
     <div className="min-h-screen pb-16 md:pb-0">
       <TopBar />
       <Header />
-      <main>
+      <main className="grain-paper">
         <Hero />
         <CategoryCircles />
         <FlashSale />
