@@ -27,7 +27,7 @@ export function ProductCard({ p }: { p: DBProduct & { brand?: string | null; con
   const viewsToday = Number((p as any).views_today ?? 0);
 
   return (
-    <article className="group relative bg-card border border-border/60 overflow-hidden">
+    <article className="group relative bg-card border border-border/60 overflow-hidden card-hover-gold">
       <Link to="/product/$id" params={{ id: p.id }} className="block">
         <div className="relative aspect-[4/5] overflow-hidden bg-secondary">
           <img src={img} alt={p.name_ar} loading="lazy" className="w-full h-full object-cover group-hover:scale-105 transition-transform duration-500" />
