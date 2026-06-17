@@ -41,27 +41,46 @@ function Checkout() {
   async function placeOrder() {
     if (!form.full_name || !validPhone || !form.address) { toast.error("عبّي البيانات المطلوبة"); return; }
     setSubmitting(true);
-    const { data: { user } } = await supabase.auth.getUser();
-    const { data: order, error } = await supabase.from("orders").insert({
-      user_id: user?.id ?? null,
-      full_name: form.full_name,
-      phone: form.phone,
-      city: form.city,
-      address: form.address,
-      notes: form.notes,
-      subtotal, shipping, total,
-      payment_method: "COD",
-    }).select().single();
-    if (error || !order) { setSubmitting(false); toast.error("صار خطأ، حاولي مرة ثانية"); return; }
-    const order_items = items.map((i) => ({
-      order_id: order.id, product_id: i.id, name_ar: i.name_ar, image_url: i.image_url,
-      size: i.size || null, color: i.color || null, quantity: i.quantity, price: i.price,
-    }));
-    await supabase.from("order_items").insert(order_items);
-    clear();
-    toast.success("تم تأكيد طلبك بنجاح! ✨");
-    navigate({ to: "/order-success", search: { id: order.order_number } });
-    setSubmitting(false);
+    try {
+      const { data, error } = await supabase.rpc("create_order_atomic", {
+        _items: items.map((i) => ({
+          product_id: i.id,
+          quantity: 1,
+          price: i.price,
+          size: i.size ?? null,
+          color: i.color ?? null,
+        })),
+        _customer: {
+          full_name: form.full_name,
+          phone: form.phone,
+          city: form.city,
+          address: form.address,
+          notes: form.notes,
+        },
+        _shipping: shipping,
+      });
+      if (error) {
+        const m = error.message || "";
+        if (m.includes("PRODUCT_SOLD")) toast.error("للأسف، إحدى القطع انباعت قبل ما تأكدي الطلب 😔");
+        else if (m.includes("PRODUCT_RESERVED")) toast.error("إحدى القطع محجوزة حالياً لطلب آخر، جرّبي بعد شوي");
+        else if (m.includes("PRODUCT_NOT_FOUND")) toast.error("إحدى القطع لم تعد متوفرة");
+        else if (m.includes("EMPTY_CART")) toast.error("السلة فاضية");
+        else if (m.includes("MISSING_CUSTOMER_FIELDS")) toast.error("عبّي كل البيانات المطلوبة");
+        else toast.error("صار خطأ، حاولي مرة ثانية");
+        setSubmitting(false);
+        setStep(2);
+        return;
+      }
+      const row = Array.isArray(data) ? data[0] : data;
+      const orderNumber = (row as any)?.order_number as string | undefined;
+      clear();
+      toast.success("تم تأكيد طلبك بنجاح! ✨");
+      navigate({ to: "/order-success", search: { id: orderNumber ?? "" } });
+    } catch {
+      toast.error("صار خطأ، حاولي مرة ثانية");
+    } finally {
+      setSubmitting(false);
+    }
   }
 
   return (
