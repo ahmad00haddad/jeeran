@@ -424,6 +424,21 @@ export type Database = {
       [_ in never]: never
     }
     Functions: {
+      check_items_availability: {
+        Args: { _product_ids: string[] }
+        Returns: {
+          available: boolean
+          product_id: string
+          reason: string
+        }[]
+      }
+      create_order_atomic: {
+        Args: { _customer: Json; _items: Json; _shipping?: number }
+        Returns: {
+          order_id: string
+          order_number: string
+        }[]
+      }
       has_role: {
         Args: {
           _role: Database["public"]["Enums"]["app_role"]
