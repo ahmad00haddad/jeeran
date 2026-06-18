@@ -123,6 +123,24 @@ function RootComponent() {
   const { queryClient } = Route.useRouteContext();
   useEffect(() => { loadSavedFont(); }, []);
 
+  useEffect(() => {
+    const { mergeLocalWishlistToDB, hydrateWishlistFromDB } = useCart.getState();
+    // Initial hydration if a session already exists
+    supabase.auth.getSession().then(({ data }) => {
+      if (data.session?.user) {
+        mergeLocalWishlistToDB().then(() => hydrateWishlistFromDB());
+      }
+    });
+    const { data: { subscription } } = supabase.auth.onAuthStateChange((event) => {
+      if (event === "SIGNED_IN") {
+        mergeLocalWishlistToDB().then(() => hydrateWishlistFromDB());
+      } else if (event === "SIGNED_OUT") {
+        useCart.setState({ wishlist: [] });
+      }
+    });
+    return () => subscription.unsubscribe();
+  }, []);
+
   return (
     <QueryClientProvider client={queryClient}>
       <Outlet />
