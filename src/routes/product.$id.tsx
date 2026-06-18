@@ -15,7 +15,64 @@ import { whatsappLink } from "@/lib/config";
 import type { DBProduct } from "@/types/db";
 import { toast } from "sonner";
 
-export const Route = createFileRoute("/product/$id")({ component: PDP });
+export const Route = createFileRoute("/product/$id")({
+  component: PDP,
+  loader: async ({ params }) => {
+    const { data } = await supabase
+      .from("products")
+      .select("id,name_ar,description_ar,price,sale_price,image_url,sold")
+      .eq("id", params.id)
+      .maybeSingle();
+    return { seo: data as Pick<DBProduct, "id" | "name_ar" | "description_ar" | "price" | "sale_price" | "image_url" | "sold"> | null };
+  },
+  head: ({ loaderData, params }) => {
+    const p = loaderData?.seo;
+    if (!p) {
+      return { meta: [{ title: "قطعة غير متوفرة — جيران" }] };
+    }
+    const price = (p.sale_price ?? p.price).toFixed(2);
+    const title = `${p.name_ar} — ${price} د.أ | جيران`;
+    const desc = (p.description_ar || `قطعة فريدة من جيران: ${p.name_ar}. السعر ${price} د.أ. الدفع عند الاستلام.`).slice(0, 160);
+    const img = p.image_url?.startsWith("http") ? p.image_url : `https://jeeran.lovable.app${p.image_url || ""}`;
+    const url = `https://jeeran.lovable.app/product/${params.id}`;
+    return {
+      meta: [
+        { title },
+        { name: "description", content: desc },
+        { property: "og:title", content: title },
+        { property: "og:description", content: desc },
+        { property: "og:type", content: "product" },
+        { property: "og:url", content: url },
+        { property: "og:image", content: img },
+        { property: "product:price:amount", content: price },
+        { property: "product:price:currency", content: "JOD" },
+        { property: "product:availability", content: p.sold ? "oos" : "instock" },
+        { name: "twitter:card", content: "summary_large_image" },
+        { name: "twitter:title", content: title },
+        { name: "twitter:description", content: desc },
+        { name: "twitter:image", content: img },
+      ],
+      links: [{ rel: "canonical", href: url }],
+      scripts: [{
+        type: "application/ld+json",
+        children: JSON.stringify({
+          "@context": "https://schema.org",
+          "@type": "Product",
+          name: p.name_ar,
+          description: desc,
+          image: img,
+          offers: {
+            "@type": "Offer",
+            price,
+            priceCurrency: "JOD",
+            availability: p.sold ? "https://schema.org/OutOfStock" : "https://schema.org/InStock",
+            url,
+          },
+        }),
+      }],
+    };
+  },
+});
 
 function PDP() {
   const { id } = useParams({ from: "/product/$id" });
