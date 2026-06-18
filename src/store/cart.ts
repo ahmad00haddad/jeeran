@@ -50,7 +50,39 @@ export const useCart = create<State>()(
       clear: () => set({ items: [] }),
       toggleWish: (id) => {
         const w = get().wishlist;
-        set({ wishlist: w.includes(id) ? w.filter((x) => x !== id) : [...w, id] });
+        const next = w.includes(id) ? w.filter((x) => x !== id) : [...w, id];
+        set({ wishlist: next });
+        // Sync to DB if signed in (fire-and-forget)
+        supabase.auth.getUser().then(({ data }) => {
+          const uid = data.user?.id;
+          if (!uid) return;
+          if (next.includes(id)) {
+            supabase.from("wishlists").upsert({ user_id: uid, product_id: id }, { onConflict: "user_id,product_id" }).then(() => {});
+          } else {
+            supabase.from("wishlists").delete().eq("user_id", uid).eq("product_id", id).then(() => {});
+          }
+        });
+      },
+      hydrateWishlistFromDB: async () => {
+        const { data: u } = await supabase.auth.getUser();
+        const uid = u.user?.id;
+        if (!uid) return;
+        const { data } = await supabase.from("wishlists").select("product_id").eq("user_id", uid);
+        const ids = (data || []).map((r: { product_id: string }) => r.product_id);
+        // Merge: union local + remote
+        const merged = Array.from(new Set([...get().wishlist, ...ids]));
+        set({ wishlist: merged });
+      },
+      mergeLocalWishlistToDB: async () => {
+        const { data: u } = await supabase.auth.getUser();
+        const uid = u.user?.id;
+        if (!uid) return;
+        const local = get().wishlist;
+        if (local.length === 0) return;
+        await supabase.from("wishlists").upsert(
+          local.map((pid) => ({ user_id: uid, product_id: pid })),
+          { onConflict: "user_id,product_id" }
+        );
       },
     }),
     { name: "jeeran-cart" }
