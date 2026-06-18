@@ -10,6 +10,8 @@ import {
 import { Toaster } from "sonner";
 import { useEffect } from "react";
 import { loadSavedFont } from "@/lib/customFont";
+import { supabase } from "@/integrations/supabase/client";
+import { useCart } from "@/store/cart";
 
 import appCss from "../styles.css?url";
 
