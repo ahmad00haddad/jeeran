@@ -20,6 +20,8 @@ type State = {
   setQty: (id: string, qty: number, size?: string) => void;
   clear: () => void;
   toggleWish: (id: string) => void;
+  hydrateWishlistFromDB: () => Promise<void>;
+  mergeLocalWishlistToDB: () => Promise<void>;
 };
 
 const key = (i: { id: string; size?: string }) => `${i.id}::${i.size || ""}`;
