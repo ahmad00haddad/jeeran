@@ -63,10 +63,19 @@ function ShopPage() {
           <button onClick={() => setVerifiedOnly(!verifiedOnly)} className={`px-3 py-1.5 text-xs font-bold border ${verifiedOnly ? "bg-green-700 text-white border-green-700" : "border-border"}`}>✓ موثّقة نظيفة</button>
           <button onClick={() => setOnSale(!onSale)} className={`px-3 py-1.5 text-xs font-bold border ${onSale ? "bg-gold text-gold-foreground border-gold" : "border-border"}`}>تخفيضات فقط</button>
         </div>
-        <div className="text-sm text-muted-foreground mb-4">{products.length} منتج</div>
-        <div className="grid grid-cols-2 md:grid-cols-4 gap-3 md:gap-5">
-          {products.map((p) => <ProductCard key={p.id} p={p} />)}
-        </div>
+        <div className="text-sm text-muted-foreground mb-4">{loading ? "جارٍ تحميل القطع..." : `${products.length} منتج`}</div>
+        {loading ? (
+          <ProductGridSkeleton count={8} />
+        ) : products.length === 0 ? (
+          <div className="text-center py-20 text-muted-foreground">
+            <p className="text-lg mb-2">ما لقينا قطع تطابق فلترك 🔍</p>
+            <p className="text-sm">جرّبي تخفّفي الفلاتر أو تبحثي بكلمة تانية</p>
+          </div>
+        ) : (
+          <div className="grid grid-cols-2 md:grid-cols-4 gap-3 md:gap-5">
+            {products.map((p) => <ProductCard key={p.id} p={p} />)}
+          </div>
+        )}
       </main>
       <Footer />
       <MobileNav />
