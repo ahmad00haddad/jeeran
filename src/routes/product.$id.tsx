@@ -93,7 +93,18 @@ function PDP() {
           .then(({ data: r }) => setRelated((r as DBProduct[]) || []));
       }
     });
-    supabase.rpc("increment_product_view", { _product_id: id });
+    // Debounce view counter: count once per product per 30 minutes per browser
+    try {
+      const k = `jeeran_view_${id}`;
+      const last = Number(sessionStorage.getItem(k) || "0");
+      const now = Date.now();
+      if (now - last > 30 * 60 * 1000) {
+        sessionStorage.setItem(k, String(now));
+        supabase.rpc("increment_product_view", { _product_id: id });
+      }
+    } catch {
+      supabase.rpc("increment_product_view", { _product_id: id });
+    }
   }, [id]);
 
   if (!p) return <div className="min-h-screen flex items-center justify-center">جارٍ التحميل...</div>;
