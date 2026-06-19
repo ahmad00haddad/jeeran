@@ -88,7 +88,11 @@ function PDP() {
   const { add, toggleWish, wishlist } = useCart();
 
   useEffect(() => {
+    setLoading(true);
+    setNotFound(false);
     supabase.from("products").select("*").eq("id", id).maybeSingle().then(({ data }) => {
+      setLoading(false);
+      if (!data) { setNotFound(true); return; }
       setP(data as DBProduct);
       if (data?.category_id) {
         const nowIso = new Date().toISOString();
