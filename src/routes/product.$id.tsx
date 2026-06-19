@@ -78,6 +78,8 @@ export const Route = createFileRoute("/product/$id")({
 function PDP() {
   const { id } = useParams({ from: "/product/$id" });
   const [p, setP] = useState<DBProduct | null>(null);
+  const [loading, setLoading] = useState(true);
+  const [notFound, setNotFound] = useState(false);
   const [related, setRelated] = useState<DBProduct[]>([]);
   // قطعة واحدة فريدة — لا مقاسات متعددة
   const [dialog, setDialog] = useState<null | "offer" | "hold24h">(null);
