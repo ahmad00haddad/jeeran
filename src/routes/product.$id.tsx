@@ -7,6 +7,7 @@ import { Footer } from "@/components/jeeran/Footer";
 import { MobileNav } from "@/components/jeeran/MobileNav";
 import { ProductCard } from "@/components/jeeran/ProductCard";
 import { OfferDialog } from "@/components/jeeran/OfferDialog";
+import { ProductDetailSkeleton } from "@/components/jeeran/Skeletons";
 import { RentalDialog } from "@/components/jeeran/RentalDialog";
 import { supabase } from "@/integrations/supabase/client";
 import { resolveImg } from "@/lib/imageMap";
