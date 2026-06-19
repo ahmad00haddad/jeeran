@@ -7,6 +7,7 @@ import { Footer } from "@/components/jeeran/Footer";
 import { MobileNav } from "@/components/jeeran/MobileNav";
 import { ProductCard } from "@/components/jeeran/ProductCard";
 import { OfferDialog } from "@/components/jeeran/OfferDialog";
+import { ProductDetailSkeleton } from "@/components/jeeran/Skeletons";
 import { RentalDialog } from "@/components/jeeran/RentalDialog";
 import { supabase } from "@/integrations/supabase/client";
 import { resolveImg } from "@/lib/imageMap";
@@ -77,6 +78,8 @@ export const Route = createFileRoute("/product/$id")({
 function PDP() {
   const { id } = useParams({ from: "/product/$id" });
   const [p, setP] = useState<DBProduct | null>(null);
+  const [loading, setLoading] = useState(true);
+  const [notFound, setNotFound] = useState(false);
   const [related, setRelated] = useState<DBProduct[]>([]);
   // قطعة واحدة فريدة — لا مقاسات متعددة
   const [dialog, setDialog] = useState<null | "offer" | "hold24h">(null);
@@ -85,7 +88,11 @@ function PDP() {
   const { add, toggleWish, wishlist } = useCart();
 
   useEffect(() => {
+    setLoading(true);
+    setNotFound(false);
     supabase.from("products").select("*").eq("id", id).maybeSingle().then(({ data }) => {
+      setLoading(false);
+      if (!data) { setNotFound(true); return; }
       setP(data as DBProduct);
       if (data?.category_id) {
         const nowIso = new Date().toISOString();
@@ -107,7 +114,32 @@ function PDP() {
     }
   }, [id]);
 
-  if (!p) return <div className="min-h-screen flex items-center justify-center">جارٍ التحميل...</div>;
+  if (loading) {
+    return (
+      <div className="min-h-screen pb-16 md:pb-0">
+        <TopBar />
+        <Header />
+        <ProductDetailSkeleton />
+        <Footer />
+        <MobileNav />
+      </div>
+    );
+  }
+  if (notFound || !p) {
+    return (
+      <div className="min-h-screen pb-16 md:pb-0">
+        <TopBar />
+        <Header />
+        <main className="max-w-3xl mx-auto px-4 py-20 text-center">
+          <div className="font-display text-4xl font-bold mb-3">القطعة مش موجودة</div>
+          <p className="text-muted-foreground mb-6">يمكن انباعت أو الرابط مش صحيح. تعالي شوفي باقي التشكيلة 💛</p>
+          <Link to="/shop" className="inline-block bg-primary text-primary-foreground px-8 py-3 font-bold hover:bg-primary/90 transition">رجوع للمتجر</Link>
+        </main>
+        <Footer />
+        <MobileNav />
+      </div>
+    );
+  }
   const effective = p.sale_price ?? p.price;
   // قطعة فريدة — لا مقاسات
   const wished = wishlist.includes(p.id);
