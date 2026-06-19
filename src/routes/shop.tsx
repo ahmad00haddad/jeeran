@@ -5,6 +5,7 @@ import { Header } from "@/components/jeeran/Header";
 import { Footer } from "@/components/jeeran/Footer";
 import { MobileNav } from "@/components/jeeran/MobileNav";
 import { ProductCard } from "@/components/jeeran/ProductCard";
+import { ProductGridSkeleton } from "@/components/jeeran/Skeletons";
 import { supabase } from "@/integrations/supabase/client";
 import type { DBProduct, Category } from "@/types/db";
 
