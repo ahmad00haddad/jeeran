@@ -18,6 +18,7 @@ export const Route = createFileRoute("/shop")({
 function ShopPage() {
   const { q, sort } = useSearch({ from: "/shop" });
   const [products, setProducts] = useState<DBProduct[]>([]);
+  const [loading, setLoading] = useState(true);
   const [cats, setCats] = useState<Category[]>([]);
   const [activeCat, setActiveCat] = useState<string | null>(null);
   const [onSale, setOnSale] = useState(false);
