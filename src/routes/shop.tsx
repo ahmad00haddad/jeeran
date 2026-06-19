@@ -30,6 +30,7 @@ function ShopPage() {
   }, []);
 
   useEffect(() => {
+    setLoading(true);
     const nowIso = new Date().toISOString();
     let query = supabase.from("products").select("*").eq("active", true).eq("sold", false).or(`reserved_until.is.null,reserved_until.lt.${nowIso}`);
     if (activeCat) query = query.eq("category_id", activeCat);
@@ -40,7 +41,7 @@ function ShopPage() {
     if (sort === "price_asc") query = query.order("price", { ascending: true });
     else if (sort === "price_desc") query = query.order("price", { ascending: false });
     else query = query.order("created_at", { ascending: false });
-    query.limit(200).then(({ data }) => setProducts((data as DBProduct[]) || []));
+    query.limit(200).then(({ data }) => { setProducts((data as DBProduct[]) || []); setLoading(false); });
   }, [activeCat, q, sort, onSale, maxPrice, verifiedOnly]);
 
   return (
