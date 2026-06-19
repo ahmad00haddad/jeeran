@@ -1,8 +1,10 @@
-import { useEffect, useState } from "react";
-import { X, ShoppingBag, Trash2 } from "lucide-react";
+import { useEffect } from "react";
+import { X, ShoppingBag, Trash2, AlertTriangle } from "lucide-react";
 import { Link } from "@tanstack/react-router";
 import { useCart, cartTotals } from "@/store/cart";
 import { resolveImg } from "@/lib/imageMap";
+import { supabase } from "@/integrations/supabase/client";
+import { toast } from "sonner";
 
 export function CartDrawer({ open, onClose }: { open: boolean; onClose: () => void }) {
   const { items, remove } = useCart();
@@ -11,6 +13,33 @@ export function CartDrawer({ open, onClose }: { open: boolean; onClose: () => vo
   useEffect(() => {
     document.body.style.overflow = open ? "hidden" : "";
     return () => { document.body.style.overflow = ""; };
+  }, [open]);
+
+  // Auto-check availability when drawer opens; remove sold/reserved items
+  useEffect(() => {
+    if (!open || items.length === 0) return;
+    const ids = items.map((i) => i.id);
+    (async () => {
+      const { data, error } = await supabase.rpc("check_items_availability", { _product_ids: ids });
+      if (error || !data) return;
+      const unavailable = (data as { product_id: string; available: boolean; reason: string }[]).filter((r) => !r.available);
+      if (unavailable.length === 0) return;
+      const removedNames: string[] = [];
+      unavailable.forEach((u) => {
+        const it = items.find((i) => i.id === u.product_id);
+        if (it) {
+          removedNames.push(it.name_ar);
+          remove(it.id, it.size);
+        }
+      });
+      if (removedNames.length > 0) {
+        toast.warning("بعض القطع ما عادت متوفرة وانحذفت من السلة", {
+          description: removedNames.slice(0, 3).join("، ") + (removedNames.length > 3 ? "…" : ""),
+          icon: <AlertTriangle className="w-4 h-4" />,
+        });
+      }
+    })();
+    // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [open]);
 
   if (!open) return null;
