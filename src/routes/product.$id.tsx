@@ -114,7 +114,32 @@ function PDP() {
     }
   }, [id]);
 
-  if (!p) return <div className="min-h-screen flex items-center justify-center">جارٍ التحميل...</div>;
+  if (loading) {
+    return (
+      <div className="min-h-screen pb-16 md:pb-0">
+        <TopBar />
+        <Header />
+        <ProductDetailSkeleton />
+        <Footer />
+        <MobileNav />
+      </div>
+    );
+  }
+  if (notFound || !p) {
+    return (
+      <div className="min-h-screen pb-16 md:pb-0">
+        <TopBar />
+        <Header />
+        <main className="max-w-3xl mx-auto px-4 py-20 text-center">
+          <div className="font-display text-4xl font-bold mb-3">القطعة مش موجودة</div>
+          <p className="text-muted-foreground mb-6">يمكن انباعت أو الرابط مش صحيح. تعالي شوفي باقي التشكيلة 💛</p>
+          <Link to="/shop" className="inline-block bg-primary text-primary-foreground px-8 py-3 font-bold hover:bg-primary/90 transition">رجوع للمتجر</Link>
+        </main>
+        <Footer />
+        <MobileNav />
+      </div>
+    );
+  }
   const effective = p.sale_price ?? p.price;
   // قطعة فريدة — لا مقاسات
   const wished = wishlist.includes(p.id);
