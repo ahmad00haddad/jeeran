@@ -1,7 +1,7 @@
 import { Heart, BadgeCheck, Eye, Sparkles } from "lucide-react";
 import { Link } from "@tanstack/react-router";
 import type { DBProduct } from "@/types/db";
-import { resolveImg } from "@/lib/imageMap";
+import { resolveImg, buildSrcSet } from "@/lib/imageMap";
 import { useCart } from "@/store/cart";
 import { toast } from "sonner";
 
@@ -30,7 +30,17 @@ export function ProductCard({ p }: { p: DBProduct & { brand?: string | null; con
     <article className="group relative bg-card border border-border/60 overflow-hidden card-hover-gold">
       <Link to="/product/$id" params={{ id: p.id }} className="block">
         <div className="relative aspect-[4/5] overflow-hidden bg-secondary">
-          <img src={img} alt={p.name_ar} loading="lazy" className="w-full h-full object-cover group-hover:scale-105 transition-transform duration-500" />
+          <img
+            src={img}
+            srcSet={buildSrcSet(img)}
+            sizes="(min-width: 768px) 25vw, 50vw"
+            alt={p.name_ar}
+            loading="lazy"
+            decoding="async"
+            width={400}
+            height={500}
+            className="w-full h-full object-cover group-hover:scale-105 transition-transform duration-500"
+          />
           <div className="absolute top-2 right-2 flex flex-col gap-1 items-end">
             {condLabel && (
               <span className="bg-deep/85 text-cream text-[10px] font-bold px-2 py-1">{condLabel}</span>
