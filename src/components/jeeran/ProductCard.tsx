@@ -1,7 +1,7 @@
 import { Heart, BadgeCheck, Eye, Sparkles } from "lucide-react";
 import { Link } from "@tanstack/react-router";
 import type { DBProduct } from "@/types/db";
-import { resolveImg } from "@/lib/imageMap";
+import { resolveImg, buildSrcSet } from "@/lib/imageMap";
 import { useCart } from "@/store/cart";
 import { toast } from "sonner";
 
