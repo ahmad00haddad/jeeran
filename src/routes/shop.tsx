@@ -1,13 +1,15 @@
 import { createFileRoute, useSearch } from "@tanstack/react-router";
-import { useEffect, useState } from "react";
+import { useEffect, useRef, useState, useCallback } from "react";
 import { TopBar } from "@/components/jeeran/TopBar";
 import { Header } from "@/components/jeeran/Header";
 import { Footer } from "@/components/jeeran/Footer";
 import { MobileNav } from "@/components/jeeran/MobileNav";
 import { ProductCard } from "@/components/jeeran/ProductCard";
-import { ProductGridSkeleton } from "@/components/jeeran/Skeletons";
+import { ProductGridSkeleton, ProductCardSkeleton } from "@/components/jeeran/Skeletons";
 import { supabase } from "@/integrations/supabase/client";
 import type { DBProduct, Category } from "@/types/db";
+
+const PAGE_SIZE = 24;
 
 export const Route = createFileRoute("/shop")({
   validateSearch: (s: Record<string, unknown>) => ({ q: (s.q as string) || "", sort: (s.sort as string) || "new" }),
@@ -19,20 +21,24 @@ function ShopPage() {
   const { q, sort } = useSearch({ from: "/shop" });
   const [products, setProducts] = useState<DBProduct[]>([]);
   const [loading, setLoading] = useState(true);
+  const [loadingMore, setLoadingMore] = useState(false);
+  const [hasMore, setHasMore] = useState(true);
+  const [total, setTotal] = useState(0);
   const [cats, setCats] = useState<Category[]>([]);
   const [activeCat, setActiveCat] = useState<string | null>(null);
   const [onSale, setOnSale] = useState(false);
   const [maxPrice, setMaxPrice] = useState<number | null>(null);
   const [verifiedOnly, setVerifiedOnly] = useState(false);
+  const sentinelRef = useRef<HTMLDivElement | null>(null);
+  const pageRef = useRef(0);
 
   useEffect(() => {
     supabase.from("categories").select("*").order("display_order").then(({ data }) => setCats((data as Category[]) || []));
   }, []);
 
-  useEffect(() => {
-    setLoading(true);
+  const buildQuery = useCallback(() => {
     const nowIso = new Date().toISOString();
-    let query = supabase.from("products").select("*").eq("active", true).eq("sold", false).or(`reserved_until.is.null,reserved_until.lt.${nowIso}`);
+    let query = supabase.from("products").select("*", { count: "exact" }).eq("active", true).eq("sold", false).or(`reserved_until.is.null,reserved_until.lt.${nowIso}`);
     if (activeCat) query = query.eq("category_id", activeCat);
     if (q) query = query.ilike("name_ar", `%${q}%`);
     if (onSale) query = query.not("sale_price", "is", null);
@@ -41,8 +47,47 @@ function ShopPage() {
     if (sort === "price_asc") query = query.order("price", { ascending: true });
     else if (sort === "price_desc") query = query.order("price", { ascending: false });
     else query = query.order("created_at", { ascending: false });
-    query.limit(200).then(({ data }) => { setProducts((data as DBProduct[]) || []); setLoading(false); });
+    return query;
   }, [activeCat, q, sort, onSale, maxPrice, verifiedOnly]);
+
+  useEffect(() => {
+    setLoading(true);
+    setProducts([]);
+    setHasMore(true);
+    pageRef.current = 0;
+    buildQuery().range(0, PAGE_SIZE - 1).then(({ data, count }) => {
+      const items = (data as DBProduct[]) || [];
+      setProducts(items);
+      setTotal(count || 0);
+      setHasMore(items.length === PAGE_SIZE && (count == null || items.length < count));
+      setLoading(false);
+    });
+  }, [buildQuery]);
+
+  const loadMore = useCallback(async () => {
+    if (loadingMore || loading || !hasMore) return;
+    setLoadingMore(true);
+    const next = pageRef.current + 1;
+    const from = next * PAGE_SIZE;
+    const to = from + PAGE_SIZE - 1;
+    const { data, count } = await buildQuery().range(from, to);
+    const items = (data as DBProduct[]) || [];
+    setProducts((prev) => [...prev, ...items]);
+    pageRef.current = next;
+    if (count != null) setTotal(count);
+    setHasMore(items.length === PAGE_SIZE && (count == null || from + items.length < count));
+    setLoadingMore(false);
+  }, [buildQuery, hasMore, loading, loadingMore]);
+
+  useEffect(() => {
+    const el = sentinelRef.current;
+    if (!el) return;
+    const io = new IntersectionObserver((entries) => {
+      if (entries[0]?.isIntersecting) loadMore();
+    }, { rootMargin: "400px" });
+    io.observe(el);
+    return () => io.disconnect();
+  }, [loadMore]);
 
   return (
     <div className="min-h-screen pb-16 md:pb-0">
@@ -63,7 +108,9 @@ function ShopPage() {
           <button onClick={() => setVerifiedOnly(!verifiedOnly)} className={`px-3 py-1.5 text-xs font-bold border ${verifiedOnly ? "bg-green-700 text-white border-green-700" : "border-border"}`}>✓ موثّقة نظيفة</button>
           <button onClick={() => setOnSale(!onSale)} className={`px-3 py-1.5 text-xs font-bold border ${onSale ? "bg-gold text-gold-foreground border-gold" : "border-border"}`}>تخفيضات فقط</button>
         </div>
-        <div className="text-sm text-muted-foreground mb-4">{loading ? "جارٍ تحميل القطع..." : `${products.length} منتج`}</div>
+        <div className="text-sm text-muted-foreground mb-4">
+          {loading ? "جارٍ تحميل القطع..." : `${products.length}${total ? ` من ${total}` : ""} منتج`}
+        </div>
         {loading ? (
           <ProductGridSkeleton count={8} />
         ) : products.length === 0 ? (
@@ -72,9 +119,16 @@ function ShopPage() {
             <p className="text-sm">جرّبي تخفّفي الفلاتر أو تبحثي بكلمة تانية</p>
           </div>
         ) : (
-          <div className="grid grid-cols-2 md:grid-cols-4 gap-3 md:gap-5">
-            {products.map((p) => <ProductCard key={p.id} p={p} />)}
-          </div>
+          <>
+            <div className="grid grid-cols-2 md:grid-cols-4 gap-3 md:gap-5">
+              {products.map((p) => <ProductCard key={p.id} p={p} />)}
+              {loadingMore && Array.from({ length: 4 }).map((_, i) => <ProductCardSkeleton key={`s-${i}`} />)}
+            </div>
+            <div ref={sentinelRef} className="h-10" />
+            {!hasMore && products.length > PAGE_SIZE && (
+              <div className="text-center text-xs text-muted-foreground py-6">وصلتي لآخر القطع 💛</div>
+            )}
+          </>
         )}
       </main>
       <Footer />
