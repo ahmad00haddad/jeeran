@@ -18,3 +18,23 @@ export function resolveImg(url?: string | null): string {
   const name = url.split("/").pop() || "";
   return map[name] || p1;
 }
+
+// Supabase Storage image transformations:
+// `/storage/v1/object/public/...` → `/storage/v1/render/image/public/...?width=&quality=&format=webp`
+function toRenderUrl(url: string): string | null {
+  const i = url.indexOf("/storage/v1/object/public/");
+  if (i === -1) return null;
+  return url.replace("/storage/v1/object/public/", "/storage/v1/render/image/public/");
+}
+
+export function optimizedSrc(url: string, width: number, quality = 70): string {
+  const render = toRenderUrl(url);
+  if (!render) return url;
+  const sep = render.includes("?") ? "&" : "?";
+  return `${render}${sep}width=${width}&quality=${quality}&format=origin`;
+}
+
+export function buildSrcSet(url: string, widths: number[] = [240, 360, 480, 720]): string | undefined {
+  if (!toRenderUrl(url)) return undefined;
+  return widths.map((w) => `${optimizedSrc(url, w)} ${w}w`).join(", ");
+}
