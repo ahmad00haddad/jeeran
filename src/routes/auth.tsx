@@ -6,7 +6,10 @@ import { Footer } from "@/components/jeeran/Footer";
 import { supabase } from "@/integrations/supabase/client";
 import { toast } from "sonner";
 
-export const Route = createFileRoute("/auth")({ component: Auth });
+export const Route = createFileRoute("/auth")({
+  component: Auth,
+  head: () => ({ meta: [{ title: "دخول / تسجيل — جيران" }, { name: "description", content: "سجّلي دخولك أو أنشئي حساب جديد في جيران." }, { name: "robots", content: "noindex" }] }),
+});
 
 function Auth() {
   const navigate = useNavigate();

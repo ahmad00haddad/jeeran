@@ -1,0 +1,9 @@
+User-agent: *
+Allow: /
+Disallow: /admin
+Disallow: /account
+Disallow: /checkout
+Disallow: /order-success
+Disallow: /auth
+
+Sitemap: https://jeeran.lovable.app/sitemap.xml

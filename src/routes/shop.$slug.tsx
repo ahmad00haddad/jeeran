@@ -8,7 +8,15 @@ import { ProductCard } from "@/components/jeeran/ProductCard";
 import { supabase } from "@/integrations/supabase/client";
 import type { DBProduct, Category } from "@/types/db";
 
-export const Route = createFileRoute("/shop/$slug")({ component: CatPage });
+export const Route = createFileRoute("/shop/$slug")({
+  component: CatPage,
+  head: ({ params }) => ({
+    meta: [
+      { title: `${params.slug} — جيران` },
+      { name: "description", content: `تصفّحي قطع فئة ${params.slug} في جيران — ملابس محتشمة مستعملة بسعر يناسب جيبك.` },
+    ],
+  }),
+});
 
 function CatPage() {
   const { slug } = useParams({ from: "/shop/$slug" });

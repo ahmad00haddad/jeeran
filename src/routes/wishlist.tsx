@@ -9,7 +9,10 @@ import { supabase } from "@/integrations/supabase/client";
 import { useCart } from "@/store/cart";
 import type { DBProduct } from "@/types/db";
 
-export const Route = createFileRoute("/wishlist")({ component: Wishlist });
+export const Route = createFileRoute("/wishlist")({
+  component: Wishlist,
+  head: () => ({ meta: [{ title: "مفضلتي — جيران" }, { name: "description", content: "قائمة القطع اللي حفظتيها في جيران." }] }),
+});
 
 function Wishlist() {
   const { wishlist } = useCart();
