@@ -8,7 +8,10 @@ import { supabase } from "@/integrations/supabase/client";
 import { useAuth } from "@/hooks/useAuth";
 import { Package, LogOut, Shield } from "lucide-react";
 
-export const Route = createFileRoute("/account")({ component: Account });
+export const Route = createFileRoute("/account")({
+  component: Account,
+  head: () => ({ meta: [{ title: "حسابي — جيران" }, { name: "description", content: "تفاصيل حسابك وطلباتك في جيران." }, { name: "robots", content: "noindex" }] }),
+});
 
 function Account() {
   const { user, isAdmin, loading } = useAuth();
