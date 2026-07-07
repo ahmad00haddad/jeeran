@@ -57,8 +57,12 @@ function Admin() {
     return { total, pending, delivered, todayCount: todayOrders.length, todayRevenue: todayOrders.reduce((s, o) => s + Number(o.total || 0), 0), soldCount, availableCount };
   }, [orders, products]);
 
+  useEffect(() => {
+    if (!loading && !user) nav({ to: "/auth" });
+  }, [loading, user, nav]);
+
   if (loading) return <div className="min-h-screen flex items-center justify-center">...</div>;
-  if (!user) { nav({ to: "/auth" }); return null; }
+  if (!user) return null;
   if (!isAdmin) return (
     <div className="min-h-screen flex flex-col">
       <TopBar /><Header />
