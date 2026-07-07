@@ -7,7 +7,10 @@ import { useCart, cartTotals } from "@/store/cart";
 import { resolveImg } from "@/lib/imageMap";
 import { Trash2 } from "lucide-react";
 
-export const Route = createFileRoute("/cart")({ component: CartPage });
+export const Route = createFileRoute("/cart")({
+  component: CartPage,
+  head: () => ({ meta: [{ title: "السلة — جيران" }, { name: "description", content: "استعرضي القطع اللي في سلتك قبل ما تكملي الطلب." }, { name: "robots", content: "noindex" }] }),
+});
 
 function CartPage() {
   const { items, remove } = useCart();

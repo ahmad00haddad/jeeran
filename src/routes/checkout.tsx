@@ -11,7 +11,10 @@ import { toast } from "sonner";
 
 const cities = ["عمّان","الزرقاء","إربد","العقبة","الكرك","المفرق","مأدبا","جرش","عجلون","الطفيلة","معان","البلقاء"];
 
-export const Route = createFileRoute("/checkout")({ component: Checkout });
+export const Route = createFileRoute("/checkout")({
+  component: Checkout,
+  head: () => ({ meta: [{ title: "إتمام الطلب — جيران" }, { name: "description", content: "أكملي بيانات الشحن والدفع عند الاستلام في جيران." }, { name: "robots", content: "noindex" }] }),
+});
 
 function Checkout() {
   const navigate = useNavigate();
