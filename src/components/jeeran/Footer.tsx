@@ -1,11 +1,12 @@
 import { Logo } from "./Logo";
 import { Instagram, Facebook, Twitter } from "lucide-react";
+import { Link } from "@tanstack/react-router";
 
 export function Footer() {
   return (
     <footer className="bg-deep text-cream pt-14 pb-6 grain-strong">
       <div className="max-w-7xl mx-auto px-4">
-        <div className="grid md:grid-cols-4 gap-8 pb-8 border-b border-cream/10">
+        <div className="grid md:grid-cols-3 lg:grid-cols-5 gap-8 pb-8 border-b border-cream/10">
           <div className="space-y-4">
             <Logo className="text-cream" />
             <p className="text-sm text-cream/70 leading-relaxed">
@@ -41,6 +42,16 @@ export function Footer() {
               <li><a href="#" className="hover:text-cream">جدول القياسات</a></li>
               <li><a href="#" className="hover:text-cream">طرق الدفع</a></li>
               <li><a href="#" className="hover:text-cream">تواصلي معنا</a></li>
+            </ul>
+          </div>
+          <div>
+            <h4 className="font-bold mb-4 text-gold text-sm tracking-wider">روابط سريعة</h4>
+            <ul className="space-y-2 text-sm text-cream/70">
+              <li><Link to="/shop" className="hover:text-cream">تسوّقي الآن</Link></li>
+              <li><Link to="/cart" className="hover:text-cream">سلة المشتريات</Link></li>
+              <li><Link to="/wishlist" className="hover:text-cream">المفضلة</Link></li>
+              <li><Link to="/install" className="hover:text-cream">تثبيت التطبيق</Link></li>
+              <li><Link to="/auth" className="hover:text-cream">دخول / تسجيل</Link></li>
             </ul>
           </div>
           <div>
