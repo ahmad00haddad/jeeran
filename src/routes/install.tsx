@@ -149,6 +149,7 @@ function InstallPage() {
               <h2 className="font-display text-xl font-bold">على الكمبيوتر</h2>
             </div>
             <p className="text-sm text-muted-foreground mb-4">
+            <p className="text-sm text-muted-foreground mb-4">
               في متصفح Chrome أو Edge على الكمبيوتر، اضغطي على أيقونة التثبيت <Download className="inline w-4 h-4 mx-1 align-text-bottom" /> بجانب شريط العنوان، ثم اختاري <strong>تثبيت</strong>.
             </p>
             <p className="text-sm text-muted-foreground">
