@@ -143,10 +143,10 @@ function InstallPage() {
 
           <div className="bg-card border border-border p-6">
             <div className="flex items-center gap-3 mb-4">
+              <h2 className="font-display text-xl font-bold">على الكمبيوتر</h2>
               <div className="w-10 h-10 rounded-full bg-gold/20 flex items-center justify-center">
                 <Monitor className="w-5 h-5 text-gold" />
               </div>
-              <h2 className="font-display text-xl font-bold">على الكمبيوتر</h2>
             </div>
             <p className="text-sm text-muted-foreground mb-4">
               في متصفح Chrome أو Edge على الكمبيوتر، اضغطي على أيقونة التثبيت <Download className="inline w-4 h-4 mx-1 align-text-bottom" /> بجانب شريط العنوان، ثم اختاري <strong>تثبيت</strong>.
