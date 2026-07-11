@@ -47,11 +47,11 @@ export function Footer() {
           <div>
             <h4 className="font-bold mb-4 text-gold text-sm tracking-wider">روابط سريعة</h4>
             <ul className="space-y-2 text-sm text-cream/70">
-              <li><a href="/shop" className="hover:text-cream">تسوّقي الآن</a></li>
-              <li><a href="/cart" className="hover:text-cream">سلة المشتريات</a></li>
-              <li><a href="/wishlist" className="hover:text-cream">المفضلة</a></li>
-              <li><a href="/install" className="hover:text-cream">تثبيت التطبيق</a></li>
-              <li><a href="/auth" className="hover:text-cream">دخول / تسجيل</a></li>
+              <li><Link to="/shop" className="hover:text-cream">تسوّقي الآن</Link></li>
+              <li><Link to="/cart" className="hover:text-cream">سلة المشتريات</Link></li>
+              <li><Link to="/wishlist" className="hover:text-cream">المفضلة</Link></li>
+              <li><Link to="/install" className="hover:text-cream">تثبيت التطبيق</Link></li>
+              <li><Link to="/auth" className="hover:text-cream">دخول / تسجيل</Link></li>
             </ul>
           </div>
           <div>
