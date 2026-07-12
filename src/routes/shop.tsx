@@ -164,6 +164,53 @@ function ShopPage() {
       </main>
       <Footer />
       <MobileNav />
+
+      <BottomSheet
+        open={filtersOpen}
+        onClose={() => setFiltersOpen(false)}
+        title="فلاتر البحث"
+        footer={
+          <div className="flex gap-2">
+            <button
+              onClick={() => { setMaxPrice(null); setVerifiedOnly(false); setOnSale(false); }}
+              className="flex-1 py-3 border border-border rounded-full font-bold text-sm tap"
+            >مسح الفلاتر</button>
+            <button
+              onClick={() => setFiltersOpen(false)}
+              className="flex-1 py-3 bg-primary text-primary-foreground rounded-full font-bold text-sm tap"
+            >عرض النتائج</button>
+          </div>
+        }
+      >
+        <div className="p-4 space-y-6">
+          <section>
+            <h3 className="font-bold mb-3 text-sm">السعر</h3>
+            <div className="flex flex-wrap gap-2">
+              {[5, 10, 20].map((v) => (
+                <button
+                  key={v}
+                  onClick={() => setMaxPrice(maxPrice === v ? null : v)}
+                  className={`px-4 py-2 text-sm rounded-full border tap ${maxPrice === v ? "bg-primary text-primary-foreground border-primary" : "border-border"}`}
+                >تحت {v} د.أ</button>
+              ))}
+            </div>
+          </section>
+          <section>
+            <h3 className="font-bold mb-3 text-sm">الحالة</h3>
+            <div className="flex flex-wrap gap-2">
+              <button
+                onClick={() => setVerifiedOnly(!verifiedOnly)}
+                className={`px-4 py-2 text-sm rounded-full border tap ${verifiedOnly ? "bg-green-700 text-white border-green-700" : "border-border"}`}
+              >✓ موثّقة نظيفة</button>
+              <button
+                onClick={() => setOnSale(!onSale)}
+                className={`px-4 py-2 text-sm rounded-full border tap ${onSale ? "bg-gold text-gold-foreground border-gold" : "border-border"}`}
+              >تخفيضات فقط</button>
+            </div>
+          </section>
+        </div>
+      </BottomSheet>
     </div>
+
   );
 }
