@@ -232,5 +232,28 @@
     overflow: hidden; clip: rect(0,0,0,0);
     white-space: nowrap; border: 0;
   }
+
+  /* Mobile app-like utilities */
+  .safe-top { padding-top: env(safe-area-inset-top, 0px); }
+  .safe-bottom { padding-bottom: env(safe-area-inset-bottom, 0px); }
+  .pb-safe { padding-bottom: calc(env(safe-area-inset-bottom, 0px) + 0.5rem); }
+  .h-dvh { height: 100dvh; }
+  .min-h-dvh-safe { min-height: 100dvh; }
+
+  .tap { -webkit-tap-highlight-color: transparent; transition: transform 120ms ease, opacity 120ms ease; }
+  .tap:active { transform: scale(0.96); opacity: 0.9; }
+
+  @media (display-mode: standalone) {
+    .hide-standalone { display: none !important; }
+  }
+  .only-standalone { display: none; }
+  @media (display-mode: standalone) {
+    .only-standalone { display: initial; }
+  }
+}
+
+@layer base {
+  html, body { -webkit-tap-highlight-color: transparent; }
+  body { overscroll-behavior-y: none; }
 }
 
