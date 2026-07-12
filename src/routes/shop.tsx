@@ -1,13 +1,16 @@
 import { createFileRoute, useSearch } from "@tanstack/react-router";
 import { useEffect, useRef, useState, useCallback } from "react";
+import { SlidersHorizontal } from "lucide-react";
 import { TopBar } from "@/components/jeeran/TopBar";
 import { Header } from "@/components/jeeran/Header";
 import { Footer } from "@/components/jeeran/Footer";
 import { MobileNav } from "@/components/jeeran/MobileNav";
 import { ProductCard } from "@/components/jeeran/ProductCard";
 import { ProductGridSkeleton, ProductCardSkeleton } from "@/components/jeeran/Skeletons";
+import { BottomSheet } from "@/components/mobile/BottomSheet";
 import { supabase } from "@/integrations/supabase/client";
 import type { DBProduct, Category } from "@/types/db";
+
 
 const PAGE_SIZE = 24;
 
