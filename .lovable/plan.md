@@ -1,93 +1,131 @@
-# خطة التدقيق الشامل لموقع Jeeran
+# خطة: تحويل جيران لتجربة موبايل شبيهة بتطبيق أصلي (App-like PWA)
 
-## 0. تنبيه عاجل — عطل حرج قائم الآن (يجب إصلاحه أولًا قبل بدء التدقيق)
-
-فحص شبكة الصفحة الرئيسية يُظهر أن **كل طلبات جلب المنتجات ترجع 401**:
-
-```
-GET /rest/v1/products?select=*&sold=eq.false&...
-→ 401 { "code":"42501", "message":"permission denied for function has_role" }
-```
-
-السبب: سياسة SELECT على جدول `products` (أو سياسة مرتبطة تُستدعى ضمنها) تستدعي `public.has_role(...)`، وفي آخر مايجريشن سحبنا صلاحية `EXECUTE` عنها من دور `anon`. النتيجة: الزوار غير المسجلين لا يرون أي منتج — الصفحة الرئيسية، متجر، الفلاش سيل، صفحة المنتج، كلها فارغة.
-
-**الأثر:** الموقع عمليًا معطّل للزوار. لا يمكن اعتبار أي تدقيق UX/أداء ذا معنى قبل رفع هذا العطل.
-
-**الإصلاح المقترح (خطوة أولى مستقلة قبل التدقيق):**
-- منح `EXECUTE` على `public.has_role(uuid, app_role)` لدور `anon` مجددًا، لأن السياسة العامة تحتاج تقييمها للزوار.
-- بديل أنظف: إعادة كتابة سياسات SELECT على الجداول العامة (products / categories / offers) بحيث لا تعتمد على `has_role` في مسار الزائر، وحصر `has_role` في سياسات الكتابة/الأدمن فقط.
-- إعادة تشغيل linter و`get_scan_results` للتأكد أنه لم تُفتح ثغرات جديدة.
-
-سأنفّذ هذا الإصلاح كأول مهمة عند تفعيل وضع البناء، ثم أبدأ التدقيق الكامل أدناه.
+## الهدف
+جعل النسخة المحمولة تُحسّ وكأنها تطبيق فعلي: تنقّل سفلي دائم، ترويسة مضغوطة، انتقالات ناعمة، إيماءات، وسلوك offline/standalone سلس — دون كسر تجربة سطح المكتب.
 
 ---
 
-## 1. الهدف والنطاق
+## 1) الأساسات (Shell & Safe Areas)
+- إضافة دعم كامل لـ `env(safe-area-inset-*)` (خصوصًا iOS notch/home indicator) على:
+  - `Header` (padding-top)
+  - `MobileNav` (padding-bottom)
+  - `CartDrawer` و `Dialog`s
+- استخدام `100dvh` بدل `100vh` لمنع القفزات مع شريط المتصفح.
+- كشف وضع standalone عبر `display-mode: standalone` وتفعيل ستايل خاص (إخفاء بانرات "ثبّت التطبيق"، شريط علوي أقصر).
 
-تدقيق منظّم للموقع الحي (https://jeeran.lovable.app) وللمستودع، وإخراج تقرير عملي يحتوي:
-- بطاقات عيوب مصنّفة (حرج/عالٍ/متوسط/منخفض) لكل محور.
-- حلول محددة قابلة للتنفيذ لكل عيب.
-- حكم واضح: جاهز للنشر / جاهز بشروط / غير جاهز.
-- حكم واضح: قابل للتحويل لتطبيق موبايل بسهولة / بإعادة هيكلة متوسطة / بإعادة بناء.
+## 2) الترويسة (Header) على الموبايل
+- تصغير الارتفاع وإزالة أيقونات مكررة مع `MobileNav`:
+  - إزالة أيقونات User/Wishlist/Cart من Header على الموبايل (موجودة أصلًا في التنقّل السفلي).
+  - إبقاء: زر رجوع سياقي (عند صفحات داخلية) + الشعار + أيقونة بحث تفتح Overlay بحث فل-سكرين.
+- Overlay بحث بملء الشاشة مع اقتراحات وتاريخ بحث.
+- إخفاء `TopBar` على الموبايل (أو تحويله لشريط رفيع جدًا).
 
-## 2. المخرجات النهائية
+## 3) التنقّل السفلي (MobileNav)
+- تصميم iOS/Android حديث: أيقونات أكبر، Label اختياري، Active pill/indicator متحرك.
+- إضافة haptic feedback (Vibration API) عند التبديل.
+- إخفاء تلقائي عند التمرير للأسفل، ظهور عند التمرير للأعلى (اختياري).
+- تعديل الشارات (badges) لتكون أوضح.
 
-1. تقرير Markdown في `/mnt/documents/jeeran-audit-report.md` بالهيكل المطلوب في المواصفات (ملخص تنفيذي → محاور ستة → خارطة طريق).
-2. ملف بطاقات عيوب `jeeran-defects.csv` (ID, محور, مكان, وصف, دليل, أثر, أولوية, حل, تقدير جهد).
-3. لقطات Playwright كأدلة بصرية للعيوب المرئية تحت `/mnt/documents/audit-evidence/`.
-4. تلخيص في الشات مع أعلى 10 إصلاحات وقرار الجاهزية.
+## 4) انتقالات الصفحات (Page Transitions)
+- استخدام View Transitions API (متاح على Chromium) مع fallback لـ Framer Motion لانتقالات slide/fade بين الطرق.
+- انتقال خاص لصفحة المنتج (shared element على صورة المنتج).
 
-## 3. المنهجية التنفيذية
+## 5) صفحة المنتج (Product Detail)
+- Gallery أفقي بالسحب (swipe) مع Dots + Pinch-to-zoom.
+- Sticky bottom bar للسعر + زر "أضيفي للسلة" بدل زر داخل التدفق.
+- Sheet سفلي (Bottom Sheet) لاختيار المقاس/اللون بدل Dropdown.
 
-### مرحلة A — فهم المنتج (قراءة فقط)
-- استعراض: `src/routes/index.tsx`, `shop.tsx`, `product.$id.tsx`, `checkout.tsx`, `admin.tsx`, `auth.tsx`, `account.tsx`, `wishlist.tsx`.
-- استخراج رحلات المستخدم الأساسية: تصفح → منتج → سلة → دفع، والإيجار، وتسجيل الدخول، ولوحة الأدمن.
-- خريطة الصفحات + المهمة الأساسية + الفئة المستهدفة (نساء/عرايس/تراث أردني بحسب المكوّنات الحالية).
+## 6) السلة والدفع (Cart/Checkout)
+- تحويل `CartDrawer` على الموبايل إلى Bottom Sheet بسحب.
+- Checkout بخطوات (Stepper) بملء الشاشة مع Sticky CTA.
+- حقول إدخال أكبر (min-height 48px)، `inputMode` مناسب (`tel`, `numeric`), autofill.
 
-### مرحلة B — المسح الاستكشافي على الموقع الحي
-- تشغيل Playwright بحجم شاشة سطح مكتب (1280×1800) وجوّال (390×844).
-- زيارة كل مسار أساسي، أخذ سكرينشوت، جمع Console + Network + أخطاء وقت التشغيل.
-- محاولة السيناريوهات الحدّية: سلة فارغة، رقم هاتف خاطئ، محاولة دفع بدون بيانات، تحديث الصفحة أثناء التنقل، بحث لا نتائج له، منتج مُباع.
+## 7) قوائم المنتجات (Shop/Home)
+- شبكة عمودين على الموبايل بمسافات مريحة، Skeletons أثناء التحميل.
+- Sticky Filters chips أفقية قابلة للسحب.
+- Filters يفتح كـ Bottom Sheet فل-هايت بدل Modal.
+- Pull-to-refresh على الصفحة الرئيسية والمتجر.
+- Infinite scroll بدل Pagination.
 
-### مرحلة C — التدقيق المحوري (المحاور الستة)
-لكل محور: قائمة أسئلة → أدلة (كود/شبكة/سكرينشوت) → بطاقات عيوب.
+## 8) الإيماءات (Gestures)
+- Swipe back للرجوع (via Framer Motion drag).
+- Swipe to delete على عناصر السلة/المفضلة.
+- Long press لمعاينة سريعة للمنتج (Quick View sheet).
 
-1. **UI/UX** — انطباع أول، هرمية، اتساق (خطوط/ألوان)، microcopy عربي، حالات فارغة، تغذية راجعة. تركيز خاص: هل CTA واحد واضح؟ هل التوجه RTL سليم في كل الصفحات؟
-2. **بنية المعلومات والتنقل** — Header, MobileNav, breadcrumbs, تسميات الأقسام، عمق النقرات للوصول للدفع، مسار العودة/التعديل.
-3. **الأداء وإمكانية الوصول والاستجابة** — حجم الحزمة، `srcset` (تم جزئيًا)، Lighthouse محلي عبر Playwright، تباين ألوان النظام الحالي (deep/gold/cream)، `alt` للصور، `aria-*`، تجربة اللمس على 390px.
-4. **المنطق الوظيفي** — مراجعة `create_order_atomic`, `reserve_product_on_order_item`, `check_items_availability`, تدفق السلة (`store/cart.ts`)، تعارض السلة عند تعدد التبويبات، انتهاء الحجز بعد 45 دقيقة، RLS الحالي، سلوك rental_requests.
-5. **الجاهزية للنشر** — `.env`, `wrangler.jsonc`, `vite.config.ts`, وجود `errorComponent/notFoundComponent`, تسجيل الأخطاء، خارطة النشر، فحص أمان (`get_scan_results` + `supabase--linter`)، رؤوس SEO لكل route.
-6. **جاهزية الموبايل** — فصل المنطق عن العرض، اعتماد Tailwind tokens قابلة لإعادة الاستخدام، APIs (RPC) القابلة للاستهلاك من تطبيق React Native/Expo لاحقًا، حاجات offline/caching، إشعارات.
+## 9) الأداء والإحساس
+- Lazy load صور + `content-visibility: auto` للأقسام.
+- تعطيل hover states على الموبايل، تفعيل `:active` بحركة scale خفيفة (0.97).
+- إزالة الـ tap highlight الأزرق (`-webkit-tap-highlight-color: transparent`).
+- Font preload، تجنّب CLS بحجز أبعاد الصور.
 
-### مرحلة D — تصنيف وتقرير
-- تصنيف كل عيب: حرج/عالٍ/متوسط/منخفض حسب المصفوفة في المواصفات.
-- خارطة طريق: Quick wins (1–3 أيام) → إصلاحات متوسطة (1–2 أسبوع) → تحسينات هيكلية → متطلبات ما قبل تطبيق الموبايل.
+## 10) Offline & PWA سلوك تطبيق
+- إضافة Service Worker عبر `vite-plugin-pwa` (generateSW) مع NetworkFirst للـ HTML و CacheFirst للأصول الثابتة.
+- صفحة Offline مخصصة.
+- Splash screens لـ iOS (مجموعة صور بأحجام مختلفة).
+- تحديث `manifest.webmanifest`: إضافة `shortcuts` (تسوّق/المفضلة/السلة)، `share_target` (اختياري)، `categories`.
+- زر تحديث ذكي عند توفر نسخة جديدة (SW update prompt).
 
-## 4. الأدوات المستخدمة
+## 11) الطباعة والأحجام (Typography scale)
+- سلّم أحجام أصغر على الموبايل + line-height أوسع.
+- عناوين bold أكبر في صفحات المنتج والفواتير.
 
-- `code--view` / `rg` لقراءة الكود.
-- `acp_subagent--explore` لتتبعات متعددة الملفات بالتوازي (منطق السلة، تدفق الطلب، سياسات RLS).
-- Playwright shell script لجمع سكرينشوتات + console + network لكل مسار على `localhost:8080`.
-- `supabase--linter` و `security--get_scan_results` لإعادة الفحص الأمني.
-- `supabase--read_query` لفحص الأعمدة والسياسات الفعلية للجداول.
+## 12) إخفاء شعار Lovable
+- استدعاء `publish_settings--set_badge_visibility({ hide_badge: true })`.
+- ملاحظة: يتطلب خطة Pro أو أعلى.
 
-## 5. التسلسل والتقدير
+---
 
-| # | خطوة | تقدير |
-|---|---|---|
-| 0 | إصلاح عطل `has_role` العاجل | فوري |
-| 1 | استكشاف الكود + خريطة الرحلات | ~15 د |
-| 2 | مسح Playwright (desktop + mobile) لكل مسار | ~20 د |
-| 3 | تدقيق المحاور الستة + كتابة البطاقات | ~40 د |
-| 4 | تجميع التقرير النهائي + CSV + قرار الجاهزية | ~15 د |
+## الملفات المتوقع تعديلها/إضافتها
 
-## 6. ما لن يُنفَّذ في هذه الجولة (خارج النطاق ما لم يُطلب)
-- إصلاح كل العيوب المكتشفة — التدقيق يُخرج التقرير والحلول، والتنفيذ الفعلي لكل بند يتم على دفعات بموافقتك.
-- تغييرات هوية بصرية شاملة.
-- بناء تطبيق موبايل — فقط تقييم الجاهزية.
+**تعديل:**
+- `src/styles.css` — safe-area utilities, active states, tap highlight, dvh.
+- `src/routes/__root.tsx` — SW registration guard, standalone detection.
+- `src/components/jeeran/Header.tsx` — تبسيط للموبايل + Search Overlay.
+- `src/components/jeeran/MobileNav.tsx` — إعادة تصميم + auto-hide.
+- `src/components/jeeran/CartDrawer.tsx` — Bottom Sheet على الموبايل.
+- `src/routes/product.$id.tsx` — Gallery swipe + sticky CTA.
+- `src/routes/shop.tsx` + `shop.$slug.tsx` — Sticky chips + Bottom Sheet filters.
+- `src/routes/checkout.tsx` — Stepper + inputs محسّنة.
+- `public/manifest.webmanifest` — shortcuts + categories.
 
-## 7. نقاط قرار أطلبها منك قبل التنفيذ
+**إضافة:**
+- `src/components/mobile/BottomSheet.tsx`
+- `src/components/mobile/SearchOverlay.tsx`
+- `src/components/mobile/PageTransition.tsx`
+- `src/components/mobile/PullToRefresh.tsx`
+- `src/hooks/useStandalone.ts`
+- `src/hooks/useSwipeBack.ts`
+- `src/pwa/register.ts` (مع حراسات preview/dev)
+- `public/offline.html` + iOS splash images.
 
-1. هل تريد أن أبدأ فورًا بإصلاح عطل `has_role` (العنصر 0) ثم أنتقل للتدقيق، أم تريد التدقيق فقط والإصلاح لاحقًا؟
-2. هل التدقيق يشمل لوحة الأدمن `/admin` كاملة أم واجهة الزبون فقط؟
-3. هل تريد التقرير بالعربية فقط، أم عربي + ملخص إنجليزي؟
+---
+
+## تفاصيل تقنية
+
+- **مكتبات مطلوبة:** `framer-motion` (موجودة غالبًا)، `vite-plugin-pwa`، `workbox-window`.
+- **View Transitions:** استخدام `document.startViewTransition` مع fallback لـ Framer Motion لـ Safari.
+- **Bottom Sheet:** بناء مخصص عبر Framer Motion drag على `y` مع snap points [0, 0.5, 1].
+- **SW Guards:** عدم التسجيل في `preview--*.lovable.app` أو `id-preview--*` أو dev (حسب PWA skill).
+- **Haptics:** `navigator.vibrate?.(10)` — لا يعمل على iOS Safari لكنه لا يكسر شيء.
+- **Safe areas CSS:**
+  ```css
+  @supports (padding: env(safe-area-inset-top)) {
+    .safe-top { padding-top: env(safe-area-inset-top); }
+    .safe-bottom { padding-bottom: env(safe-area-inset-bottom); }
+  }
+  ```
+
+---
+
+## مراحل التنفيذ المقترحة (نطبّقها على دفعات)
+
+1. **Phase 1 — الأساسات (سريع، أثر كبير):** safe-areas، dvh، tap highlight، active scale، تبسيط Header الموبايل، إعادة تصميم MobileNav، إخفاء شعار Lovable.
+2. **Phase 2 — Sheets & Search:** Bottom Sheet component، تحويل CartDrawer و Filters، Search Overlay.
+3. **Phase 3 — صفحة المنتج:** Gallery swipe، Sticky CTA، shared element transition.
+4. **Phase 4 — Offline & PWA متقدم:** vite-plugin-pwa، offline page، shortcuts، update prompt، iOS splash.
+5. **Phase 5 — Polish:** Page transitions، pull-to-refresh، swipe gestures، haptics.
+
+---
+
+## سؤال قبل البدء
+هل تريد أن نبدأ بـ **Phase 1** مباشرة (أثر مرئي فوري)، أم تفضّل تنفيذ الخطة كاملة على دفعات متتالية دون توقف؟ وهل خطتك تدعم Pro (لإخفاء شعار Lovable)؟
