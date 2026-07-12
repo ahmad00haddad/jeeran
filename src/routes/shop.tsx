@@ -32,8 +32,10 @@ function ShopPage() {
   const [onSale, setOnSale] = useState(false);
   const [maxPrice, setMaxPrice] = useState<number | null>(null);
   const [verifiedOnly, setVerifiedOnly] = useState(false);
+  const [filtersOpen, setFiltersOpen] = useState(false);
   const sentinelRef = useRef<HTMLDivElement | null>(null);
   const pageRef = useRef(0);
+
 
   useEffect(() => {
     supabase.from("categories").select("*").order("display_order").then(({ data }) => setCats((data as Category[]) || []));
