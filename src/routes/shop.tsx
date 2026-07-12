@@ -98,24 +98,50 @@ function ShopPage() {
     <div className="min-h-screen pb-16 md:pb-0">
       <TopBar />
       <Header />
-      <main className="max-w-7xl mx-auto px-4 py-6">
-        <h1 className="font-display text-3xl font-bold mb-4">{q ? `نتائج: ${q}` : "كل التشكيلة"}</h1>
-        <div className="flex flex-wrap gap-2 mb-3">
-          <button onClick={() => setActiveCat(null)} className={`px-4 py-1.5 text-sm border ${!activeCat ? "bg-primary text-primary-foreground border-primary" : "border-border"}`}>الكل</button>
-          {cats.map((c) => (
-            <button key={c.id} onClick={() => setActiveCat(c.id)} className={`px-4 py-1.5 text-sm border ${activeCat === c.id ? "bg-primary text-primary-foreground border-primary" : "border-border"}`}>{c.name_ar}</button>
-          ))}
+      <main className="max-w-7xl mx-auto px-4 py-4 md:py-6">
+        <h1 className="font-display text-2xl md:text-3xl font-bold mb-3 md:mb-4">{q ? `نتائج: ${q}` : "كل التشكيلة"}</h1>
+
+        {/* Sticky filter chips (categories) — horizontally scrollable on mobile */}
+        <div className="sticky top-14 md:top-0 z-20 -mx-4 px-4 py-2 bg-cream/95 backdrop-blur border-b border-border">
+          <div className="flex gap-2 overflow-x-auto no-scrollbar snap-x">
+            <button onClick={() => setActiveCat(null)} className={`shrink-0 snap-start px-4 py-1.5 text-sm rounded-full border tap ${!activeCat ? "bg-primary text-primary-foreground border-primary" : "border-border bg-cream"}`}>الكل</button>
+            {cats.map((c) => (
+              <button key={c.id} onClick={() => setActiveCat(c.id)} className={`shrink-0 snap-start px-4 py-1.5 text-sm rounded-full border tap ${activeCat === c.id ? "bg-primary text-primary-foreground border-primary" : "border-border bg-cream"}`}>{c.name_ar}</button>
+            ))}
+          </div>
         </div>
-        <div className="flex flex-wrap gap-2 mb-6 pt-2 border-t border-border">
+
+        {/* Desktop-only inline filters */}
+        <div className="hidden md:flex flex-wrap gap-2 my-4">
           <button onClick={() => setMaxPrice(maxPrice === 5 ? null : 5)} className={`px-3 py-1.5 text-xs font-bold border ${maxPrice === 5 ? "bg-primary text-primary-foreground border-primary" : "border-border"}`}>تحت 5 د.أ</button>
           <button onClick={() => setMaxPrice(maxPrice === 10 ? null : 10)} className={`px-3 py-1.5 text-xs font-bold border ${maxPrice === 10 ? "bg-primary text-primary-foreground border-primary" : "border-border"}`}>تحت 10 د.أ</button>
           <button onClick={() => setMaxPrice(maxPrice === 20 ? null : 20)} className={`px-3 py-1.5 text-xs font-bold border ${maxPrice === 20 ? "bg-primary text-primary-foreground border-primary" : "border-border"}`}>تحت 20 د.أ</button>
           <button onClick={() => setVerifiedOnly(!verifiedOnly)} className={`px-3 py-1.5 text-xs font-bold border ${verifiedOnly ? "bg-green-700 text-white border-green-700" : "border-border"}`}>✓ موثّقة نظيفة</button>
           <button onClick={() => setOnSale(!onSale)} className={`px-3 py-1.5 text-xs font-bold border ${onSale ? "bg-gold text-gold-foreground border-gold" : "border-border"}`}>تخفيضات فقط</button>
         </div>
-        <div className="text-sm text-muted-foreground mb-4">
+
+        {/* Mobile filter trigger */}
+        <div className="md:hidden flex items-center justify-between mt-3 mb-2">
+          <button
+            onClick={() => setFiltersOpen(true)}
+            className="flex items-center gap-2 px-4 py-2 rounded-full border border-border bg-cream text-sm font-bold tap"
+          >
+            <SlidersHorizontal className="w-4 h-4" /> فلاتر
+            {(maxPrice || verifiedOnly || onSale) && (
+              <span className="bg-primary text-primary-foreground text-[10px] w-5 h-5 rounded-full flex items-center justify-center">
+                {[maxPrice, verifiedOnly, onSale].filter(Boolean).length}
+              </span>
+            )}
+          </button>
+          <div className="text-xs text-muted-foreground">
+            {loading ? "جارٍ التحميل..." : `${products.length}${total ? `/${total}` : ""}`}
+          </div>
+        </div>
+
+        <div className="hidden md:block text-sm text-muted-foreground mb-4">
           {loading ? "جارٍ تحميل القطع..." : `${products.length}${total ? ` من ${total}` : ""} منتج`}
         </div>
+
         {loading ? (
           <ProductGridSkeleton count={8} />
         ) : products.length === 0 ? (
