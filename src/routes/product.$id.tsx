@@ -215,7 +215,7 @@ function PDP() {
               قطعة واحدة فريدة — مقاس واحد فقط كما هو موصوف. راجعي تفاصيل القياسات في الوصف.
             </div>
 
-            <div className="flex items-center gap-4">
+            <div className="hidden md:flex items-center gap-4">
               <button
                 disabled={unavailable}
                 onClick={() => {
@@ -223,10 +223,10 @@ function PDP() {
                   add({ id: p.id, name_ar: p.name_ar, price: effective, image_url: p.image_url, quantity: 1 });
                   toast.success("انضافت للسلة 🛍️");
                 }}
-                className="flex-1 bg-primary text-primary-foreground py-3.5 font-bold hover:bg-primary/90 transition disabled:opacity-50 disabled:cursor-not-allowed"
+                className="flex-1 bg-primary text-primary-foreground py-3.5 font-bold hover:bg-primary/90 transition disabled:opacity-50 disabled:cursor-not-allowed tap"
               >{isSold ? "تم البيع" : isReserved ? "محجوزة حالياً" : "أضيفي للسلة"}</button>
 
-              <button onClick={() => toggleWish(p.id)} className={`p-3 border ${wished ? "border-primary bg-primary text-primary-foreground" : "border-border"}`}>
+              <button onClick={() => toggleWish(p.id)} className={`p-3 border tap ${wished ? "border-primary bg-primary text-primary-foreground" : "border-border"}`}>
                 <Heart className={`w-5 h-5 ${wished ? "fill-current" : ""}`} />
               </button>
             </div>
