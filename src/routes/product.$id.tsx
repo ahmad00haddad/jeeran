@@ -157,15 +157,15 @@ function PDP() {
   const waMsg = `مرحبا 👋\nبستفسر عن قطعة: *${p.name_ar}*\nالسعر: ${effective.toFixed(2)} د.أ\nرابط: ${typeof window !== "undefined" ? window.location.href : ""}`;
 
   return (
-    <div className="min-h-screen pb-16 md:pb-0">
+    <div className="min-h-screen pb-32 md:pb-0">
       <TopBar />
       <Header />
-      <main className="max-w-7xl mx-auto px-4 py-8">
-        <nav className="text-xs text-muted-foreground mb-4">
+      <main className="max-w-7xl mx-auto px-4 py-4 md:py-8">
+        <nav className="text-xs text-muted-foreground mb-4 hidden md:block">
           <Link to="/" className="hover:text-primary">الرئيسية</Link> ← <Link to="/shop" className="hover:text-primary">المتجر</Link> ← <span>{p.name_ar}</span>
         </nav>
-        <div className="grid md:grid-cols-2 gap-8">
-          <div className="bg-secondary aspect-[4/5] overflow-hidden relative">
+        <div className="grid md:grid-cols-2 gap-6 md:gap-8">
+          <div className="bg-secondary aspect-[4/5] overflow-hidden relative -mx-4 md:mx-0">
             <img src={resolveImg(p.image_url)} alt={p.name_ar} className="w-full h-full object-cover" />
             {verified && (
               <span className="absolute top-3 right-3 bg-green-700 text-white text-xs font-bold px-2.5 py-1 flex items-center gap-1 shadow">
