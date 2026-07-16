@@ -157,15 +157,15 @@ function PDP() {
   const waMsg = `مرحبا 👋\nبستفسر عن قطعة: *${p.name_ar}*\nالسعر: ${effective.toFixed(2)} د.أ\nرابط: ${typeof window !== "undefined" ? window.location.href : ""}`;
 
   return (
-    <div className="min-h-screen pb-16 md:pb-0">
+    <div className="min-h-screen pb-32 md:pb-0">
       <TopBar />
       <Header />
-      <main className="max-w-7xl mx-auto px-4 py-8">
-        <nav className="text-xs text-muted-foreground mb-4">
+      <main className="max-w-7xl mx-auto px-4 py-4 md:py-8">
+        <nav className="text-xs text-muted-foreground mb-4 hidden md:block">
           <Link to="/" className="hover:text-primary">الرئيسية</Link> ← <Link to="/shop" className="hover:text-primary">المتجر</Link> ← <span>{p.name_ar}</span>
         </nav>
-        <div className="grid md:grid-cols-2 gap-8">
-          <div className="bg-secondary aspect-[4/5] overflow-hidden relative">
+        <div className="grid md:grid-cols-2 gap-6 md:gap-8">
+          <div className="bg-secondary aspect-[4/5] overflow-hidden relative -mx-4 md:mx-0">
             <img src={resolveImg(p.image_url)} alt={p.name_ar} className="w-full h-full object-cover" />
             {verified && (
               <span className="absolute top-3 right-3 bg-green-700 text-white text-xs font-bold px-2.5 py-1 flex items-center gap-1 shadow">
@@ -215,7 +215,7 @@ function PDP() {
               قطعة واحدة فريدة — مقاس واحد فقط كما هو موصوف. راجعي تفاصيل القياسات في الوصف.
             </div>
 
-            <div className="flex items-center gap-4">
+            <div className="hidden md:flex items-center gap-4">
               <button
                 disabled={unavailable}
                 onClick={() => {
@@ -223,10 +223,10 @@ function PDP() {
                   add({ id: p.id, name_ar: p.name_ar, price: effective, image_url: p.image_url, quantity: 1 });
                   toast.success("انضافت للسلة 🛍️");
                 }}
-                className="flex-1 bg-primary text-primary-foreground py-3.5 font-bold hover:bg-primary/90 transition disabled:opacity-50 disabled:cursor-not-allowed"
+                className="flex-1 bg-primary text-primary-foreground py-3.5 font-bold hover:bg-primary/90 transition disabled:opacity-50 disabled:cursor-not-allowed tap"
               >{isSold ? "تم البيع" : isReserved ? "محجوزة حالياً" : "أضيفي للسلة"}</button>
 
-              <button onClick={() => toggleWish(p.id)} className={`p-3 border ${wished ? "border-primary bg-primary text-primary-foreground" : "border-border"}`}>
+              <button onClick={() => toggleWish(p.id)} className={`p-3 border tap ${wished ? "border-primary bg-primary text-primary-foreground" : "border-border"}`}>
                 <Heart className={`w-5 h-5 ${wished ? "fill-current" : ""}`} />
               </button>
             </div>
@@ -273,6 +273,37 @@ function PDP() {
           </section>
         )}
       </main>
+
+      {/* Sticky mobile CTA bar */}
+      <div
+        className="md:hidden fixed inset-x-0 z-30 bg-cream/95 backdrop-blur border-t border-border p-3 pb-safe flex items-center gap-2"
+        style={{ bottom: "calc(env(safe-area-inset-bottom, 0px) + 64px)", boxShadow: "0 -8px 24px -12px rgba(0,0,0,0.15)" }}
+      >
+        <button
+          onClick={() => toggleWish(p.id)}
+          aria-label="المفضلة"
+          className={`shrink-0 p-3 border rounded-full tap ${wished ? "border-primary bg-primary text-primary-foreground" : "border-border bg-cream"}`}
+        >
+          <Heart className={`w-5 h-5 ${wished ? "fill-current" : ""}`} />
+        </button>
+        <div className="flex flex-col items-start leading-tight shrink-0 pl-1">
+          <span className="text-primary font-bold text-lg">{effective.toFixed(2)} <span className="text-xs font-normal">د.أ</span></span>
+          {p.sale_price && <span className="text-[10px] text-muted-foreground line-through">{p.price.toFixed(2)}</span>}
+        </div>
+        <button
+          disabled={unavailable}
+          onClick={() => {
+            if (unavailable) return;
+            add({ id: p.id, name_ar: p.name_ar, price: effective, image_url: p.image_url, quantity: 1 });
+            toast.success("انضافت للسلة 🛍️");
+            try { (navigator as any).vibrate?.(10); } catch {}
+          }}
+          className="flex-1 bg-primary text-primary-foreground py-3 rounded-full font-bold text-sm disabled:opacity-50 tap"
+        >
+          {isSold ? "تم البيع" : isReserved ? "محجوزة" : "أضيفي للسلة"}
+        </button>
+      </div>
+
       <OfferDialog
         open={!!dialog}
         onClose={() => setDialog(null)}
