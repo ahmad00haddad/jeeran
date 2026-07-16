@@ -273,6 +273,37 @@ function PDP() {
           </section>
         )}
       </main>
+
+      {/* Sticky mobile CTA bar */}
+      <div
+        className="md:hidden fixed inset-x-0 z-30 bg-cream/95 backdrop-blur border-t border-border p-3 pb-safe flex items-center gap-2"
+        style={{ bottom: "calc(env(safe-area-inset-bottom, 0px) + 64px)", boxShadow: "0 -8px 24px -12px rgba(0,0,0,0.15)" }}
+      >
+        <button
+          onClick={() => toggleWish(p.id)}
+          aria-label="المفضلة"
+          className={`shrink-0 p-3 border rounded-full tap ${wished ? "border-primary bg-primary text-primary-foreground" : "border-border bg-cream"}`}
+        >
+          <Heart className={`w-5 h-5 ${wished ? "fill-current" : ""}`} />
+        </button>
+        <div className="flex flex-col items-start leading-tight shrink-0 pl-1">
+          <span className="text-primary font-bold text-lg">{effective.toFixed(2)} <span className="text-xs font-normal">د.أ</span></span>
+          {p.sale_price && <span className="text-[10px] text-muted-foreground line-through">{p.price.toFixed(2)}</span>}
+        </div>
+        <button
+          disabled={unavailable}
+          onClick={() => {
+            if (unavailable) return;
+            add({ id: p.id, name_ar: p.name_ar, price: effective, image_url: p.image_url, quantity: 1 });
+            toast.success("انضافت للسلة 🛍️");
+            try { (navigator as any).vibrate?.(10); } catch {}
+          }}
+          className="flex-1 bg-primary text-primary-foreground py-3 rounded-full font-bold text-sm disabled:opacity-50 tap"
+        >
+          {isSold ? "تم البيع" : isReserved ? "محجوزة" : "أضيفي للسلة"}
+        </button>
+      </div>
+
       <OfferDialog
         open={!!dialog}
         onClose={() => setDialog(null)}
