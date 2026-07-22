@@ -27,21 +27,20 @@ export function Footer() {
           <div>
             <h4 className="font-bold mb-4 text-gold text-sm tracking-wider">تسوّقي</h4>
             <ul className="space-y-2 text-sm text-cream/70">
-              <li><a href="#" className="hover:text-cream">عبايات</a></li>
-              <li><a href="#" className="hover:text-cream">حجابات</a></li>
-              <li><a href="#" className="hover:text-cream">فساتين طويلة</a></li>
-              <li><a href="#" className="hover:text-cream">رجالي</a></li>
-              <li><a href="#" className="hover:text-cream">أطفال</a></li>
+              <li><Link to="/shop" className="hover:text-cream">عبايات</Link></li>
+              <li><Link to="/shop" className="hover:text-cream">حجابات</Link></li>
+              <li><Link to="/shop" className="hover:text-cream">فساتين طويلة</Link></li>
+              <li><Link to="/shop" className="hover:text-cream">رجالي</Link></li>
+              <li><Link to="/shop" className="hover:text-cream">أطفال</Link></li>
             </ul>
           </div>
           <div>
             <h4 className="font-bold mb-4 text-gold text-sm tracking-wider">خدمة العملاء</h4>
             <ul className="space-y-2 text-sm text-cream/70">
-              <li><a href="#" className="hover:text-cream">الشحن والتوصيل</a></li>
-              <li><a href="#" className="hover:text-cream">الإرجاع والاستبدال</a></li>
-              <li><a href="#" className="hover:text-cream">جدول القياسات</a></li>
-              <li><a href="#" className="hover:text-cream">طرق الدفع</a></li>
-              <li><a href="#" className="hover:text-cream">تواصلي معنا</a></li>
+              <li><Link to="/shipping" className="hover:text-cream">الشحن والتوصيل</Link></li>
+              <li><Link to="/returns" className="hover:text-cream">الإرجاع والاستبدال</Link></li>
+              <li><Link to="/about" className="hover:text-cream">من نحن</Link></li>
+              <li><Link to="/contact" className="hover:text-cream">تواصلي معنا</Link></li>
             </ul>
           </div>
           <div>
@@ -51,7 +50,8 @@ export function Footer() {
               <li><Link to="/cart" className="hover:text-cream">سلة المشتريات</Link></li>
               <li><Link to="/wishlist" className="hover:text-cream">المفضلة</Link></li>
               <li><Link to="/install" className="hover:text-cream">تثبيت التطبيق</Link></li>
-              <li><Link to="/auth" className="hover:text-cream">دخول / تسجيل</Link></li>
+              <li><Link to="/terms" className="hover:text-cream">الشروط والأحكام</Link></li>
+              <li><Link to="/privacy" className="hover:text-cream">سياسة الخصوصية</Link></li>
             </ul>
           </div>
           <div>
@@ -61,11 +61,12 @@ export function Footer() {
               <input type="email" placeholder="بريدك الإلكتروني" className="flex-1 bg-cream/10 border border-cream/20 px-3 py-2.5 text-sm focus:outline-none focus:border-gold" />
               <button className="bg-primary text-primary-foreground px-5 text-sm font-bold hover:bg-gold hover:text-gold-foreground transition">اشتركي</button>
             </div>
-            <div className="mt-6 text-xs text-cream/60 leading-relaxed">
+            <div className="mt-6 text-xs text-cream/60 leading-relaxed" dir="ltr">
               📍 الزرقاء، الأردن<br />
-              ☎ ٠٧٩ ١٢٣ ٤٥٦٧
+              <a href="https://wa.me/962799256345" className="hover:text-gold">☎ +962 79 925 6345</a>
             </div>
           </div>
+
         </div>
         <div className="pt-6 flex flex-wrap items-center justify-between gap-3 text-xs text-cream/50">
           <span>© ٢٠٢٥ جيران — سوق الملابس المستعملة الأردني</span>
