@@ -1,11 +1,12 @@
-import { createFileRoute, Link, useNavigate } from "@tanstack/react-router";
+import { createFileRoute, Link } from "@tanstack/react-router";
 import { TopBar } from "@/components/jeeran/TopBar";
 import { Header } from "@/components/jeeran/Header";
 import { Footer } from "@/components/jeeran/Footer";
 import { MobileNav } from "@/components/jeeran/MobileNav";
-import { useCart, cartTotals } from "@/store/cart";
+import { useCart, cartTotals, type CartItem } from "@/store/cart";
 import { resolveImg } from "@/lib/imageMap";
 import { Trash2 } from "lucide-react";
+import { toast } from "sonner";
 
 export const Route = createFileRoute("/cart")({
   component: CartPage,
@@ -13,8 +14,16 @@ export const Route = createFileRoute("/cart")({
 });
 
 function CartPage() {
-  const { items, remove } = useCart();
+  const { items, remove, add } = useCart();
   const { subtotal, shipping, total } = cartTotals(items);
+
+  function handleRemove(item: CartItem) {
+    remove(item.id, item.size);
+    toast.success("انشالت من السلة", {
+      action: { label: "تراجع", onClick: () => add(item) },
+      duration: 5000,
+    });
+  }
 
   return (
     <div className="min-h-screen pb-16 md:pb-0">
@@ -43,7 +52,13 @@ function CartPage() {
                       <span className="font-bold text-primary">{(i.price * i.quantity).toFixed(2)} د.أ</span>
                     </div>
                   </div>
-                  <button onClick={() => remove(i.id, i.size)} className="self-start text-muted-foreground hover:text-primary"><Trash2 className="w-4 h-4" /></button>
+                  <button
+                    onClick={() => handleRemove(i)}
+                    aria-label="حذف من السلة"
+                    className="self-start text-muted-foreground hover:text-primary p-2"
+                  >
+                    <Trash2 className="w-4 h-4" />
+                  </button>
                 </div>
               ))}
             </div>
