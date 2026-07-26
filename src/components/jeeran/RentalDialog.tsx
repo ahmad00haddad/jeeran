@@ -1,7 +1,8 @@
 import { useState } from "react";
 import { supabase } from "@/integrations/supabase/client";
 import { toast } from "sonner";
-import { X, Sparkles } from "lucide-react";
+import { X, Sparkles, Loader2 } from "lucide-react";
+import { normalizePhone, normalizeName, isValidJoPhone } from "@/lib/phone";
 
 type Props = {
   open: boolean;
@@ -21,10 +22,21 @@ export function RentalDialog({ open, onClose, productId, productName, rentalPric
   const [busy, setBusy] = useState(false);
 
   if (!open) return null;
-  const validPhone = /^0?7[7-9]\d{7}$/.test(phone.replace(/\s/g, ""));
+  const cleanPhone = normalizePhone(phone);
+  const validPhone = isValidJoPhone(cleanPhone);
+  const cleanName = normalizeName(full_name);
+  const validName = cleanName.length >= 3;
+  const dirty = full_name || phone || event_date || message;
+
+  function tryClose() {
+    if (busy) return;
+    if (dirty && !confirm("متأكدة تتركي بدون إرسال؟ البيانات رح تنمحي.")) return;
+    onClose();
+  }
 
   async function submit() {
-    if (!full_name || !validPhone || !event_date) {
+    if (busy) return;
+    if (!validName || !validPhone || !event_date) {
       toast.error("عبّي البيانات صح (الاسم، الرقم، تاريخ المناسبة)");
       return;
     }
@@ -33,7 +45,7 @@ export function RentalDialog({ open, onClose, productId, productName, rentalPric
     const { error } = await supabase.from("rental_requests").insert({
       product_id: productId,
       user_id: user?.id ?? null,
-      full_name, phone, event_date, message,
+      full_name: cleanName, phone: cleanPhone, event_date, message: message.trim(),
     });
     setBusy(false);
     if (error) { toast.error("صار خطأ، جرّبي مرة ثانية"); return; }
@@ -42,9 +54,9 @@ export function RentalDialog({ open, onClose, productId, productName, rentalPric
   }
 
   return (
-    <div className="fixed inset-0 z-50 bg-black/60 flex items-center justify-center p-4" onClick={onClose}>
+    <div className="fixed inset-0 z-50 bg-black/60 flex items-center justify-center p-4" onClick={tryClose}>
       <div className="bg-card w-full max-w-md p-6 border border-border relative" onClick={(e) => e.stopPropagation()}>
-        <button onClick={onClose} className="absolute top-3 left-3"><X className="w-5 h-5" /></button>
+        <button onClick={tryClose} aria-label="إغلاق" className="absolute top-3 left-3 p-1"><X className="w-5 h-5" /></button>
         <h3 className="font-display text-xl font-bold mb-1 flex items-center gap-2">
           <Sparkles className="w-5 h-5 text-gold" /> استأجري هالقطعة
         </h3>
@@ -59,11 +71,12 @@ export function RentalDialog({ open, onClose, productId, productName, rentalPric
         <div className="space-y-3">
           <label className="block">
             <span className="text-xs font-medium">الاسم *</span>
-            <input value={full_name} onChange={(e) => setName(e.target.value)} className="w-full border border-border px-3 py-2 mt-1 outline-none focus:border-primary" />
+            <input value={full_name} onChange={(e) => setName(e.target.value)} onBlur={(e) => setName(normalizeName(e.target.value))} className={`w-full border px-3 py-2 mt-1 outline-none ${full_name && !validName ? "border-red-500" : "border-border focus:border-primary"}`} />
           </label>
           <label className="block">
             <span className="text-xs font-medium">رقم الموبايل *</span>
-            <input value={phone} onChange={(e) => setPhone(e.target.value)} placeholder="07XXXXXXXX" className={`w-full border px-3 py-2 mt-1 outline-none ${phone && !validPhone ? "border-red-500" : "border-border focus:border-primary"}`} />
+            <input value={phone} inputMode="tel" onChange={(e) => setPhone(e.target.value)} onBlur={(e) => setPhone(normalizePhone(e.target.value))} placeholder="07XXXXXXXX" className={`w-full border px-3 py-2 mt-1 outline-none ${phone && !validPhone ? "border-red-500" : "border-border focus:border-primary"}`} />
+            {phone && !validPhone && <span className="text-xs text-red-500">رقم أردني غير صحيح</span>}
           </label>
           <label className="block">
             <span className="text-xs font-medium">تاريخ المناسبة *</span>
@@ -71,13 +84,14 @@ export function RentalDialog({ open, onClose, productId, productName, rentalPric
           </label>
           <label className="block">
             <span className="text-xs font-medium">ملاحظة (المقاس، تفاصيل المناسبة...)</span>
-            <textarea value={message} onChange={(e) => setMessage(e.target.value)} rows={2} className="w-full border border-border px-3 py-2 mt-1 outline-none focus:border-primary" />
+            <textarea value={message} onChange={(e) => setMessage(e.target.value)} rows={2} maxLength={300} className="w-full border border-border px-3 py-2 mt-1 outline-none focus:border-primary" />
           </label>
           <div className="text-[11px] text-muted-foreground bg-secondary p-2 leading-relaxed">
             البائع رح يتواصل معك بالواتساب لتأكيد التوفر بالتاريخ المطلوب. القطعة بتنحجز بس يأكد البائع، وبترجع بعد المناسبة بحالتها.
           </div>
-          <button onClick={submit} disabled={busy} className="w-full bg-primary text-primary-foreground py-3 font-bold disabled:opacity-50">
-            {busy ? "..." : "إرسال طلب الإيجار"}
+          <button onClick={submit} disabled={busy} className="w-full bg-primary text-primary-foreground py-3 font-bold disabled:opacity-50 flex items-center justify-center gap-2">
+            {busy && <Loader2 className="w-4 h-4 animate-spin" />}
+            {busy ? "جارٍ الإرسال..." : "إرسال طلب الإيجار"}
           </button>
         </div>
       </div>
