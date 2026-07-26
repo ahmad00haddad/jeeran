@@ -1,131 +1,148 @@
-# خطة: تحويل جيران لتجربة موبايل شبيهة بتطبيق أصلي (App-like PWA)
+# خطة "المستخدم العشوائي" — تحصين تجربة المستخدم
 
-## الهدف
-جعل النسخة المحمولة تُحسّ وكأنها تطبيق فعلي: تنقّل سفلي دائم، ترويسة مضغوطة، انتقالات ناعمة، إيماءات، وسلوك offline/standalone سلس — دون كسر تجربة سطح المكتب.
+هدف الخطة: نفترض أن المستخدم يضغط كل شيء بشكل عشوائي، ما بيقرأ، وممكن يكبس نفس الزر 20 مرة أو يقفل ويرجع أو يفتح 5 تبويبات. نضيف حواجز أمان + رسائل واضحة + منع كوارث.
 
----
+## المشاكل المكتشفة (Audit)
 
-## 1) الأساسات (Shell & Safe Areas)
-- إضافة دعم كامل لـ `env(safe-area-inset-*)` (خصوصًا iOS notch/home indicator) على:
-  - `Header` (padding-top)
-  - `MobileNav` (padding-bottom)
-  - `CartDrawer` و `Dialog`s
-- استخدام `100dvh` بدل `100vh` لمنع القفزات مع شريط المتصفح.
-- كشف وضع standalone عبر `display-mode: standalone` وتفعيل ستايل خاص (إخفاء بانرات "ثبّت التطبيق"، شريط علوي أقصر).
+### 1) الطلبات (Checkout)
+- زر "تأكيد الطلب" غير محمي من الدبل-كليك بشكل مرئي (submitting=true بس، بس المستخدم ممكن يضغط قبل ما يتغير state).
+- إذا صار خطأ بعد الضغط، المستخدم بيرجع لـstep 2 بدون توضيح كافي أي قطعة انباعت.
+- ما في تأكيد "متأكدة إنك بدك تأكدي الطلب؟" — الضغطة النهائية بلا رجعة.
+- رقم الموبايل: لو المستخدم كتب مسافات/رموز عربية/+962، ما في تنظيف تلقائي (بس regex validation).
+- الاسم والعنوان: ما في حد أدنى (ممكن يكتب "a") ولا trim للفراغات.
 
-## 2) الترويسة (Header) على الموبايل
-- تصغير الارتفاع وإزالة أيقونات مكررة مع `MobileNav`:
-  - إزالة أيقونات User/Wishlist/Cart من Header على الموبايل (موجودة أصلًا في التنقّل السفلي).
-  - إبقاء: زر رجوع سياقي (عند صفحات داخلية) + الشعار + أيقونة بحث تفتح Overlay بحث فل-سكرين.
-- Overlay بحث بملء الشاشة مع اقتراحات وتاريخ بحث.
-- إخفاء `TopBar` على الموبايل (أو تحويله لشريط رفيع جدًا).
+### 2) السلة (Cart)
+- زر "حذف" فوري بدون تأكيد — لو ضغطت غلط راحت القطعة (بدون Undo).
+- لو القطعة انباعت وهي بالسلة، ما في تحذير قبل الـcheckout (بس بيظهر بعد الضغط).
 
-## 3) التنقّل السفلي (MobileNav)
-- تصميم iOS/Android حديث: أيقونات أكبر، Label اختياري، Active pill/indicator متحرك.
-- إضافة haptic feedback (Vibration API) عند التبديل.
-- إخفاء تلقائي عند التمرير للأسفل، ظهور عند التمرير للأعلى (اختياري).
-- تعديل الشارات (badges) لتكون أوضح.
+### 3) صفحة المنتج
+- زر "أضيفي للسلة" ممكن يُضغط عدة مرات — منطقياً بيبقى قطعة واحدة، بس ما في feedback واضح "موجودة أصلاً بالسلة".
+- زر واتساب/عرض سعر/حجز 24س: لو ضغط بسرعة على offer وrental dialog، ممكن يفتحوا فوق بعض.
+- OfferDialog & RentalDialog: التاتش خارج الديالوج بيقفله فوراً حتى لو المستخدم عبّى بيانات — بيفقد كل شي.
+- OfferDialog: ما في حد أقصى/أدنى منطقي للسعر المعروض (ممكن يكتب 1 د.أ لفستان 200).
 
-## 4) انتقالات الصفحات (Page Transitions)
-- استخدام View Transitions API (متاح على Chromium) مع fallback لـ Framer Motion لانتقالات slide/fade بين الطرق.
-- انتقال خاص لصفحة المنتج (shared element على صورة المنتج).
+### 4) المفضلة / Wishlist
+- toggleWish بدون feedback (بيتبدل بصمت) — المستخدم ما بيعرف صار شو.
 
-## 5) صفحة المنتج (Product Detail)
-- Gallery أفقي بالسحب (swipe) مع Dots + Pinch-to-zoom.
-- Sticky bottom bar للسعر + زر "أضيفي للسلة" بدل زر داخل التدفق.
-- Sheet سفلي (Bottom Sheet) لاختيار المقاس/اللون بدل Dropdown.
+### 5) الأدمن / نماذج الإدخال
+- ما في تأكيد قبل الحذف (خطر مسح منتج بالغلط).
+- ما في حماية من الخروج من الصفحة وفيها تغييرات غير محفوظة (beforeunload).
 
-## 6) السلة والدفع (Cart/Checkout)
-- تحويل `CartDrawer` على الموبايل إلى Bottom Sheet بسحب.
-- Checkout بخطوات (Stepper) بملء الشاشة مع Sticky CTA.
-- حقول إدخال أكبر (min-height 48px)، `inputMode` مناسب (`tel`, `numeric`), autofill.
+### 6) عام
+- ما في Error Boundary مرئي بالعربي لو انهار component (بيطلع صفحة إنجليزية من `error-page.ts`).
+- 404: ما في route للـcatch-all بالعربي.
+- الروابط المكسورة بالفوتر/الهيدر: ما تم فحصها.
+- الفورمز كلها: لو المستخدم ضغط Enter بلا تعبئة، سلوك غير موحّد.
+- Loading states: بعض الأزرار ما بتتعطل خلال العملية (double-submit risk).
 
-## 7) قوائم المنتجات (Shop/Home)
-- شبكة عمودين على الموبايل بمسافات مريحة، Skeletons أثناء التحميل.
-- Sticky Filters chips أفقية قابلة للسحب.
-- Filters يفتح كـ Bottom Sheet فل-هايت بدل Modal.
-- Pull-to-refresh على الصفحة الرئيسية والمتجر.
-- Infinite scroll بدل Pagination.
-
-## 8) الإيماءات (Gestures)
-- Swipe back للرجوع (via Framer Motion drag).
-- Swipe to delete على عناصر السلة/المفضلة.
-- Long press لمعاينة سريعة للمنتج (Quick View sheet).
-
-## 9) الأداء والإحساس
-- Lazy load صور + `content-visibility: auto` للأقسام.
-- تعطيل hover states على الموبايل، تفعيل `:active` بحركة scale خفيفة (0.97).
-- إزالة الـ tap highlight الأزرق (`-webkit-tap-highlight-color: transparent`).
-- Font preload، تجنّب CLS بحجز أبعاد الصور.
-
-## 10) Offline & PWA سلوك تطبيق
-- إضافة Service Worker عبر `vite-plugin-pwa` (generateSW) مع NetworkFirst للـ HTML و CacheFirst للأصول الثابتة.
-- صفحة Offline مخصصة.
-- Splash screens لـ iOS (مجموعة صور بأحجام مختلفة).
-- تحديث `manifest.webmanifest`: إضافة `shortcuts` (تسوّق/المفضلة/السلة)، `share_target` (اختياري)، `categories`.
-- زر تحديث ذكي عند توفر نسخة جديدة (SW update prompt).
-
-## 11) الطباعة والأحجام (Typography scale)
-- سلّم أحجام أصغر على الموبايل + line-height أوسع.
-- عناوين bold أكبر في صفحات المنتج والفواتير.
-
-## 12) إخفاء شعار Lovable
-- استدعاء `publish_settings--set_badge_visibility({ hide_badge: true })`.
-- ملاحظة: يتطلب خطة Pro أو أعلى.
+### 7) Session / Auth
+- المستخدم عمل login وفتح صفحة admin بدون صلاحية — بيشوف شو؟ (لازم نتأكد من route guard).
+- Logout بدون تأكيد.
 
 ---
 
-## الملفات المتوقع تعديلها/إضافتها
+## الحلول المقترحة (Fixes)
 
-**تعديل:**
-- `src/styles.css` — safe-area utilities, active states, tap highlight, dvh.
-- `src/routes/__root.tsx` — SW registration guard, standalone detection.
-- `src/components/jeeran/Header.tsx` — تبسيط للموبايل + Search Overlay.
-- `src/components/jeeran/MobileNav.tsx` — إعادة تصميم + auto-hide.
-- `src/components/jeeran/CartDrawer.tsx` — Bottom Sheet على الموبايل.
-- `src/routes/product.$id.tsx` — Gallery swipe + sticky CTA.
-- `src/routes/shop.tsx` + `shop.$slug.tsx` — Sticky chips + Bottom Sheet filters.
-- `src/routes/checkout.tsx` — Stepper + inputs محسّنة.
-- `public/manifest.webmanifest` — shortcuts + categories.
+### أولوية عالية (Blockers لتجربة سليمة)
 
-**إضافة:**
-- `src/components/mobile/BottomSheet.tsx`
-- `src/components/mobile/SearchOverlay.tsx`
-- `src/components/mobile/PageTransition.tsx`
-- `src/components/mobile/PullToRefresh.tsx`
-- `src/hooks/useStandalone.ts`
-- `src/hooks/useSwipeBack.ts`
-- `src/pwa/register.ts` (مع حراسات preview/dev)
-- `public/offline.html` + iOS splash images.
+1. **Confirm Dialog قبل العمليات الحساسة**
+   - إضافة `<ConfirmDialog>` مشترك (يستخدم shadcn AlertDialog).
+   - يُستخدم في: حذف من السلة، حذف منتج (أدمن)، تسجيل خروج، تأكيد الطلب النهائي.
+
+2. **حماية Double-submit شاملة**
+   - كل زر submit: `disabled={submitting}` + عرض spinner + منع click handler ثاني.
+   - نطبّقها على: Checkout، OfferDialog، RentalDialog، Admin forms.
+
+3. **تنظيف مدخلات الهاتف والاسم تلقائياً**
+   - عند blur: `trim()`، إزالة مسافات من الهاتف، تحويل الأرقام العربية إلى إنجليزية.
+   - رسالة inline خضراء عند صحة الرقم (feedback إيجابي).
+
+4. **Toast + Undo عند حذف من السلة**
+   - `toast.success("انحذفت", { action: { label: "تراجع", onClick: restore }})`.
+
+5. **فحص توفر القطع قبل فتح Checkout**
+   - عند دخول `/checkout`: query سريع للـsold/reserved status لكل قطعة بالسلة، وإزالة/تحذير قبل ما يعبّي البيانات.
+
+6. **OfferDialog / RentalDialog: منع القفل الخاطئ**
+   - الضغط خارج الديالوج ما بيقفل إذا فيه بيانات مكتوبة — بدل هيك، يظهر confirm صغير "متأكدة تتركي بدون إرسال؟".
+   - Escape key نفس السلوك.
+
+7. **Feedback واضح للـwishlist**
+   - toast قصير: "انضافت للمفضلة ❤️" / "انشالت من المفضلة".
+
+### أولوية متوسطة
+
+8. **صفحة 404 عربية**
+   - `src/routes/__root.tsx` notFoundComponent بالعربي مع زر رجوع للرئيسية.
+
+9. **Error Boundary عربي**
+   - تحديث `renderErrorPage()` لعرض رسالة عربية مع زر تحديث ورقم واتساب للتواصل.
+
+10. **حماية الأدمن**
+    - `src/routes/admin.tsx`: التأكد من redirect للمستخدم غير المصرح (لو الآن بيعرض بس رسالة، نضيف redirect لـ`/`).
+
+11. **حدود منطقية على OfferDialog**
+    - السعر المعروض >= 40% من السعر الحالي وإلا رسالة "العرض منخفض جداً، جرّبي سعر أقرب".
+
+12. **beforeunload للنماذج الطويلة**
+    - Checkout و Admin product form: تحذير عند إغلاق التاب/الرجوع لو فيه بيانات غير محفوظة.
+
+13. **زر "موجودة بالسلة" بدل "أضيفي للسلة"**
+    - بعد الإضافة: الزر يتحول لـ"موجودة بالسلة — روحي للسلة" (لتفادي الضغطات المكررة).
+
+### أولوية منخفضة (Polish)
+
+14. **تحسين رسائل الفشل**
+    - كل catch/error: رسالة واضحة + زر "أعيدي المحاولة".
+
+15. **منع فتح ديالوجين مع بعض**
+    - state واحد `openDialog: "offer" | "rental" | "hold24h" | null` في PDP.
+
+16. **رسائل تحذيرية للسلوك الغريب**
+    - لو المستخدم بيضغط نفس الزر خلال ثانية 3 مرات: toast "خذي نفس، الطلب عم يتعالج ⏳".
 
 ---
 
-## تفاصيل تقنية
+## المراحل (Phased Roadmap)
 
-- **مكتبات مطلوبة:** `framer-motion` (موجودة غالبًا)، `vite-plugin-pwa`، `workbox-window`.
-- **View Transitions:** استخدام `document.startViewTransition` مع fallback لـ Framer Motion لـ Safari.
-- **Bottom Sheet:** بناء مخصص عبر Framer Motion drag على `y` مع snap points [0, 0.5, 1].
-- **SW Guards:** عدم التسجيل في `preview--*.lovable.app` أو `id-preview--*` أو dev (حسب PWA skill).
-- **Haptics:** `navigator.vibrate?.(10)` — لا يعمل على iOS Safari لكنه لا يكسر شيء.
-- **Safe areas CSS:**
-  ```css
-  @supports (padding: env(safe-area-inset-top)) {
-    .safe-top { padding-top: env(safe-area-inset-top); }
-    .safe-bottom { padding-bottom: env(safe-area-inset-bottom); }
-  }
-  ```
+### المرحلة 1 — Blockers (نبدأ فوراً)
+- إنشاء `ConfirmDialog` مشترك.
+- تطبيق Confirm + Undo على: حذف السلة، تأكيد الطلب، حذف الأدمن، تسجيل الخروج.
+- Double-submit protection على كل الأزرار الحساسة.
+- تنظيف مدخلات الهاتف/الاسم تلقائياً.
+- فحص توفر قطع السلة عند دخول الـcheckout.
+
+### المرحلة 2 — تحسين الديالوجات والـFeedback
+- إصلاح إغلاق OfferDialog/RentalDialog عن غير قصد.
+- Toast feedback للـwishlist.
+- زر "موجودة بالسلة" بعد الإضافة.
+- حدود منطقية على العروض.
+- state موحّد للديالوجات في PDP.
+
+### المرحلة 3 — صفحات الأخطاء والحماية
+- 404 عربية + notFoundComponent.
+- Error Boundary عربي.
+- Route guard حقيقي للأدمن.
+- beforeunload للنماذج الطويلة.
+
+### المرحلة 4 — Polish
+- رسائل خطأ محسّنة + أزرار retry.
+- تحذيرات spam-click.
+- مراجعة عامة لكل زر بالموقع.
 
 ---
 
-## مراحل التنفيذ المقترحة (نطبّقها على دفعات)
+## التفاصيل التقنية (للمطور)
 
-1. **Phase 1 — الأساسات (سريع، أثر كبير):** safe-areas، dvh، tap highlight، active scale، تبسيط Header الموبايل، إعادة تصميم MobileNav، إخفاء شعار Lovable.
-2. **Phase 2 — Sheets & Search:** Bottom Sheet component، تحويل CartDrawer و Filters، Search Overlay.
-3. **Phase 3 — صفحة المنتج:** Gallery swipe، Sticky CTA، shared element transition.
-4. **Phase 4 — Offline & PWA متقدم:** vite-plugin-pwa، offline page، shortcuts، update prompt، iOS splash.
-5. **Phase 5 — Polish:** Page transitions، pull-to-refresh، swipe gestures، haptics.
+- **ConfirmDialog جديد**: `src/components/ui/confirm-dialog.tsx` باستخدام shadcn AlertDialog، يستقبل `{ title, description, confirmLabel, onConfirm, variant }`.
+- **Hook للـform dirty**: `useBeforeUnload(isDirty)` في `src/hooks/`.
+- **Cart availability check**: server function جديدة `check_cart_availability(_ids: uuid[])` تُرجع الـsold/reserved لكل id — أو استعلام مباشر عبر `supabase.from("products").select("id,sold,reserved_until").in("id", ids)`.
+- **Phone normalizer**: `src/lib/phone.ts` يحوّل الأرقام العربية `٠١٢...` لإنجليزية ويزيل +962/00962.
+- **notFoundComponent**: على مستوى `__root.tsx` route.
+- **Route guard admin**: `useAuth()` — لو `!isAdmin && !loading` → `navigate({to: "/"})`.
+
+الملفات المتوقع تعديلها في المرحلة 1: `src/routes/cart.tsx`, `src/routes/checkout.tsx`, `src/routes/admin.tsx`, `src/components/jeeran/OfferDialog.tsx`, `src/components/jeeran/RentalDialog.tsx`, ملف ConfirmDialog جديد، `src/lib/phone.ts` جديد.
 
 ---
 
-## سؤال قبل البدء
-هل تريد أن نبدأ بـ **Phase 1** مباشرة (أثر مرئي فوري)، أم تفضّل تنفيذ الخطة كاملة على دفعات متتالية دون توقف؟ وهل خطتك تدعم Pro (لإخفاء شعار Lovable)؟
+هل نبدأ بالمرحلة 1؟ أو تحبي نضيف/نحذف نقاط قبل ما نطبق؟
