@@ -10,7 +10,10 @@ import { Plus, Package, ShoppingCart, Trash2, TrendingUp, DollarSign, Users, Clo
 import { ACCEPTED_FONT_EXT, saveCustomFont, clearCustomFont, loadSavedFont, type CustomFont } from "@/lib/customFont";
 import { ConfirmDialog } from "@/components/ui/confirm-dialog";
 
-export const Route = createFileRoute("/admin")({ component: Admin });
+export const Route = createFileRoute("/admin")({
+  component: Admin,
+  head: () => ({ meta: [{ title: "لوحة الإدارة — جيران" }, { name: "description", content: "إدارة القطع والطلبات وطلبات الإيجار في متجر جيران." }, { name: "robots", content: "noindex" }] }),
+});
 
 
 const CONDITIONS = [
