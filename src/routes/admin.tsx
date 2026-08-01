@@ -8,8 +8,12 @@ import { useAuth } from "@/hooks/useAuth";
 import { toast } from "sonner";
 import { Plus, Package, ShoppingCart, Trash2, TrendingUp, DollarSign, Users, Clock, Type, Upload } from "lucide-react";
 import { ACCEPTED_FONT_EXT, saveCustomFont, clearCustomFont, loadSavedFont, type CustomFont } from "@/lib/customFont";
+import { ConfirmDialog } from "@/components/ui/confirm-dialog";
 
-export const Route = createFileRoute("/admin")({ component: Admin });
+export const Route = createFileRoute("/admin")({
+  component: Admin,
+  head: () => ({ meta: [{ title: "لوحة الإدارة — جيران" }, { name: "description", content: "إدارة القطع والطلبات وطلبات الإيجار في متجر جيران." }, { name: "robots", content: "noindex" }] }),
+});
 
 
 const CONDITIONS = [
@@ -35,6 +39,19 @@ function Admin() {
     description_ar: "", seller_notes: "", verified_clean: false,
     rentable: false, rental_price: "", rental_duration_days: "", rental_deposit: "",
   });
+  const [pendingDelete, setPendingDelete] = useState<{ id: string; name: string } | null>(null);
+  const [deleting, setDeleting] = useState(false);
+
+  // تحذير قبل إغلاق التبويب لو في نموذج قطعة مفتوح وفيه بيانات
+  useEffect(() => {
+    const dirty = showForm && (form.name_ar || form.price || form.description_ar || form.brand);
+    if (!dirty) return;
+    const h = (e: BeforeUnloadEvent) => { e.preventDefault(); e.returnValue = ""; };
+    window.addEventListener("beforeunload", h);
+    return () => window.removeEventListener("beforeunload", h);
+  }, [showForm, form]);
+
+
 
   useEffect(() => {
     if (isAdmin) {
@@ -126,12 +143,17 @@ function Admin() {
     else { toast.success("تم التحديث"); setOrders((p) => p.map((o) => o.id === id ? { ...o, status } : o)); }
   }
 
-  async function deleteProduct(id: string) {
-    if (!confirm("متأكد؟")) return;
-    await supabase.from("products").delete().eq("id", id);
-    setProducts((p) => p.filter((x) => x.id !== id));
-    toast.success("تم الحذف");
+  async function deleteProduct() {
+    if (!pendingDelete || deleting) return;
+    setDeleting(true);
+    const { error } = await supabase.from("products").delete().eq("id", pendingDelete.id);
+    setDeleting(false);
+    if (error) { toast.error(error.message); return; }
+    setProducts((p) => p.filter((x) => x.id !== pendingDelete.id));
+    toast.success("تم حذف القطعة");
+    setPendingDelete(null);
   }
+
 
   return (
     <div className="min-h-screen bg-background">
@@ -239,7 +261,7 @@ function Admin() {
                           </button>
                         </td>
                         <td className="p-2 text-center">
-                          <button onClick={() => deleteProduct(p.id)} className="text-primary hover:underline"><Trash2 className="w-4 h-4 inline" /></button>
+                          <button onClick={() => setPendingDelete({ id: p.id, name: p.name_ar })} aria-label="حذف القطعة" className="text-primary hover:underline"><Trash2 className="w-4 h-4 inline" /></button>
                         </td>
                       </tr>
                     );
@@ -361,6 +383,17 @@ function Admin() {
 
         {tab === "fonts" && <FontsPanel />}
       </main>
+
+      <ConfirmDialog
+        open={!!pendingDelete}
+        onOpenChange={(v) => { if (!v) setPendingDelete(null); }}
+        title="حذف القطعة؟"
+        description={`رح تنحذف "${pendingDelete?.name ?? ""}" نهائياً وما فيك ترجّعها.`}
+        confirmLabel={deleting ? "جارٍ الحذف..." : "احذفها"}
+        cancelLabel="تراجع"
+        destructive
+        onConfirm={deleteProduct}
+      />
 
       <Footer />
     </div>
