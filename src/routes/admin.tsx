@@ -35,6 +35,19 @@ function Admin() {
     description_ar: "", seller_notes: "", verified_clean: false,
     rentable: false, rental_price: "", rental_duration_days: "", rental_deposit: "",
   });
+  const [pendingDelete, setPendingDelete] = useState<{ id: string; name: string } | null>(null);
+  const [deleting, setDeleting] = useState(false);
+
+  // تحذير قبل إغلاق التبويب لو في نموذج قطعة مفتوح وفيه بيانات
+  useEffect(() => {
+    const dirty = showForm && (form.name_ar || form.price || form.description_ar || form.brand);
+    if (!dirty) return;
+    const h = (e: BeforeUnloadEvent) => { e.preventDefault(); e.returnValue = ""; };
+    window.addEventListener("beforeunload", h);
+    return () => window.removeEventListener("beforeunload", h);
+  }, [showForm, form]);
+
+
 
   useEffect(() => {
     if (isAdmin) {
