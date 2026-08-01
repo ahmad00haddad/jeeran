@@ -226,7 +226,7 @@ function PDP() {
                 className="flex-1 bg-primary text-primary-foreground py-3.5 font-bold hover:bg-primary/90 transition disabled:opacity-50 disabled:cursor-not-allowed tap"
               >{isSold ? "تم البيع" : isReserved ? "محجوزة حالياً" : "أضيفي للسلة"}</button>
 
-              <button onClick={() => toggleWish(p.id)} className={`p-3 border tap ${wished ? "border-primary bg-primary text-primary-foreground" : "border-border"}`}>
+              <button onClick={() => { toggleWish(p.id); toast.success(wished ? "انشالت من المفضلة" : "انحفظت بالمفضلة ❤️"); }} aria-label="المفضلة" className={`p-3 border tap ${wished ? "border-primary bg-primary text-primary-foreground" : "border-border"}`}>
                 <Heart className={`w-5 h-5 ${wished ? "fill-current" : ""}`} />
               </button>
             </div>
