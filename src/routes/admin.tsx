@@ -257,7 +257,7 @@ function Admin() {
                           </button>
                         </td>
                         <td className="p-2 text-center">
-                          <button onClick={() => deleteProduct(p.id)} className="text-primary hover:underline"><Trash2 className="w-4 h-4 inline" /></button>
+                          <button onClick={() => setPendingDelete({ id: p.id, name: p.name_ar })} aria-label="حذف القطعة" className="text-primary hover:underline"><Trash2 className="w-4 h-4 inline" /></button>
                         </td>
                       </tr>
                     );
