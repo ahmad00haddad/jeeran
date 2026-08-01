@@ -139,12 +139,17 @@ function Admin() {
     else { toast.success("تم التحديث"); setOrders((p) => p.map((o) => o.id === id ? { ...o, status } : o)); }
   }
 
-  async function deleteProduct(id: string) {
-    if (!confirm("متأكد؟")) return;
-    await supabase.from("products").delete().eq("id", id);
-    setProducts((p) => p.filter((x) => x.id !== id));
-    toast.success("تم الحذف");
+  async function deleteProduct() {
+    if (!pendingDelete || deleting) return;
+    setDeleting(true);
+    const { error } = await supabase.from("products").delete().eq("id", pendingDelete.id);
+    setDeleting(false);
+    if (error) { toast.error(error.message); return; }
+    setProducts((p) => p.filter((x) => x.id !== pendingDelete.id));
+    toast.success("تم حذف القطعة");
+    setPendingDelete(null);
   }
+
 
   return (
     <div className="min-h-screen bg-background">
