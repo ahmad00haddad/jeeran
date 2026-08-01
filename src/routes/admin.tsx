@@ -380,6 +380,17 @@ function Admin() {
         {tab === "fonts" && <FontsPanel />}
       </main>
 
+      <ConfirmDialog
+        open={!!pendingDelete}
+        onOpenChange={(v) => { if (!v) setPendingDelete(null); }}
+        title="حذف القطعة؟"
+        description={`رح تنحذف "${pendingDelete?.name ?? ""}" نهائياً وما فيك ترجّعها.`}
+        confirmLabel={deleting ? "جارٍ الحذف..." : "احذفها"}
+        cancelLabel="تراجع"
+        destructive
+        onConfirm={deleteProduct}
+      />
+
       <Footer />
     </div>
   );
