@@ -280,7 +280,7 @@ function PDP() {
         style={{ bottom: "calc(env(safe-area-inset-bottom, 0px) + 64px)", boxShadow: "0 -8px 24px -12px rgba(0,0,0,0.15)" }}
       >
         <button
-          onClick={() => toggleWish(p.id)}
+          onClick={() => { toggleWish(p.id); toast.success(wished ? "انشالت من المفضلة" : "انحفظت بالمفضلة ❤️"); }}
           aria-label="المفضلة"
           className={`shrink-0 p-3 border rounded-full tap ${wished ? "border-primary bg-primary text-primary-foreground" : "border-border bg-cream"}`}
         >
