@@ -6,9 +6,10 @@ import { Footer } from "@/components/jeeran/Footer";
 import { supabase } from "@/integrations/supabase/client";
 import { useAuth } from "@/hooks/useAuth";
 import { toast } from "sonner";
-import { Plus, Package, ShoppingCart, Trash2, TrendingUp, DollarSign, Users, Clock, Type, Upload } from "lucide-react";
+import { Plus, Package, ShoppingCart, Trash2, TrendingUp, DollarSign, Users, Clock, Type, Upload, Bug, Bell, Loader2 } from "lucide-react";
 import { ACCEPTED_FONT_EXT, saveCustomFont, clearCustomFont, loadSavedFont, type CustomFont } from "@/lib/customFont";
 import { ConfirmDialog } from "@/components/ui/confirm-dialog";
+import { uploadProductImage } from "@/lib/uploadImage";
 
 export const Route = createFileRoute("/admin")({
   component: Admin,
@@ -26,13 +27,16 @@ const CONDITIONS = [
 function Admin() {
   const { user, isAdmin, loading } = useAuth();
   const nav = useNavigate();
-  const [tab, setTab] = useState<"stats" | "products" | "orders" | "offers" | "rentals" | "fonts">("stats");
+  const [tab, setTab] = useState<"stats" | "products" | "orders" | "offers" | "rentals" | "fonts" | "errors">("stats");
   const [products, setProducts] = useState<any[]>([]);
   const [orders, setOrders] = useState<any[]>([]);
   const [offers, setOffers] = useState<any[]>([]);
   const [rentals, setRentals] = useState<any[]>([]);
   const [cats, setCats] = useState<any[]>([]);
+  const [errors, setErrors] = useState<any[]>([]);
   const [showForm, setShowForm] = useState(false);
+  const [uploading, setUploading] = useState(false);
+  const [notifOn, setNotifOn] = useState(false);
   const [form, setForm] = useState({
     name_ar: "", brand: "", price: "", original_price: "", sale_price: "",
     image_url: "", category_id: "", condition: "like_new",
@@ -60,7 +64,41 @@ function Admin() {
       supabase.from("categories").select("*").order("display_order").then(({ data }) => setCats(data || []));
       supabase.from("offers").select("*, products(name_ar, price, image_url)").order("created_at", { ascending: false }).limit(200).then(({ data }) => setOffers(data || []));
       supabase.from("rental_requests").select("*, products(name_ar, rental_price, image_url)").order("created_at", { ascending: false }).limit(200).then(({ data }: any) => setRentals(data || []));
+      supabase.from("client_errors").select("*").order("created_at", { ascending: false }).limit(100).then(({ data }: any) => setErrors(data || []));
     }
+  }, [isAdmin]);
+
+  // إشعارات الطلبات الجديدة — تنبيه فوري بدون ما تفتحي الصفحة يدوياً
+  useEffect(() => {
+    if (typeof window !== "undefined" && "Notification" in window) {
+      setNotifOn(Notification.permission === "granted");
+    }
+  }, []);
+
+  useEffect(() => {
+    if (!isAdmin) return;
+    let lastSeen = localStorage.getItem("jeeran-last-order-seen") || "";
+    const poll = async () => {
+      const { data } = await supabase
+        .from("orders").select("*").order("created_at", { ascending: false }).limit(20);
+      if (!data?.length) return;
+      setOrders((prev) => (data.length !== prev.length ? data : prev));
+      const newest = data[0] as any;
+      const newestAt: string = newest?.created_at ?? "";
+      if (lastSeen && newestAt > lastSeen) {
+        const count = data.filter((o: any) => (o.created_at ?? "") > lastSeen).length;
+        toast.success(`🔔 ${count} طلب جديد!`, { description: `آخر طلب: ${newest.order_number} — ${newest.full_name}`, duration: 15000 });
+        try { new Audio("data:audio/wav;base64,UklGRl9vT19XQVZFZm10IBAAAAABAAEAQB8AAEAfAAABAAgAZGF0YQAAAAA=").play(); } catch { /* ignore */ }
+        if (typeof Notification !== "undefined" && Notification.permission === "granted") {
+          new Notification("طلب جديد على جيران", { body: `${newest.order_number} — ${newest.full_name} — ${Number(newest.total).toFixed(2)} د.أ` });
+        }
+      }
+      lastSeen = newestAt;
+      localStorage.setItem("jeeran-last-order-seen", lastSeen);
+    };
+    poll();
+    const t = setInterval(poll, 45000);
+    return () => clearInterval(t);
   }, [isAdmin]);
 
   const stats = useMemo(() => {
@@ -159,13 +197,27 @@ function Admin() {
     <div className="min-h-screen bg-background">
       <TopBar /><Header />
       <main className="max-w-7xl mx-auto px-4 py-8">
-        <h1 className="font-display text-3xl font-bold mb-6">لوحة إدارة جيران</h1>
+        <div className="flex flex-wrap items-center justify-between gap-3 mb-6">
+          <h1 className="font-display text-3xl font-bold">لوحة إدارة جيران</h1>
+          <button
+            onClick={async () => {
+              if (typeof Notification === "undefined") { toast.error("متصفحك ما بيدعم الإشعارات"); return; }
+              const p = await Notification.requestPermission();
+              setNotifOn(p === "granted");
+              toast[p === "granted" ? "success" : "error"](p === "granted" ? "تفعّلت إشعارات الطلبات الجديدة 🔔" : "ما تفعّلت الإشعارات");
+            }}
+            className={`flex items-center gap-2 px-4 py-2 text-sm font-bold border ${notifOn ? "border-green-600 text-green-700 bg-green-50" : "border-border"}`}
+          >
+            <Bell className="w-4 h-4" /> {notifOn ? "الإشعارات مفعّلة" : "فعّلي إشعارات الطلبات"}
+          </button>
+        </div>
         <div className="flex gap-2 mb-6 border-b border-border overflow-x-auto">
           <button onClick={() => setTab("stats")} className={`px-4 py-2 font-bold whitespace-nowrap ${tab === "stats" ? "border-b-2 border-primary text-primary" : "text-muted-foreground"}`}><TrendingUp className="w-4 h-4 inline ml-1" /> الإحصائيات</button>
           <button onClick={() => setTab("products")} className={`px-4 py-2 font-bold whitespace-nowrap ${tab === "products" ? "border-b-2 border-primary text-primary" : "text-muted-foreground"}`}><Package className="w-4 h-4 inline ml-1" /> القطع ({products.length})</button>
           <button onClick={() => setTab("orders")} className={`px-4 py-2 font-bold whitespace-nowrap ${tab === "orders" ? "border-b-2 border-primary text-primary" : "text-muted-foreground"}`}><ShoppingCart className="w-4 h-4 inline ml-1" /> الطلبات ({orders.length})</button>
           <button onClick={() => setTab("offers")} className={`px-4 py-2 font-bold whitespace-nowrap ${tab === "offers" ? "border-b-2 border-primary text-primary" : "text-muted-foreground"}`}>🏷️ العروض ({offers.filter(o => o.status === "pending").length})</button>
           <button onClick={() => setTab("rentals")} className={`px-4 py-2 font-bold whitespace-nowrap ${tab === "rentals" ? "border-b-2 border-primary text-primary" : "text-muted-foreground"}`}>✨ الإيجار ({rentals.filter(r => r.status === "pending").length})</button>
+          <button onClick={() => setTab("errors")} className={`px-4 py-2 font-bold whitespace-nowrap ${tab === "errors" ? "border-b-2 border-primary text-primary" : "text-muted-foreground"}`}><Bug className="w-4 h-4 inline ml-1" /> الأخطاء ({errors.length})</button>
           <button onClick={() => setTab("fonts")} className={`px-4 py-2 font-bold whitespace-nowrap ${tab === "fonts" ? "border-b-2 border-primary text-primary" : "text-muted-foreground"}`}><Type className="w-4 h-4 inline ml-1" /> الخطوط</button>
         </div>
 
@@ -218,7 +270,28 @@ function Admin() {
                 <input type="number" step="0.01" placeholder="السعر الأصلي بالمحل (اختياري)" value={form.original_price} onChange={(e) => setForm({ ...form, original_price: e.target.value })} className="border border-border px-3 py-2" />
                 <input type="number" step="0.01" placeholder="سعر تخفيض إضافي (اختياري)" value={form.sale_price} onChange={(e) => setForm({ ...form, sale_price: e.target.value })} className="border border-border px-3 py-2" />
                 <div className="border border-border bg-secondary/30 px-3 py-2 text-xs text-muted-foreground flex items-center">قطعة واحدة فريدة — مستعملة لا تتكرر</div>
-                <input placeholder="رابط الصورة" value={form.image_url} onChange={(e) => setForm({ ...form, image_url: e.target.value })} className="border border-border px-3 py-2 md:col-span-2" />
+                <div className="md:col-span-2 space-y-2">
+                  <div className="flex flex-wrap items-center gap-3">
+                    <label className={`inline-flex items-center gap-2 border border-border px-3 py-2 text-sm cursor-pointer ${uploading ? "opacity-50 pointer-events-none" : ""}`}>
+                      {uploading ? <Loader2 className="w-4 h-4 animate-spin" /> : <Upload className="w-4 h-4" />}
+                      {uploading ? "جارٍ الرفع والضغط..." : "ارفعي صورة من جهازك"}
+                      <input type="file" accept="image/*" className="hidden" onChange={async (e) => {
+                        const f = e.target.files?.[0]; e.target.value = "";
+                        if (!f) return;
+                        setUploading(true);
+                        try {
+                          const url = await uploadProductImage(f);
+                          setForm((s) => ({ ...s, image_url: url }));
+                          toast.success("انرفعت الصورة ومضغوطة ✨");
+                        } catch (err: any) { toast.error(err?.message || "فشل رفع الصورة"); }
+                        setUploading(false);
+                      }} />
+                    </label>
+                    <span className="text-xs text-muted-foreground">تتحوّل تلقائياً لـ WebP بعرض ١٤٠٠px — أخف وأسرع</span>
+                  </div>
+                  <input placeholder="أو الصقي رابط الصورة" value={form.image_url} onChange={(e) => setForm({ ...form, image_url: e.target.value })} className="border border-border px-3 py-2 w-full" />
+                  {form.image_url && <img src={form.image_url} alt="معاينة" className="w-24 h-28 object-cover border border-border" />}
+                </div>
                 <textarea placeholder="الوصف (القياسات بالسنتيمتر، اللون، التفاصيل) — قطعة واحدة فريدة" value={form.description_ar} onChange={(e) => setForm({ ...form, description_ar: e.target.value })} className="border border-border px-3 py-2 md:col-span-2" rows={2} />
                 <textarea placeholder="ملاحظات عن الحالة (مثل: ملبوس مرة وحدة بالعرس، بدون أي عيوب)" value={form.seller_notes} onChange={(e) => setForm({ ...form, seller_notes: e.target.value })} className="border border-border px-3 py-2 md:col-span-2" rows={2} />
                 <label className="flex items-center gap-2 md:col-span-2 text-sm font-bold bg-green-50 border border-green-200 px-3 py-2">
@@ -381,6 +454,21 @@ function Admin() {
           </div>
         )}
 
+        {tab === "errors" && (
+          <div className="space-y-3">
+            {errors.length === 0 && <p className="text-muted-foreground">ما في أخطاء مسجّلة — الموقع شغال تمام ✨</p>}
+            {errors.map((e) => (
+              <div key={e.id} className="border border-border p-4 text-sm bg-card">
+                <div className="flex justify-between gap-3">
+                  <span className="font-bold text-primary break-all">{e.message}</span>
+                  <span className="text-xs text-muted-foreground whitespace-nowrap">{new Date(e.created_at).toLocaleString("ar-JO")}</span>
+                </div>
+                <div className="text-xs text-muted-foreground mt-1 break-all">{e.url}</div>
+                {e.stack && <pre className="text-[11px] mt-2 whitespace-pre-wrap opacity-70 max-h-32 overflow-auto" dir="ltr">{e.stack}</pre>}
+              </div>
+            ))}
+          </div>
+        )}
         {tab === "fonts" && <FontsPanel />}
       </main>
 

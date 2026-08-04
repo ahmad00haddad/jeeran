@@ -47,6 +47,7 @@ export function Footer() {
             <h4 className="font-bold mb-4 text-gold text-sm tracking-wider">روابط سريعة</h4>
             <ul className="space-y-2 text-sm text-cream/70">
               <li><Link to="/shop" className="hover:text-cream">تسوّقي الآن</Link></li>
+              <li><Link to="/track" className="hover:text-cream">تتبّعي طلبك</Link></li>
               <li><Link to="/cart" className="hover:text-cream">سلة المشتريات</Link></li>
               <li><Link to="/wishlist" className="hover:text-cream">المفضلة</Link></li>
               <li><Link to="/install" className="hover:text-cream">تثبيت التطبيق</Link></li>
