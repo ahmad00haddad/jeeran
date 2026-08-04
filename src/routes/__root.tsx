@@ -131,7 +131,7 @@ function RootShell({ children }: { children: React.ReactNode }) {
 
 function RootComponent() {
   const { queryClient } = Route.useRouteContext();
-  useEffect(() => { loadSavedFont(); }, []);
+  useEffect(() => { loadSavedFont(); installErrorMonitoring(); }, []);
 
   useEffect(() => {
     const { mergeLocalWishlistToDB, hydrateWishlistFromDB } = useCart.getState();
