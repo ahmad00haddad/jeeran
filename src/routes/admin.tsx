@@ -256,7 +256,28 @@ function Admin() {
                 <input type="number" step="0.01" placeholder="السعر الأصلي بالمحل (اختياري)" value={form.original_price} onChange={(e) => setForm({ ...form, original_price: e.target.value })} className="border border-border px-3 py-2" />
                 <input type="number" step="0.01" placeholder="سعر تخفيض إضافي (اختياري)" value={form.sale_price} onChange={(e) => setForm({ ...form, sale_price: e.target.value })} className="border border-border px-3 py-2" />
                 <div className="border border-border bg-secondary/30 px-3 py-2 text-xs text-muted-foreground flex items-center">قطعة واحدة فريدة — مستعملة لا تتكرر</div>
-                <input placeholder="رابط الصورة" value={form.image_url} onChange={(e) => setForm({ ...form, image_url: e.target.value })} className="border border-border px-3 py-2 md:col-span-2" />
+                <div className="md:col-span-2 space-y-2">
+                  <div className="flex flex-wrap items-center gap-3">
+                    <label className={`inline-flex items-center gap-2 border border-border px-3 py-2 text-sm cursor-pointer ${uploading ? "opacity-50 pointer-events-none" : ""}`}>
+                      {uploading ? <Loader2 className="w-4 h-4 animate-spin" /> : <Upload className="w-4 h-4" />}
+                      {uploading ? "جارٍ الرفع والضغط..." : "ارفعي صورة من جهازك"}
+                      <input type="file" accept="image/*" className="hidden" onChange={async (e) => {
+                        const f = e.target.files?.[0]; e.target.value = "";
+                        if (!f) return;
+                        setUploading(true);
+                        try {
+                          const url = await uploadProductImage(f);
+                          setForm((s) => ({ ...s, image_url: url }));
+                          toast.success("انرفعت الصورة ومضغوطة ✨");
+                        } catch (err: any) { toast.error(err?.message || "فشل رفع الصورة"); }
+                        setUploading(false);
+                      }} />
+                    </label>
+                    <span className="text-xs text-muted-foreground">تتحوّل تلقائياً لـ WebP بعرض ١٤٠٠px — أخف وأسرع</span>
+                  </div>
+                  <input placeholder="أو الصقي رابط الصورة" value={form.image_url} onChange={(e) => setForm({ ...form, image_url: e.target.value })} className="border border-border px-3 py-2 w-full" />
+                  {form.image_url && <img src={form.image_url} alt="معاينة" className="w-24 h-28 object-cover border border-border" />}
+                </div>
                 <textarea placeholder="الوصف (القياسات بالسنتيمتر، اللون، التفاصيل) — قطعة واحدة فريدة" value={form.description_ar} onChange={(e) => setForm({ ...form, description_ar: e.target.value })} className="border border-border px-3 py-2 md:col-span-2" rows={2} />
                 <textarea placeholder="ملاحظات عن الحالة (مثل: ملبوس مرة وحدة بالعرس، بدون أي عيوب)" value={form.seller_notes} onChange={(e) => setForm({ ...form, seller_notes: e.target.value })} className="border border-border px-3 py-2 md:col-span-2" rows={2} />
                 <label className="flex items-center gap-2 md:col-span-2 text-sm font-bold bg-green-50 border border-green-200 px-3 py-2">
