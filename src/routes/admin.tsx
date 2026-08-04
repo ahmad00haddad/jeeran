@@ -64,7 +64,40 @@ function Admin() {
       supabase.from("categories").select("*").order("display_order").then(({ data }) => setCats(data || []));
       supabase.from("offers").select("*, products(name_ar, price, image_url)").order("created_at", { ascending: false }).limit(200).then(({ data }) => setOffers(data || []));
       supabase.from("rental_requests").select("*, products(name_ar, rental_price, image_url)").order("created_at", { ascending: false }).limit(200).then(({ data }: any) => setRentals(data || []));
+      supabase.from("client_errors").select("*").order("created_at", { ascending: false }).limit(100).then(({ data }: any) => setErrors(data || []));
     }
+  }, [isAdmin]);
+
+  // إشعارات الطلبات الجديدة — تنبيه فوري بدون ما تفتحي الصفحة يدوياً
+  useEffect(() => {
+    if (typeof window !== "undefined" && "Notification" in window) {
+      setNotifOn(Notification.permission === "granted");
+    }
+  }, []);
+
+  useEffect(() => {
+    if (!isAdmin) return;
+    let lastSeen = localStorage.getItem("jeeran-last-order-seen") || "";
+    const poll = async () => {
+      const { data } = await supabase
+        .from("orders").select("*").order("created_at", { ascending: false }).limit(20);
+      if (!data?.length) return;
+      setOrders((prev) => (data.length !== prev.length ? data : prev));
+      const newest = data[0];
+      if (lastSeen && newest.created_at > lastSeen) {
+        const count = data.filter((o: any) => o.created_at > lastSeen).length;
+        toast.success(`🔔 ${count} طلب جديد!`, { description: `آخر طلب: ${newest.order_number} — ${newest.full_name}`, duration: 15000 });
+        try { new Audio("data:audio/wav;base64,UklGRl9vT19XQVZFZm10IBAAAAABAAEAQB8AAEAfAAABAAgAZGF0YQAAAAA=").play(); } catch { /* ignore */ }
+        if (typeof Notification !== "undefined" && Notification.permission === "granted") {
+          new Notification("طلب جديد على جيران", { body: `${newest.order_number} — ${newest.full_name} — ${Number(newest.total).toFixed(2)} د.أ` });
+        }
+      }
+      lastSeen = newest.created_at;
+      localStorage.setItem("jeeran-last-order-seen", lastSeen);
+    };
+    poll();
+    const t = setInterval(poll, 45000);
+    return () => clearInterval(t);
   }, [isAdmin]);
 
   const stats = useMemo(() => {
