@@ -44,6 +44,36 @@ export type Database = {
         }
         Relationships: []
       }
+      client_errors: {
+        Row: {
+          created_at: string
+          id: string
+          message: string
+          path: string | null
+          stack: string | null
+          user_agent: string | null
+          user_id: string | null
+        }
+        Insert: {
+          created_at?: string
+          id?: string
+          message: string
+          path?: string | null
+          stack?: string | null
+          user_agent?: string | null
+          user_id?: string | null
+        }
+        Update: {
+          created_at?: string
+          id?: string
+          message?: string
+          path?: string | null
+          stack?: string | null
+          user_agent?: string | null
+          user_id?: string | null
+        }
+        Relationships: []
+      }
       offers: {
         Row: {
           amount: number | null
@@ -449,6 +479,10 @@ export type Database = {
       increment_product_view: {
         Args: { _product_id: string }
         Returns: undefined
+      }
+      track_order: {
+        Args: { _order_number: string; _phone: string }
+        Returns: Json
       }
     }
     Enums: {
