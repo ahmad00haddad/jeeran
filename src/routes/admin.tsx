@@ -454,6 +454,21 @@ function Admin() {
           </div>
         )}
 
+        {tab === "errors" && (
+          <div className="space-y-3">
+            {errors.length === 0 && <p className="text-muted-foreground">ما في أخطاء مسجّلة — الموقع شغال تمام ✨</p>}
+            {errors.map((e) => (
+              <div key={e.id} className="border border-border p-4 text-sm bg-card">
+                <div className="flex justify-between gap-3">
+                  <span className="font-bold text-primary break-all">{e.message}</span>
+                  <span className="text-xs text-muted-foreground whitespace-nowrap">{new Date(e.created_at).toLocaleString("ar-JO")}</span>
+                </div>
+                <div className="text-xs text-muted-foreground mt-1 break-all">{e.url}</div>
+                {e.stack && <pre className="text-[11px] mt-2 whitespace-pre-wrap opacity-70 max-h-32 overflow-auto" dir="ltr">{e.stack}</pre>}
+              </div>
+            ))}
+          </div>
+        )}
         {tab === "fonts" && <FontsPanel />}
       </main>
 
