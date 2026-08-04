@@ -41,9 +41,9 @@ export function injectCustomFont(font: CustomFont) {
       font-weight: 100 900;
     }
     :root {
-      --font-display: '${FAMILY}', 'Reem Kufi', 'Tajawal', sans-serif !important;
-      --font-sans: '${FAMILY}', 'Tajawal', system-ui, sans-serif !important;
-      --font-serif: '${FAMILY}', 'Amiri', serif !important;
+      --font-display: '${FAMILY}', 'El Messiri', 'IBM Plex Sans Arabic', sans-serif !important;
+      --font-sans: '${FAMILY}', 'IBM Plex Sans Arabic', system-ui, sans-serif !important;
+      --font-serif: '${FAMILY}', 'Aref Ruqaa', serif !important;
     }
     body, h1, h2, h3, h4, h5, h6, .font-display, .font-serif-ar {
       font-family: '${FAMILY}', var(--font-sans) !important;
