@@ -83,16 +83,17 @@ function Admin() {
         .from("orders").select("*").order("created_at", { ascending: false }).limit(20);
       if (!data?.length) return;
       setOrders((prev) => (data.length !== prev.length ? data : prev));
-      const newest = data[0];
-      if (lastSeen && newest.created_at > lastSeen) {
-        const count = data.filter((o: any) => o.created_at > lastSeen).length;
+      const newest = data[0] as any;
+      const newestAt: string = newest?.created_at ?? "";
+      if (lastSeen && newestAt > lastSeen) {
+        const count = data.filter((o: any) => (o.created_at ?? "") > lastSeen).length;
         toast.success(`🔔 ${count} طلب جديد!`, { description: `آخر طلب: ${newest.order_number} — ${newest.full_name}`, duration: 15000 });
         try { new Audio("data:audio/wav;base64,UklGRl9vT19XQVZFZm10IBAAAAABAAEAQB8AAEAfAAABAAgAZGF0YQAAAAA=").play(); } catch { /* ignore */ }
         if (typeof Notification !== "undefined" && Notification.permission === "granted") {
           new Notification("طلب جديد على جيران", { body: `${newest.order_number} — ${newest.full_name} — ${Number(newest.total).toFixed(2)} د.أ` });
         }
       }
-      lastSeen = newest.created_at;
+      lastSeen = newestAt;
       localStorage.setItem("jeeran-last-order-seen", lastSeen);
     };
     poll();
