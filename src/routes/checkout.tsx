@@ -10,6 +10,7 @@ import { ShieldCheck, Phone, MapPin, User, Check, Loader2 } from "lucide-react";
 import { toast } from "sonner";
 import { normalizePhone, normalizeName, isValidJoPhone } from "@/lib/phone";
 import { ConfirmDialog } from "@/components/ui/confirm-dialog";
+import { saveLocalOrder } from "@/lib/orderTracking";
 
 const cities = ["عمّان","الزرقاء","إربد","العقبة","الكرك","المفرق","مأدبا","جرش","عجلون","الطفيلة","معان","البلقاء"];
 
