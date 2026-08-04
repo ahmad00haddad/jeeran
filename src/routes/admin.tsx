@@ -27,13 +27,16 @@ const CONDITIONS = [
 function Admin() {
   const { user, isAdmin, loading } = useAuth();
   const nav = useNavigate();
-  const [tab, setTab] = useState<"stats" | "products" | "orders" | "offers" | "rentals" | "fonts">("stats");
+  const [tab, setTab] = useState<"stats" | "products" | "orders" | "offers" | "rentals" | "fonts" | "errors">("stats");
   const [products, setProducts] = useState<any[]>([]);
   const [orders, setOrders] = useState<any[]>([]);
   const [offers, setOffers] = useState<any[]>([]);
   const [rentals, setRentals] = useState<any[]>([]);
   const [cats, setCats] = useState<any[]>([]);
+  const [errors, setErrors] = useState<any[]>([]);
   const [showForm, setShowForm] = useState(false);
+  const [uploading, setUploading] = useState(false);
+  const [notifOn, setNotifOn] = useState(false);
   const [form, setForm] = useState({
     name_ar: "", brand: "", price: "", original_price: "", sale_price: "",
     image_url: "", category_id: "", condition: "like_new",
