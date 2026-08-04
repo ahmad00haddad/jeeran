@@ -197,13 +197,27 @@ function Admin() {
     <div className="min-h-screen bg-background">
       <TopBar /><Header />
       <main className="max-w-7xl mx-auto px-4 py-8">
-        <h1 className="font-display text-3xl font-bold mb-6">لوحة إدارة جيران</h1>
+        <div className="flex flex-wrap items-center justify-between gap-3 mb-6">
+          <h1 className="font-display text-3xl font-bold">لوحة إدارة جيران</h1>
+          <button
+            onClick={async () => {
+              if (typeof Notification === "undefined") { toast.error("متصفحك ما بيدعم الإشعارات"); return; }
+              const p = await Notification.requestPermission();
+              setNotifOn(p === "granted");
+              toast[p === "granted" ? "success" : "error"](p === "granted" ? "تفعّلت إشعارات الطلبات الجديدة 🔔" : "ما تفعّلت الإشعارات");
+            }}
+            className={`flex items-center gap-2 px-4 py-2 text-sm font-bold border ${notifOn ? "border-green-600 text-green-700 bg-green-50" : "border-border"}`}
+          >
+            <Bell className="w-4 h-4" /> {notifOn ? "الإشعارات مفعّلة" : "فعّلي إشعارات الطلبات"}
+          </button>
+        </div>
         <div className="flex gap-2 mb-6 border-b border-border overflow-x-auto">
           <button onClick={() => setTab("stats")} className={`px-4 py-2 font-bold whitespace-nowrap ${tab === "stats" ? "border-b-2 border-primary text-primary" : "text-muted-foreground"}`}><TrendingUp className="w-4 h-4 inline ml-1" /> الإحصائيات</button>
           <button onClick={() => setTab("products")} className={`px-4 py-2 font-bold whitespace-nowrap ${tab === "products" ? "border-b-2 border-primary text-primary" : "text-muted-foreground"}`}><Package className="w-4 h-4 inline ml-1" /> القطع ({products.length})</button>
           <button onClick={() => setTab("orders")} className={`px-4 py-2 font-bold whitespace-nowrap ${tab === "orders" ? "border-b-2 border-primary text-primary" : "text-muted-foreground"}`}><ShoppingCart className="w-4 h-4 inline ml-1" /> الطلبات ({orders.length})</button>
           <button onClick={() => setTab("offers")} className={`px-4 py-2 font-bold whitespace-nowrap ${tab === "offers" ? "border-b-2 border-primary text-primary" : "text-muted-foreground"}`}>🏷️ العروض ({offers.filter(o => o.status === "pending").length})</button>
           <button onClick={() => setTab("rentals")} className={`px-4 py-2 font-bold whitespace-nowrap ${tab === "rentals" ? "border-b-2 border-primary text-primary" : "text-muted-foreground"}`}>✨ الإيجار ({rentals.filter(r => r.status === "pending").length})</button>
+          <button onClick={() => setTab("errors")} className={`px-4 py-2 font-bold whitespace-nowrap ${tab === "errors" ? "border-b-2 border-primary text-primary" : "text-muted-foreground"}`}><Bug className="w-4 h-4 inline ml-1" /> الأخطاء ({errors.length})</button>
           <button onClick={() => setTab("fonts")} className={`px-4 py-2 font-bold whitespace-nowrap ${tab === "fonts" ? "border-b-2 border-primary text-primary" : "text-muted-foreground"}`}><Type className="w-4 h-4 inline ml-1" /> الخطوط</button>
         </div>
 
