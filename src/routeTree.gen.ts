@@ -10,6 +10,7 @@
 
 import { Route as rootRouteImport } from './routes/__root'
 import { Route as WishlistRouteImport } from './routes/wishlist'
+import { Route as TrackRouteImport } from './routes/track'
 import { Route as TermsRouteImport } from './routes/terms'
 import { Route as ShopRouteImport } from './routes/shop'
 import { Route as ShippingRouteImport } from './routes/shipping'
@@ -32,6 +33,11 @@ import { Route as ProductIdRouteImport } from './routes/product.$id'
 const WishlistRoute = WishlistRouteImport.update({
   id: '/wishlist',
   path: '/wishlist',
+  getParentRoute: () => rootRouteImport,
+} as any)
+const TrackRoute = TrackRouteImport.update({
+  id: '/track',
+  path: '/track',
   getParentRoute: () => rootRouteImport,
 } as any)
 const TermsRoute = TermsRouteImport.update({
@@ -142,6 +148,7 @@ export interface FileRoutesByFullPath {
   '/shipping': typeof ShippingRoute
   '/shop': typeof ShopRouteWithChildren
   '/terms': typeof TermsRoute
+  '/track': typeof TrackRoute
   '/wishlist': typeof WishlistRoute
   '/product/$id': typeof ProductIdRoute
   '/shop/$slug': typeof ShopSlugRoute
@@ -163,6 +170,7 @@ export interface FileRoutesByTo {
   '/shipping': typeof ShippingRoute
   '/shop': typeof ShopRouteWithChildren
   '/terms': typeof TermsRoute
+  '/track': typeof TrackRoute
   '/wishlist': typeof WishlistRoute
   '/product/$id': typeof ProductIdRoute
   '/shop/$slug': typeof ShopSlugRoute
@@ -185,6 +193,7 @@ export interface FileRoutesById {
   '/shipping': typeof ShippingRoute
   '/shop': typeof ShopRouteWithChildren
   '/terms': typeof TermsRoute
+  '/track': typeof TrackRoute
   '/wishlist': typeof WishlistRoute
   '/product/$id': typeof ProductIdRoute
   '/shop/$slug': typeof ShopSlugRoute
@@ -208,6 +217,7 @@ export interface FileRouteTypes {
     | '/shipping'
     | '/shop'
     | '/terms'
+    | '/track'
     | '/wishlist'
     | '/product/$id'
     | '/shop/$slug'
@@ -229,6 +239,7 @@ export interface FileRouteTypes {
     | '/shipping'
     | '/shop'
     | '/terms'
+    | '/track'
     | '/wishlist'
     | '/product/$id'
     | '/shop/$slug'
@@ -250,6 +261,7 @@ export interface FileRouteTypes {
     | '/shipping'
     | '/shop'
     | '/terms'
+    | '/track'
     | '/wishlist'
     | '/product/$id'
     | '/shop/$slug'
@@ -272,6 +284,7 @@ export interface RootRouteChildren {
   ShippingRoute: typeof ShippingRoute
   ShopRoute: typeof ShopRouteWithChildren
   TermsRoute: typeof TermsRoute
+  TrackRoute: typeof TrackRoute
   WishlistRoute: typeof WishlistRoute
   ProductIdRoute: typeof ProductIdRoute
 }
@@ -283,6 +296,13 @@ declare module '@tanstack/react-router' {
       path: '/wishlist'
       fullPath: '/wishlist'
       preLoaderRoute: typeof WishlistRouteImport
+      parentRoute: typeof rootRouteImport
+    }
+    '/track': {
+      id: '/track'
+      path: '/track'
+      fullPath: '/track'
+      preLoaderRoute: typeof TrackRouteImport
       parentRoute: typeof rootRouteImport
     }
     '/terms': {
@@ -441,6 +461,7 @@ const rootRouteChildren: RootRouteChildren = {
   ShippingRoute: ShippingRoute,
   ShopRoute: ShopRouteWithChildren,
   TermsRoute: TermsRoute,
+  TrackRoute: TrackRoute,
   WishlistRoute: WishlistRoute,
   ProductIdRoute: ProductIdRoute,
 }
