@@ -33,9 +33,9 @@
   --color-gold-foreground: var(--gold-foreground);
   --color-cream: var(--cream);
   --color-deep: var(--deep);
-  --font-display: 'Reem Kufi', 'Tajawal', sans-serif;
-  --font-serif: 'Amiri', serif;
-  --font-sans: 'Tajawal', system-ui, sans-serif;
+  --font-display: 'El Messiri', 'IBM Plex Sans Arabic', sans-serif;
+  --font-serif: 'Aref Ruqaa', 'El Messiri', serif;
+  --font-sans: 'IBM Plex Sans Arabic', system-ui, sans-serif;
 }
 
 :root {
