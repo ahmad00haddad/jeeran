@@ -1,5 +1,6 @@
 import { createFileRoute, Link, useSearch } from "@tanstack/react-router";
-import { CheckCircle, Package, Phone } from "lucide-react";
+import { CheckCircle, Package, Phone, Truck } from "lucide-react";
+import { whatsappLink } from "@/lib/config";
 import { TopBar } from "@/components/jeeran/TopBar";
 import { Header } from "@/components/jeeran/Header";
 import { Footer } from "@/components/jeeran/Footer";
