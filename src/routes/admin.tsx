@@ -6,9 +6,10 @@ import { Footer } from "@/components/jeeran/Footer";
 import { supabase } from "@/integrations/supabase/client";
 import { useAuth } from "@/hooks/useAuth";
 import { toast } from "sonner";
-import { Plus, Package, ShoppingCart, Trash2, TrendingUp, DollarSign, Users, Clock, Type, Upload } from "lucide-react";
+import { Plus, Package, ShoppingCart, Trash2, TrendingUp, DollarSign, Users, Clock, Type, Upload, Bug, Bell, Loader2 } from "lucide-react";
 import { ACCEPTED_FONT_EXT, saveCustomFont, clearCustomFont, loadSavedFont, type CustomFont } from "@/lib/customFont";
 import { ConfirmDialog } from "@/components/ui/confirm-dialog";
+import { uploadProductImage } from "@/lib/uploadImage";
 
 export const Route = createFileRoute("/admin")({
   component: Admin,
