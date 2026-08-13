@@ -15,7 +15,7 @@ import type { DBProduct, Category } from "@/types/db";
 const PAGE_SIZE = 24;
 
 export const Route = createFileRoute("/shop")({
-  validateSearch: (s: Record<string, unknown>) => ({ q: (s.q as string) || "", sort: (s.sort as string) || "new" }),
+  validateSearch: (s: Record<string, unknown>): { q?: string; sort?: string } => ({ q: (s.q as string) || "", sort: (s.sort as string) || "new" }),
   component: ShopPage,
   head: () => ({ meta: [{ title: "تسوّقي — جيران" }, { name: "description", content: "تشكيلة جيران الكاملة من الملابس المحتشمة" }] }),
 });
