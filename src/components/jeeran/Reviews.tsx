@@ -1,4 +1,6 @@
 import { Star } from "lucide-react";
+import { Reveal } from "./Reveal";
+import { SectionHeading } from "./SectionHeading";
 
 const reviews = [
   { name: "ريم العبادي", city: "عمّان", text: "اشتريت عباية ملبوسة مرة وحدة بنص السعر — والله ما بتفرق عن الجديدة. خدمة محترمة.", rating: 5 },
@@ -9,22 +11,21 @@ const reviews = [
 
 export function Reviews() {
   return (
-    <section className="py-14 bg-secondary">
+    <section className="py-16 md:py-24 bg-secondary">
       <div className="max-w-7xl mx-auto px-4">
-        <div className="text-center mb-8">
-          <div className="text-gold text-xs tracking-[0.35em] uppercase mb-2">شو قالوا الجيران</div>
-          <h2 className="font-display text-2xl md:text-3xl font-bold">تجارب حقيقية من ناسنا</h2>
-        </div>
-        <div className="grid md:grid-cols-2 lg:grid-cols-4 gap-4">
+        <Reveal>
+          <SectionHeading align="center" eyebrow="شو قالوا الجيران" title="تجارب حقيقية من ناسنا" />
+        </Reveal>
+        <div className="grid md:grid-cols-2 lg:grid-cols-4 gap-4 md:gap-5">
           {reviews.map((r, i) => (
-            <div key={i} className="bg-card p-5 border border-border/60">
+            <Reveal key={i} delay={i * 90} className="bg-card p-6 hairline-gold">
               <div className="flex gap-0.5 mb-3">
                 {Array.from({ length: r.rating }).map((_, k) => (
                   <Star key={k} className="w-3.5 h-3.5 fill-gold text-gold" />
                 ))}
               </div>
-              <p className="text-sm leading-relaxed mb-4">"{r.text}"</p>
-              <div className="flex items-center gap-3 pt-3 border-t border-border/60">
+              <p className="text-sm leading-loose mb-5">"{r.text}"</p>
+              <div className="flex items-center gap-3 pt-4 hairline-top">
                 <div className="w-9 h-9 rounded-full bg-primary text-primary-foreground flex items-center justify-center font-bold text-sm">
                   {r.name[0]}
                 </div>
@@ -33,7 +34,7 @@ export function Reviews() {
                   <div className="text-xs text-muted-foreground">{r.city}</div>
                 </div>
               </div>
-            </div>
+            </Reveal>
           ))}
         </div>
       </div>
