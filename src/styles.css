@@ -228,6 +228,13 @@
   }
   .animate-marquee { animation: marquee 30s linear infinite; }
 
+  @keyframes spin-slow { to { transform: rotate(360deg); } }
+  .animate-spin-slow { animation: spin-slow 24s linear infinite; transform-origin: 50% 50%; }
+  @media (prefers-reduced-motion: reduce) {
+    .animate-spin-slow { animation: none; }
+  }
+
+
   /* Strong grain texture for vintage Arabic feel — applied on dark/red surfaces */
   .grain-strong { position: relative; isolation: isolate; }
   .grain-strong::before {
