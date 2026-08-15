@@ -9,6 +9,10 @@ import { ProductCard } from "@/components/jeeran/ProductCard";
 import { OfferDialog } from "@/components/jeeran/OfferDialog";
 import { ProductDetailSkeleton } from "@/components/jeeran/Skeletons";
 import { RentalDialog } from "@/components/jeeran/RentalDialog";
+import { Reveal } from "@/components/jeeran/Reveal";
+import { SectionHeading } from "@/components/jeeran/SectionHeading";
+import { UniqueStamp } from "@/components/jeeran/UniqueStamp";
+
 import { supabase } from "@/integrations/supabase/client";
 import { resolveImg } from "@/lib/imageMap";
 import { useCart } from "@/store/cart";
@@ -165,14 +169,16 @@ function PDP() {
           <Link to="/" className="hover:text-primary">الرئيسية</Link> ← <Link to="/shop" className="hover:text-primary">المتجر</Link> ← <span>{p.name_ar}</span>
         </nav>
         <div className="grid md:grid-cols-2 gap-6 md:gap-8">
-          <div className="bg-secondary aspect-[4/5] overflow-hidden relative -mx-4 md:mx-0">
+          <div className="bg-secondary aspect-[4/5] overflow-hidden relative -mx-4 md:mx-0 vignette md:hairline-gold">
             <img src={resolveImg(p.image_url)} alt={p.name_ar} className="w-full h-full object-cover" />
+            {!unavailable && <UniqueStamp className="absolute bottom-4 left-4 z-10" size={96} />}
             {verified && (
-              <span className="absolute top-3 right-3 bg-green-700 text-white text-xs font-bold px-2.5 py-1 flex items-center gap-1 shadow">
+              <span className="absolute top-3 right-3 z-10 bg-green-700 text-white text-xs font-bold px-2.5 py-1 flex items-center gap-1 shadow">
                 <BadgeCheck className="w-4 h-4" /> موثّقة نظيفة
               </span>
             )}
           </div>
+
           <div className="space-y-5">
             <div className="flex items-center gap-2 flex-wrap">
               {p.badge && <span className="inline-block bg-primary text-primary-foreground text-xs font-bold px-3 py-1">{p.badge}</span>}
@@ -265,13 +271,20 @@ function PDP() {
         </div>
 
         {related.length > 0 && (
-          <section className="mt-16">
-            <h2 className="font-display text-2xl font-bold mb-6">قطع تكمّل إطلالتك</h2>
+          <section className="mt-16 md:mt-24">
+            <Reveal>
+              <SectionHeading title="قطع تكمّل إطلالتك" subtitle="من نفس القسم — كل وحدة فريدة" />
+            </Reveal>
             <div className="grid grid-cols-2 md:grid-cols-4 gap-3 md:gap-5">
-              {related.map((r) => <ProductCard key={r.id} p={r} />)}
+              {related.map((r, i) => (
+                <Reveal key={r.id} delay={Math.min(i, 5) * 60}>
+                  <ProductCard p={r} />
+                </Reveal>
+              ))}
             </div>
           </section>
         )}
+
       </main>
 
       {/* Sticky mobile CTA bar */}
