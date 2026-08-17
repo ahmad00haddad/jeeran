@@ -259,11 +259,11 @@ function Admin() {
               <form onSubmit={addProduct} className="bg-card border border-border p-4 mb-6 grid md:grid-cols-2 gap-3">
                 <input required placeholder="اسم القطعة" value={form.name_ar} onChange={(e) => setForm({ ...form, name_ar: e.target.value })} className="border border-border px-3 py-2" />
                 <input placeholder="البراند الأصلي (Zara, H&M...)" value={form.brand} onChange={(e) => setForm({ ...form, brand: e.target.value })} className="border border-border px-3 py-2" />
-                <select value={form.category_id} onChange={(e) => setForm({ ...form, category_id: e.target.value })} className="border border-border px-3 py-2 bg-cream">
+                <select value={form.category_id} onChange={(e) => setForm({ ...form, category_id: e.target.value })} className="border border-border px-3 py-2 bg-background">
                   <option value="">— الفئة —</option>
                   {cats.map((c) => <option key={c.id} value={c.id}>{c.name_ar}</option>)}
                 </select>
-                <select value={form.condition} onChange={(e) => setForm({ ...form, condition: e.target.value })} className="border border-border px-3 py-2 bg-cream">
+                <select value={form.condition} onChange={(e) => setForm({ ...form, condition: e.target.value })} className="border border-border px-3 py-2 bg-background">
                   {CONDITIONS.map((c) => <option key={c.v} value={c.v}>{c.l}</option>)}
                 </select>
                 <input required type="number" step="0.01" placeholder="سعر البيع (د.أ)" value={form.price} onChange={(e) => setForm({ ...form, price: e.target.value })} className="border border-border px-3 py-2" />
@@ -361,7 +361,7 @@ function Admin() {
                   <div>{o.city} — {o.address}</div>
                   <div className="text-muted-foreground">{o.notes}</div>
                 </div>
-                <select value={o.status} onChange={(e) => updateOrderStatus(o.id, e.target.value)} className="border border-border px-3 py-1 text-sm bg-cream">
+                <select value={o.status} onChange={(e) => updateOrderStatus(o.id, e.target.value)} className="border border-border px-3 py-1 text-sm bg-background">
                   <option value="pending">قيد الانتظار</option>
                   <option value="confirmed">مؤكد</option>
                   <option value="shipped">في الطريق</option>
@@ -403,7 +403,7 @@ function Admin() {
                   <div className="flex gap-2">
                     <button onClick={() => updateOfferStatus(o.id, "accepted")} disabled={o.status !== "pending"} className={`px-3 py-1 text-xs font-bold ${o.status === "accepted" ? "bg-green-700 text-white" : "bg-secondary hover:bg-green-700 hover:text-white"} disabled:opacity-50`}>قبول</button>
                     <button onClick={() => updateOfferStatus(o.id, "rejected")} disabled={o.status !== "pending"} className={`px-3 py-1 text-xs font-bold ${o.status === "rejected" ? "bg-red-700 text-white" : "bg-secondary hover:bg-red-700 hover:text-white"} disabled:opacity-50`}>رفض</button>
-                    <span className="text-xs px-2 py-1 bg-cream border border-border">{o.status === "pending" ? "بانتظار" : o.status === "accepted" ? "مقبول" : o.status === "rejected" ? "مرفوض" : "منتهي"}</span>
+                    <span className="text-xs px-2 py-1 bg-background border border-border">{o.status === "pending" ? "بانتظار" : o.status === "accepted" ? "مقبول" : o.status === "rejected" ? "مرفوض" : "منتهي"}</span>
                   </div>
                 </div>
               </div>
@@ -444,7 +444,7 @@ function Admin() {
                       <button onClick={() => updateRentalStatus("accepted")} disabled={r.status !== "pending"} className={`px-3 py-1 text-xs font-bold ${r.status === "accepted" ? "bg-green-700 text-white" : "bg-secondary hover:bg-green-700 hover:text-white"} disabled:opacity-50`}>قبول</button>
                       <button onClick={() => updateRentalStatus("rejected")} disabled={r.status !== "pending"} className={`px-3 py-1 text-xs font-bold ${r.status === "rejected" ? "bg-red-700 text-white" : "bg-secondary hover:bg-red-700 hover:text-white"} disabled:opacity-50`}>رفض</button>
                       <button onClick={() => updateRentalStatus("returned")} disabled={r.status !== "accepted"} className={`px-3 py-1 text-xs font-bold ${r.status === "returned" ? "bg-deep text-cream" : "bg-secondary hover:bg-deep hover:text-cream"} disabled:opacity-50`}>تم الإرجاع</button>
-                      <span className="text-xs px-2 py-1 bg-cream border border-border">{r.status === "pending" ? "بانتظار" : r.status === "accepted" ? "مقبول" : r.status === "rejected" ? "مرفوض" : r.status === "returned" ? "رجعت" : r.status}</span>
+                      <span className="text-xs px-2 py-1 bg-background border border-border">{r.status === "pending" ? "بانتظار" : r.status === "accepted" ? "مقبول" : r.status === "rejected" ? "مرفوض" : r.status === "returned" ? "رجعت" : r.status}</span>
                     </div>
                   </div>
                 </div>

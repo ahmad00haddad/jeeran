@@ -60,7 +60,7 @@ export function ProductCard({ p }: { p: DBProduct & { brand?: string | null; con
           )}
           <button
             onClick={(e) => { e.preventDefault(); toggleWish(p.id); }}
-            className={`absolute bottom-2 left-2 w-8 h-8 rounded-full flex items-center justify-center transition ${wished ? "bg-primary text-primary-foreground" : "bg-cream/90 backdrop-blur hover:bg-primary hover:text-primary-foreground"}`}
+            className={`absolute bottom-2 left-2 w-8 h-8 rounded-full flex items-center justify-center transition ${wished ? "bg-primary text-primary-foreground" : "bg-background/90 backdrop-blur hover:bg-primary hover:text-primary-foreground"}`}
             aria-label="wishlist"
           >
             <Heart className={`w-4 h-4 ${wished ? "fill-current" : ""}`} />

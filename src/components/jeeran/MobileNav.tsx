@@ -18,7 +18,7 @@ export function MobileNav() {
   return (
     <nav
       dir="rtl"
-      className="md:hidden fixed bottom-0 inset-x-0 z-40 bg-cream/95 backdrop-blur border-t border-border grid grid-cols-5 pb-safe"
+      className="md:hidden fixed bottom-0 inset-x-0 z-40 bg-background/95 backdrop-blur border-t border-border grid grid-cols-5 pb-safe"
       style={{ boxShadow: "0 -8px 24px -12px rgba(0,0,0,0.12)" }}
     >
       {items_nav.map((it) => {

@@ -190,7 +190,7 @@ function Checkout() {
                   </label>
                   <label className="block">
                     <span className="text-sm font-medium flex items-center gap-1 mb-1"><MapPin className="w-3 h-3" /> المحافظة</span>
-                    <select value={form.city} onChange={(e) => setForm({ ...form, city: e.target.value })} className="w-full border border-border px-3 py-2 bg-cream">
+                    <select value={form.city} onChange={(e) => setForm({ ...form, city: e.target.value })} className="w-full border border-border px-3 py-2 bg-background">
                       {cities.map((c) => <option key={c}>{c}</option>)}
                     </select>
                   </label>

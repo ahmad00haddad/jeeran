@@ -73,7 +73,7 @@ export function BottomSheet({ open, onClose, title, children, maxHeight = "90dvh
       <div
         ref={sheetRef}
         className={`
-          absolute bottom-0 inset-x-0 bg-cream shadow-2xl flex flex-col
+          absolute bottom-0 inset-x-0 bg-background shadow-2xl flex flex-col
           rounded-t-2xl md:rounded-2xl md:max-w-lg md:mx-auto md:bottom-auto md:top-1/2 md:-translate-y-1/2 md:inset-x-4
           transition-transform duration-200 ease-out
           ${visible ? "translate-y-0" : "translate-y-full md:translate-y-[calc(-50%+40px)] md:opacity-0"}
