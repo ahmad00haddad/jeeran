@@ -102,11 +102,11 @@ function ShopPage() {
         <h1 className="font-display text-2xl md:text-3xl font-bold mb-3 md:mb-4">{q ? `نتائج: ${q}` : "كل التشكيلة"}</h1>
 
         {/* Sticky filter chips (categories) — horizontally scrollable on mobile */}
-        <div className="sticky top-14 md:top-0 z-20 -mx-4 px-4 py-2 bg-cream/95 backdrop-blur border-b border-border">
+        <div className="sticky top-14 md:top-0 z-20 -mx-4 px-4 py-2 bg-background/95 backdrop-blur border-b border-border">
           <div className="flex gap-2 overflow-x-auto no-scrollbar snap-x">
-            <button onClick={() => setActiveCat(null)} className={`shrink-0 snap-start px-4 py-1.5 text-sm rounded-full border tap ${!activeCat ? "bg-primary text-primary-foreground border-primary" : "border-border bg-cream"}`}>الكل</button>
+            <button onClick={() => setActiveCat(null)} className={`shrink-0 snap-start px-4 py-1.5 text-sm rounded-full border tap ${!activeCat ? "bg-primary text-primary-foreground border-primary" : "border-border bg-background"}`}>الكل</button>
             {cats.map((c) => (
-              <button key={c.id} onClick={() => setActiveCat(c.id)} className={`shrink-0 snap-start px-4 py-1.5 text-sm rounded-full border tap ${activeCat === c.id ? "bg-primary text-primary-foreground border-primary" : "border-border bg-cream"}`}>{c.name_ar}</button>
+              <button key={c.id} onClick={() => setActiveCat(c.id)} className={`shrink-0 snap-start px-4 py-1.5 text-sm rounded-full border tap ${activeCat === c.id ? "bg-primary text-primary-foreground border-primary" : "border-border bg-background"}`}>{c.name_ar}</button>
             ))}
           </div>
         </div>
@@ -124,7 +124,7 @@ function ShopPage() {
         <div className="md:hidden flex items-center justify-between mt-3 mb-2">
           <button
             onClick={() => setFiltersOpen(true)}
-            className="flex items-center gap-2 px-4 py-2 rounded-full border border-border bg-cream text-sm font-bold tap"
+            className="flex items-center gap-2 px-4 py-2 rounded-full border border-border bg-background text-sm font-bold tap"
           >
             <SlidersHorizontal className="w-4 h-4" /> فلاتر
             {(maxPrice || verifiedOnly || onSale) && (

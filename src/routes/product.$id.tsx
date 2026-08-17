@@ -203,7 +203,7 @@ function PDP() {
 
             {rentable && !unavailable && (
               <div className="border-2 border-gold bg-gold/5 p-4 space-y-2">
-                <div className="flex items-center gap-2 font-bold text-deep">
+                <div className="flex items-center gap-2 font-bold text-foreground">
                   <Sparkles className="w-4 h-4 text-gold" /> متوفرة للإيجار كمان!
                 </div>
                 <div className="text-sm text-muted-foreground">
@@ -289,13 +289,13 @@ function PDP() {
 
       {/* Sticky mobile CTA bar */}
       <div
-        className="md:hidden fixed inset-x-0 z-30 bg-cream/95 backdrop-blur border-t border-border p-3 pb-safe flex items-center gap-2"
+        className="md:hidden fixed inset-x-0 z-30 bg-background/95 backdrop-blur border-t border-border p-3 pb-safe flex items-center gap-2"
         style={{ bottom: "calc(env(safe-area-inset-bottom, 0px) + 64px)", boxShadow: "0 -8px 24px -12px rgba(0,0,0,0.15)" }}
       >
         <button
           onClick={() => { toggleWish(p.id); toast.success(wished ? "انشالت من المفضلة" : "انحفظت بالمفضلة ❤️"); }}
           aria-label="المفضلة"
-          className={`shrink-0 p-3 border rounded-full tap ${wished ? "border-primary bg-primary text-primary-foreground" : "border-border bg-cream"}`}
+          className={`shrink-0 p-3 border rounded-full tap ${wished ? "border-primary bg-primary text-primary-foreground" : "border-border bg-background"}`}
         >
           <Heart className={`w-5 h-5 ${wished ? "fill-current" : ""}`} />
         </button>

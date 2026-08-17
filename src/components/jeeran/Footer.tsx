@@ -59,7 +59,7 @@ export function Footer() {
             <h4 className="font-bold mb-4 text-gold text-sm tracking-wider">اشتركي بالنشرة</h4>
             <p className="text-sm text-cream/70 mb-3">احصلي على ١٠٪ خصم على أوّل طلب</p>
             <div className="flex">
-              <input type="email" placeholder="بريدك الإلكتروني" className="flex-1 bg-cream/10 border border-cream/20 px-3 py-2.5 text-sm focus:outline-none focus:border-gold" />
+              <input type="email" placeholder="بريدك الإلكتروني" className="flex-1 bg-background/10 border border-cream/20 px-3 py-2.5 text-sm focus:outline-none focus:border-gold" />
               <button className="bg-primary text-primary-foreground px-5 text-sm font-bold hover:bg-gold hover:text-gold-foreground transition">اشتركي</button>
             </div>
             <div className="mt-6 text-xs text-cream/60 leading-relaxed" dir="ltr">

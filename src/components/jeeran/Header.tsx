@@ -20,7 +20,7 @@ export function Header() {
 
   return (
     <>
-      <header className="sticky top-0 z-40 bg-cream/95 backdrop-blur border-b border-border safe-top">
+      <header className="sticky top-0 z-40 bg-background/95 backdrop-blur border-b border-border safe-top">
         {/* Mobile header — app-like */}
         <div className="md:hidden max-w-7xl mx-auto px-3 h-14 flex items-center gap-2">
           {!isHome ? (
@@ -90,7 +90,7 @@ export function Header() {
 
       {/* Fullscreen search overlay for mobile */}
       {searchOpen && (
-        <div className="md:hidden fixed inset-0 z-50 bg-cream safe-top flex flex-col animate-in fade-in duration-150">
+        <div className="md:hidden fixed inset-0 z-50 bg-background safe-top flex flex-col animate-in fade-in duration-150">
           <form
             onSubmit={(e) => {
               e.preventDefault();

@@ -48,7 +48,7 @@ export function CartDrawer({ open, onClose }: { open: boolean; onClose: () => vo
       {/* Mobile: bottom sheet. Desktop: side drawer */}
       <aside
         className="
-          absolute bg-cream flex flex-col shadow-2xl
+          absolute bg-background flex flex-col shadow-2xl
           bottom-0 inset-x-0 max-h-[90dvh] rounded-t-2xl animate-in slide-in-from-bottom duration-250
           md:top-0 md:left-0 md:right-auto md:bottom-0 md:h-full md:w-full md:max-w-md md:rounded-none md:animate-none
         "
