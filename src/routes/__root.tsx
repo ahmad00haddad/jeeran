@@ -11,6 +11,7 @@ import { Toaster } from "sonner";
 import { useEffect } from "react";
 import { loadSavedFont } from "@/lib/customFont";
 import { installErrorMonitoring } from "@/lib/errorMonitor";
+import { themeInitScript } from "@/lib/theme";
 import { supabase } from "@/integrations/supabase/client";
 import { useCart } from "@/store/cart";
 
@@ -108,6 +109,7 @@ export const Route = createRootRouteWithContext<{ queryClient: QueryClient }>()(
         href: appCss,
       },
     ],
+    scripts: [{ children: themeInitScript }],
 
   }),
   shellComponent: RootShell,
