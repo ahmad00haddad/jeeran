@@ -507,7 +507,7 @@ function StatusBadge({ status }: { status: string }) {
   const map: Record<string, { l: string; c: string }> = {
     pending: { l: "بانتظار", c: "bg-gold/20 text-gold-foreground" },
     confirmed: { l: "مؤكد", c: "bg-primary/20 text-primary" },
-    shipped: { l: "بالطريق", c: "bg-deep/20 text-deep" },
+    shipped: { l: "بالطريق", c: "bg-deep/20 text-foreground" },
     delivered: { l: "تم", c: "bg-green-100 text-green-800" },
     cancelled: { l: "ملغي", c: "bg-red-100 text-red-800" },
   };

@@ -203,7 +203,7 @@ function PDP() {
 
             {rentable && !unavailable && (
               <div className="border-2 border-gold bg-gold/5 p-4 space-y-2">
-                <div className="flex items-center gap-2 font-bold text-deep">
+                <div className="flex items-center gap-2 font-bold text-foreground">
                   <Sparkles className="w-4 h-4 text-gold" /> متوفرة للإيجار كمان!
                 </div>
                 <div className="text-sm text-muted-foreground">
