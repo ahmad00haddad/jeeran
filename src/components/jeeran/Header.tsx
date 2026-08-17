@@ -4,6 +4,7 @@ import { useState } from "react";
 import { Logo } from "./Logo";
 import { CartDrawer } from "./CartDrawer";
 import { useCart, cartTotals } from "@/store/cart";
+import { ThemeToggle } from "./ThemeToggle";
 
 export function Header() {
   const navigate = useNavigate();
@@ -36,6 +37,7 @@ export function Header() {
           <Link to="/" aria-label="جيران — الرئيسية" className="flex-1 flex justify-center tap">
             <Logo />
           </Link>
+          <ThemeToggle />
           <button
             aria-label="بحث"
             onClick={() => setSearchOpen(true)}
@@ -68,6 +70,7 @@ export function Header() {
             />
           </form>
           <div className="flex items-center gap-3 mr-auto">
+            <ThemeToggle />
             <Link to="/account" aria-label="حسابي" className="p-2 hover:text-primary transition"><User className="w-5 h-5" /></Link>
             <Link to="/wishlist" aria-label="المفضلة" className="p-2 hover:text-primary transition relative">
               <Heart className="w-5 h-5" />
