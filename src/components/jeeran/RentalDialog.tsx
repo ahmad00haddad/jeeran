@@ -3,6 +3,7 @@ import { supabase } from "@/integrations/supabase/client";
 import { toast } from "sonner";
 import { X, Sparkles, Loader2 } from "lucide-react";
 import { normalizePhone, normalizeName, isValidJoPhone } from "@/lib/phone";
+import { notifyAdmin } from "@/lib/notify.functions";
 
 type Props = {
   open: boolean;
