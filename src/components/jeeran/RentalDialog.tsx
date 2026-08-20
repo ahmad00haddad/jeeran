@@ -3,6 +3,7 @@ import { supabase } from "@/integrations/supabase/client";
 import { toast } from "sonner";
 import { X, Sparkles, Loader2 } from "lucide-react";
 import { normalizePhone, normalizeName, isValidJoPhone } from "@/lib/phone";
+import { notifyAdmin } from "@/lib/notify.functions";
 
 type Props = {
   open: boolean;
@@ -49,6 +50,19 @@ export function RentalDialog({ open, onClose, productId, productName, rentalPric
     });
     setBusy(false);
     if (error) { toast.error("صار خطأ، جرّبي مرة ثانية"); return; }
+    void notifyAdmin({
+      data: {
+        kind: "rental",
+        title: "طلب إيجار جديد",
+        lines: [
+          `القطعة: ${productName}`,
+          `الاسم: ${cleanName}`,
+          `الموبايل: ${cleanPhone}`,
+          `تاريخ المناسبة: ${event_date}`,
+          `سعر الإيجار: ${rentalPrice.toFixed(2)} د.أ`,
+        ],
+      },
+    }).catch(() => {});
     toast.success("انرسل طلب الإيجار ✨", { description: "البائع رح يتواصل معك بالواتساب لتأكيد التوفر." });
     onClose();
   }
