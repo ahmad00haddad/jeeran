@@ -11,6 +11,7 @@ import { toast } from "sonner";
 import { normalizePhone, normalizeName, isValidJoPhone } from "@/lib/phone";
 import { ConfirmDialog } from "@/components/ui/confirm-dialog";
 import { saveLocalOrder } from "@/lib/orderTracking";
+import { notifyAdmin } from "@/lib/notify.functions";
 
 const cities = ["عمّان","الزرقاء","إربد","العقبة","الكرك","المفرق","مأدبا","جرش","عجلون","الطفيلة","معان","البلقاء"];
 
