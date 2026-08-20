@@ -127,6 +127,19 @@ function Checkout() {
       const row = Array.isArray(data) ? data[0] : data;
       const orderNumber = (row as any)?.order_number as string | undefined;
       if (orderNumber) saveLocalOrder({ order_number: orderNumber, phone: cleanPhone, total, at: Date.now() });
+      void notifyAdmin({
+        data: {
+          kind: "order",
+          title: `طلب جديد ${orderNumber ?? ""}`.trim(),
+          lines: [
+            `الاسم: ${normalizeName(form.full_name)}`,
+            `الموبايل: ${cleanPhone}`,
+            `المدينة: ${form.city}`,
+            `القطع: ${items.length}`,
+            `الإجمالي: ${total.toFixed(2)} د.أ`,
+          ],
+        },
+      }).catch(() => {});
       clear();
       toast.success("تم تأكيد طلبك بنجاح! ✨");
       navigate({ to: "/order-success", search: { id: orderNumber ?? "" } });
