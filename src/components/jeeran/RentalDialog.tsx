@@ -49,6 +49,19 @@ export function RentalDialog({ open, onClose, productId, productName, rentalPric
     });
     setBusy(false);
     if (error) { toast.error("صار خطأ، جرّبي مرة ثانية"); return; }
+    void notifyAdmin({
+      data: {
+        kind: "rental",
+        title: "طلب إيجار جديد",
+        lines: [
+          `القطعة: ${productName}`,
+          `الاسم: ${cleanName}`,
+          `الموبايل: ${cleanPhone}`,
+          `تاريخ المناسبة: ${event_date}`,
+          `سعر الإيجار: ${rentalPrice.toFixed(2)} د.أ`,
+        ],
+      },
+    }).catch(() => {});
     toast.success("انرسل طلب الإيجار ✨", { description: "البائع رح يتواصل معك بالواتساب لتأكيد التوفر." });
     onClose();
   }
