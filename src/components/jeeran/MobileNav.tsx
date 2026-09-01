@@ -28,6 +28,7 @@ export function MobileNav() {
             key={it.label}
             to={it.to}
             onClick={() => { try { (navigator as any).vibrate?.(8); } catch {} }}
+            data-tour={it.to === "/cart" ? "cart" : it.to === "/wishlist" ? "wishlist" : undefined}
             className="relative flex flex-col items-center justify-center gap-1 pt-2 pb-1 tap"
             aria-current={active ? "page" : undefined}
           >

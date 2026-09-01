@@ -25,7 +25,7 @@ export function ProductRow({ title, subtitle, items = [], viewAllHref = "/shop" 
         </Reveal>
         <div className="grid grid-cols-2 md:grid-cols-4 gap-3 md:gap-5">
           {items.map((p, i) => (
-            <Reveal key={p.id} as="div" delay={Math.min(i, 7) * 60}>
+            <Reveal key={p.id} as="div" delay={Math.min(i, 7) * 60} {...(i === 0 ? { "data-tour": "product" } : {})}>
               <ProductCard p={p} />
             </Reveal>
           ))}

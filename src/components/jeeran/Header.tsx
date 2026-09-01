@@ -40,6 +40,7 @@ export function Header() {
           <ThemeToggle />
           <button
             aria-label="بحث"
+            data-tour="search"
             onClick={() => setSearchOpen(true)}
             className="p-2 tap"
           >
@@ -56,6 +57,7 @@ export function Header() {
               navigate({ to: "/shop", search: { q, sort: "new" } });
             }}
             role="search"
+            data-tour="search"
             className="flex-1 flex items-center max-w-xl mx-auto relative"
           >
             <label htmlFor="site-search" className="sr-only">بحث</label>
@@ -72,13 +74,13 @@ export function Header() {
           <div className="flex items-center gap-3 mr-auto">
             <ThemeToggle />
             <Link to="/account" aria-label="حسابي" className="p-2 hover:text-primary transition"><User className="w-5 h-5" /></Link>
-            <Link to="/wishlist" aria-label="المفضلة" className="p-2 hover:text-primary transition relative">
+            <Link to="/wishlist" aria-label="المفضلة" data-tour="wishlist" className="p-2 hover:text-primary transition relative">
               <Heart className="w-5 h-5" />
               {wishlist.length > 0 && (
                 <span className="absolute -top-0.5 -right-0.5 bg-gold text-gold-foreground text-[10px] w-4 h-4 rounded-full flex items-center justify-center font-bold">{wishlist.length}</span>
               )}
             </Link>
-            <button aria-label="السلة" onClick={() => setCartOpen(true)} className="p-2 hover:text-primary transition relative">
+            <button aria-label="السلة" data-tour="cart" onClick={() => setCartOpen(true)} className="p-2 hover:text-primary transition relative">
               <ShoppingBag className="w-5 h-5" />
               {count > 0 && (
                 <span className="absolute -top-0.5 -right-0.5 bg-primary text-primary-foreground text-[10px] w-4 h-4 rounded-full flex items-center justify-center font-bold">{count}</span>
