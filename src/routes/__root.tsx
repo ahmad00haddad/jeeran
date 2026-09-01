@@ -14,6 +14,7 @@ import { installErrorMonitoring } from "@/lib/errorMonitor";
 import { themeInitScript } from "@/lib/theme";
 import { supabase } from "@/integrations/supabase/client";
 import { useCart } from "@/store/cart";
+import { TourGuide } from "@/components/jeeran/TourGuide";
 
 import appCss from "../styles.css?url";
 
@@ -157,6 +158,7 @@ function RootComponent() {
   return (
     <QueryClientProvider client={queryClient}>
       <Outlet />
+      <TourGuide />
       <Toaster position="top-center" dir="rtl" richColors />
     </QueryClientProvider>
   );

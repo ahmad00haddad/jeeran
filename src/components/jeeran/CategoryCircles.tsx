@@ -19,7 +19,7 @@ const cats = [
 
 export function CategoryCircles() {
   return (
-    <section className="py-10 bg-background">
+    <section className="py-10 bg-background" data-tour="categories">
       <div className="max-w-7xl mx-auto px-4">
         <div className="flex gap-5 md:gap-7 overflow-x-auto no-scrollbar scroll-x pb-2">
           {cats.map((c) => (
