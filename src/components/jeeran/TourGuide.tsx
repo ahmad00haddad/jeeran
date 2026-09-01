@@ -141,7 +141,7 @@ export function TourGuide() {
 
           {/* card */}
           <div
-            className="absolute inset-x-4 md:inset-x-auto md:w-[420px] max-w-[calc(100vw-2rem)] bg-card text-card-foreground border border-gold/40 rounded-2xl shadow-2xl p-5 transition-all duration-300"
+            className="absolute inset-x-4 md:inset-x-0 md:w-[420px] md:mx-auto max-w-[calc(100vw-2rem)] bg-card text-card-foreground border border-gold/40 rounded-2xl shadow-2xl p-5 transition-all duration-300"
             style={
               rect
                 ? placeBelow
