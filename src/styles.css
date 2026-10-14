@@ -388,6 +388,7 @@
 
 .home-motion {
   --home-ease: cubic-bezier(0.22, 1, 0.36, 1);
+  overflow-x: clip;
 }
 .home-motion .reveal {
   transition-duration: 850ms;
