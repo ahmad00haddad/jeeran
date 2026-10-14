@@ -22,6 +22,8 @@ export const Route = createFileRoute("/")({
       { name: "description", content: "سوق أردني للملابس المحتشمة المستعملة بحالة ممتازة — عبايات، حجابات، ثياب رجالي وملابس أطفال بأسعار تناسب جيبك. الدفع عند الاستلام." },
       { property: "og:title", content: "جيران — Jeeran" },
       { property: "og:description", content: "ملابس مستعملة نظيفة من بيوتنا الأردنية. وفّري على جيبك وقللي الهدر." },
+      { property: "og:type", content: "website" },
+      { name: "twitter:card", content: "summary_large_image" },
     ],
   }),
 });
@@ -40,7 +42,7 @@ function Index() {
   }, []);
 
   return (
-    <div className="min-h-screen pb-16 md:pb-0">
+    <div className="home-motion min-h-screen pb-16 md:pb-0">
       <TopBar />
       <Header />
       <main className="grain-paper">

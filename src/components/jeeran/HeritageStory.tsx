@@ -2,7 +2,7 @@ import { Reveal } from "./Reveal";
 
 export function HeritageStory() {
   return (
-    <section className="py-20 md:py-28 bg-deep text-cream grain-strong">
+    <section className="home-story py-20 md:py-28 bg-deep text-cream grain-strong">
       <div className="max-w-3xl mx-auto px-4 text-center space-y-6">
         <Reveal>
           <div className="eyebrow">قصة جيران</div>
