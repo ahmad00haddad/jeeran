@@ -364,3 +364,128 @@
   body { overscroll-behavior-y: none; }
 }
 
+/* Homepage choreography: transform/opacity only; no layout-shifting motion. */
+@keyframes home-photo-enter {
+  from { opacity: 0; transform: translateY(24px) scale(1.035); }
+  to { opacity: 1; transform: translateY(0) scale(1); }
+}
+@keyframes home-category-enter {
+  from { opacity: 0; transform: translateY(20px) scale(0.94); }
+  to { opacity: 1; transform: translateY(0) scale(1); }
+}
+@keyframes home-gold-sweep {
+  from { background-position: 100% 50%; }
+  to { background-position: 0% 50%; }
+}
+@keyframes home-star-enter {
+  from { opacity: 0; transform: scale(0.5) rotate(-35deg); }
+  to { opacity: 1; transform: scale(1) rotate(0); }
+}
+@keyframes home-flame {
+  0%, 100% { transform: rotate(-7deg) scale(1); }
+  50% { transform: rotate(7deg) scale(1.1); }
+}
+
+.home-motion {
+  --home-ease: cubic-bezier(0.22, 1, 0.36, 1);
+}
+.home-motion .reveal {
+  transition-duration: 850ms;
+  will-change: auto;
+}
+.home-motion .home-hero .vignette {
+  animation: home-photo-enter 1.4s var(--home-ease) both;
+}
+.home-motion .home-hero .vignette:nth-child(2) { animation-delay: 180ms; }
+.home-motion .home-hero .vignette img {
+  transition: transform 1.6s var(--home-ease);
+}
+.home-motion .home-hero .gold-text {
+  background-size: 220% 100%;
+  animation: home-gold-sweep 3s ease-in-out 2 alternate;
+}
+.home-motion .rule-gold {
+  transform-origin: right center;
+  transition: transform 1.1s var(--home-ease);
+}
+.home-motion .reveal:not(.reveal-in) .rule-gold { transform: scaleX(0); }
+.home-motion .home-story .rule-gold { transform-origin: center; }
+.home-motion .home-hero a {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  transition: transform 250ms var(--home-ease), background-color 250ms ease, border-color 250ms ease;
+}
+.home-motion .home-hero a:active { transform: scale(0.97); }
+.home-motion [data-tour="categories"] a {
+  animation: home-category-enter 700ms var(--home-ease) both;
+}
+.home-motion [data-tour="categories"] a:nth-child(2) { animation-delay: 70ms; }
+.home-motion [data-tour="categories"] a:nth-child(3) { animation-delay: 140ms; }
+.home-motion [data-tour="categories"] a:nth-child(4) { animation-delay: 210ms; }
+.home-motion [data-tour="categories"] a:nth-child(5) { animation-delay: 280ms; }
+.home-motion [data-tour="categories"] a:nth-child(6) { animation-delay: 350ms; }
+.home-motion [data-tour="categories"] a:nth-child(7) { animation-delay: 420ms; }
+.home-motion [data-tour="categories"] a:nth-child(8) { animation-delay: 490ms; }
+.home-motion [data-tour="categories"] a > div {
+  transition: transform 450ms var(--home-ease), box-shadow 450ms ease;
+}
+.home-motion [data-tour="categories"] img {
+  transition: transform 650ms var(--home-ease);
+}
+.home-motion [data-tour="categories"] a > span {
+  transition: color 250ms ease, transform 350ms var(--home-ease);
+}
+.home-motion .home-story .reveal:not(.reveal-in) {
+  transform: translateY(30px) scale(0.98);
+}
+.home-motion .home-reviews .reveal:not(.reveal-in) {
+  transform: translateY(30px);
+}
+.home-motion .home-reviews .reveal-in .fill-gold {
+  animation: home-star-enter 650ms var(--home-ease) both;
+}
+.home-motion .home-reviews .fill-gold:nth-child(2) { animation-delay: 80ms; }
+.home-motion .home-reviews .fill-gold:nth-child(3) { animation-delay: 160ms; }
+.home-motion .home-reviews .fill-gold:nth-child(4) { animation-delay: 240ms; }
+.home-motion .home-reviews .fill-gold:nth-child(5) { animation-delay: 320ms; }
+.home-motion .home-features .reveal > div:first-child {
+  transition: transform 500ms var(--home-ease), background-color 350ms ease;
+}
+.home-motion .home-sale .lucide-flame {
+  animation: home-flame 1.8s ease-in-out 3;
+}
+
+@media (hover: hover) and (pointer: fine) {
+  .home-motion .home-hero .vignette:hover img { transform: scale(1.045); }
+  .home-motion .home-hero a:hover { transform: translateY(-3px); }
+  .home-motion [data-tour="categories"] a:hover > div,
+  .home-motion [data-tour="categories"] a:focus-visible > div {
+    transform: translateY(-3px);
+    box-shadow: inset 0 0 0 1px var(--gold);
+  }
+  .home-motion [data-tour="categories"] a:hover img { transform: scale(1.1); }
+  .home-motion [data-tour="categories"] a:hover > span { color: var(--primary); transform: translateY(2px); }
+  .home-motion .home-features .reveal:hover > div:first-child {
+    transform: rotate(-10deg) scale(1.12);
+    background-color: var(--secondary);
+  }
+  .home-motion .home-reviews .hairline-gold:hover {
+    transform: translateY(-5px);
+    border-color: var(--gold);
+    transition-delay: 0ms !important;
+  }
+}
+
+/* Honor the visitor's motion preference, including existing product effects. */
+@media (prefers-reduced-motion: reduce) {
+  .home-motion *, .home-motion *::before, .home-motion *::after {
+    animation: none !important;
+    transition: none !important;
+    scroll-behavior: auto !important;
+  }
+  .home-motion .reveal,
+  .home-motion .reveal:not(.reveal-in),
+  .home-motion .reveal .rule-gold { opacity: 1; transform: none; }
+}
+

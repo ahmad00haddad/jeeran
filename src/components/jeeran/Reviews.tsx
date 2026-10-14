@@ -11,7 +11,7 @@ const reviews = [
 
 export function Reviews() {
   return (
-    <section className="py-16 md:py-24 bg-secondary">
+    <section className="home-reviews py-16 md:py-24 bg-secondary">
       <div className="max-w-7xl mx-auto px-4">
         <Reveal>
           <SectionHeading align="center" eyebrow="شو قالوا الجيران" title="تجارب حقيقية من ناسنا" />

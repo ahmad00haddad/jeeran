@@ -5,7 +5,7 @@ import { Reveal } from "./Reveal";
 
 export function Hero() {
   return (
-    <section className="relative bg-deep text-cream grain-strong">
+    <section className="home-hero relative bg-deep text-cream grain-strong">
       <div className="grid md:grid-cols-2 gap-0 max-w-7xl mx-auto">
         <div className="p-8 md:p-16 flex flex-col justify-center min-h-[440px] md:min-h-[560px] order-2 md:order-1">
           <Reveal>
