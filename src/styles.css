@@ -490,3 +490,41 @@
   .home-motion .reveal .rule-gold { opacity: 1; transform: none; }
 }
 
+
+/* Homepage motion — layer 2 */
+@keyframes home-float { 0%,100% { transform: translateY(0) rotate(0); } 50% { transform: translateY(-14px) rotate(8deg); } }
+@keyframes home-shine { from { transform: translateX(-120%) skewX(-20deg); } to { transform: translateX(220%) skewX(-20deg); } }
+@keyframes home-tick { 0%,100% { transform: scale(1); } 50% { transform: scale(1.08); } }
+@keyframes home-drop { from { opacity: 0; transform: translateY(-100%); } to { opacity: 1; transform: none; } }
+@keyframes home-progress { from { transform: scaleX(0); } to { transform: scaleX(1); } }
+@keyframes home-ken { from { transform: scale(1); } to { transform: scale(1.08); } }
+
+.home-motion > header, .home-motion > div:first-child { animation: home-drop 700ms var(--home-ease) both; }
+.home-motion .home-hero .vignette img { animation: home-ken 14s ease-in-out 1.4s infinite alternate; }
+.home-motion .home-hero .home-orn {
+  position: absolute; color: var(--gold); opacity: .35; pointer-events: none; z-index: 3;
+  animation: home-float 6s ease-in-out infinite;
+}
+.home-motion .home-hero .home-orn:nth-of-type(2) { animation-duration: 8s; animation-delay: -2s; opacity: .25; }
+.home-motion .home-hero .home-orn:nth-of-type(3) { animation-duration: 7s; animation-delay: -4s; }
+.home-motion .home-hero a.bg-gold { position: relative; overflow: hidden; }
+.home-motion .home-hero a.bg-gold::after {
+  content: ""; position: absolute; inset: 0; width: 40%;
+  background: linear-gradient(90deg, transparent, color-mix(in oklab, var(--cream) 55%, transparent), transparent);
+  animation: home-shine 2.8s ease-in-out 1.5s infinite;
+}
+.home-motion .home-sale .bg-primary.tabular-nums:last-child { animation: home-tick 1s ease-in-out infinite; }
+.home-motion .home-scroll-bar {
+  position: fixed; top: 0; inset-inline: 0; height: 3px; z-index: 60; transform-origin: right;
+  background: linear-gradient(90deg, var(--gold), var(--primary));
+  animation: home-progress linear both; animation-timeline: scroll(root);
+}
+@supports not (animation-timeline: scroll()) { .home-motion .home-scroll-bar { display: none; } }
+.home-motion .home-row .reveal:not(.reveal-in) { transform: translateY(36px) rotate(-1.5deg); }
+.home-motion .home-row .reveal img { transition: transform 700ms var(--home-ease); }
+@media (hover: hover) and (pointer: fine) {
+  .home-motion .home-row .reveal:hover img { transform: scale(1.06); }
+}
+@media (prefers-reduced-motion: reduce) {
+  .home-motion .home-scroll-bar, .home-motion .home-orn { display: none; }
+}
