@@ -6,7 +6,7 @@ import { SectionHeading } from "./SectionHeading";
 
 export function ProductRow({ title, subtitle, items = [], viewAllHref = "/shop" }: { title: string; subtitle?: string; items?: DBProduct[]; viewAllHref?: string }) {
   return (
-    <section className="py-14 md:py-20">
+    <section className="home-row py-14 md:py-20">
       <div className="max-w-7xl mx-auto px-4">
         <Reveal>
           <SectionHeading

@@ -6,6 +6,7 @@ import { Reveal } from "./Reveal";
 export function Hero() {
   return (
     <section className="home-hero relative bg-deep text-cream grain-strong">
+      <div aria-hidden className="home-scroll-bar" /><svg className="home-orn" style={{top:"12%",insetInlineStart:"6%"}} width="28" height="28" viewBox="0 0 40 40" aria-hidden="true"><path d="M20 2 L24 16 L38 20 L24 24 L20 38 L16 24 L2 20 L16 16 Z" fill="currentColor"/></svg><svg className="home-orn" style={{bottom:"14%",insetInlineStart:"42%"}} width="18" height="18" viewBox="0 0 40 40" aria-hidden="true"><path d="M20 2 L24 16 L38 20 L24 24 L20 38 L16 24 L2 20 L16 16 Z" fill="currentColor"/></svg><svg className="home-orn" style={{top:"40%",insetInlineEnd:"4%"}} width="22" height="22" viewBox="0 0 40 40" aria-hidden="true"><path d="M20 2 L24 16 L38 20 L24 24 L20 38 L16 24 L2 20 L16 16 Z" fill="currentColor"/></svg>
       <div className="grid md:grid-cols-2 gap-0 max-w-7xl mx-auto">
         <div className="p-8 md:p-16 flex flex-col justify-center min-h-[440px] md:min-h-[560px] order-2 md:order-1">
           <Reveal>
