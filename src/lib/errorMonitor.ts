@@ -17,9 +17,9 @@ async function report(message: string, stack?: string) {
   try {
     const { data } = await supabase.auth.getUser();
     await supabase.from("client_errors").insert({
-      message: message.slice(0, 500),
+      message: (message || "unknown error").slice(0, 500),
       stack: (stack || "").slice(0, 3000),
-      path: window.location.pathname + window.location.search,
+      path: (window.location.pathname + window.location.search).slice(0, 500),
       user_agent: navigator.userAgent.slice(0, 300),
       user_id: data.user?.id ?? null,
     });
