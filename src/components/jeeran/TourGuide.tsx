@@ -51,7 +51,7 @@ function useRect(selector?: string, tick = 0) {
     if (!selector) { setRect(null); return; }
     const el = document.querySelector(selector) as HTMLElement | null;
     if (!el) { setRect(null); return; }
-    el.scrollIntoView({ block: "center", behavior: "smooth" });
+    el.scrollIntoView({ block: "center", behavior: window.matchMedia("(prefers-reduced-motion: reduce)").matches ? "auto" : "smooth" });
     const measure = () => setRect(el.getBoundingClientRect());
     measure();
     const t = setTimeout(measure, 420);
@@ -141,7 +141,8 @@ export function TourGuide() {
 
           {/* card */}
           <div
-            className="absolute inset-x-4 md:inset-x-0 md:w-[420px] md:mx-auto max-w-[calc(100vw-2rem)] bg-card text-card-foreground border border-gold/40 rounded-2xl shadow-2xl p-5 transition-all duration-300"
+            key={i}
+            className="elastic-modal absolute inset-x-4 md:inset-x-0 md:w-[420px] md:mx-auto max-w-[calc(100vw-2rem)] bg-card text-card-foreground border border-gold/40 rounded-2xl shadow-2xl p-5 transition-all duration-300"
             style={
               rect
                 ? placeBelow

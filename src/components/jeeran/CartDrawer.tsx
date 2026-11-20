@@ -49,8 +49,8 @@ export function CartDrawer({ open, onClose }: { open: boolean; onClose: () => vo
       <aside
         className="
           absolute bg-background flex flex-col shadow-2xl
-          bottom-0 inset-x-0 max-h-[90dvh] rounded-t-2xl animate-in slide-in-from-bottom duration-250
-          md:top-0 md:left-0 md:right-auto md:bottom-0 md:h-full md:w-full md:max-w-md md:rounded-none md:animate-none
+          bottom-0 inset-x-0 max-h-[90dvh] rounded-t-2xl elastic-modal
+          md:top-0 md:left-0 md:right-auto md:bottom-0 md:h-full md:w-full md:max-w-md md:rounded-none
         "
       >
         {/* Drag handle (mobile) */}
@@ -59,14 +59,14 @@ export function CartDrawer({ open, onClose }: { open: boolean; onClose: () => vo
         </div>
         <header className="flex items-center justify-between p-4 border-b border-border bg-deep text-cream md:rounded-none">
           <div className="flex items-center gap-2 font-bold">
-            <ShoppingBag className="w-5 h-5" /> سلة المشتريات ({count})
+            <ShoppingBag className="w-5 h-5" /> سلة المشتريات (<span key={count} className="elastic-bump">{count}</span>)
           </div>
           <button onClick={onClose} className="p-1 hover:text-gold tap" aria-label="إغلاق"><X /></button>
         </header>
         <div className="flex-1 overflow-y-auto overscroll-contain p-4 space-y-3">
           {items.length === 0 && (
             <div className="text-center py-16 text-muted-foreground">
-              <ShoppingBag className="w-16 h-16 mx-auto mb-3 opacity-30" />
+              <ShoppingBag className="settle-in w-16 h-16 mx-auto mb-3 opacity-30" />
               <p>السلة فاضية يا حلوة</p>
               <Link to="/shop" onClick={onClose} className="inline-block mt-4 bg-primary text-primary-foreground px-6 py-3 font-bold tap">تسوقي الآن</Link>
             </div>

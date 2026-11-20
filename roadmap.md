@@ -1,4 +1,4 @@
-# Homepage animation work
-- [x] Add varied homepage-only entrance, scroll and interaction animations.
-- [x] Verify navigation, reduced motion and page layout in the browser.
-- [x] Apply the required package security update and check preview status.
+# Elastic Motion
+- [x] Replace decorative homepage loops, stars and card tilt with quiet interaction motion.
+- [x] Apply shared elastic presses, value badges, windows, menus, tabs and RTL switches.
+- [ ] Verify desktop/mobile interactions, reduced motion and preview status.

@@ -26,9 +26,9 @@ function Wishlist() {
     <div className="min-h-screen pb-16 md:pb-0">
       <TopBar /><Header />
       <main className="max-w-7xl mx-auto px-4 py-8">
-        <h1 className="font-display text-3xl font-bold mb-6">مفضلتي ({wishlist.length})</h1>
+        <h1 className="font-display text-3xl font-bold mb-6">مفضلتي (<span key={wishlist.length} className="elastic-bump inline-block">{wishlist.length}</span>)</h1>
         {wishlist.length === 0 ? (
-          <p className="text-center text-muted-foreground py-12">ما في عناصر بالمفضلة بعد</p>
+          <p className="settle-in text-center text-muted-foreground py-12">ما في عناصر بالمفضلة بعد</p>
         ) : (
           <div className="grid grid-cols-2 md:grid-cols-4 gap-3 md:gap-5">
             {products.map((p) => <ProductCard key={p.id} p={p} />)}

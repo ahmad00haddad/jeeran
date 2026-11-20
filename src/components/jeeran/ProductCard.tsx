@@ -4,6 +4,7 @@ import type { DBProduct } from "@/types/db";
 import { resolveImg, buildSrcSet } from "@/lib/imageMap";
 import { useCart } from "@/store/cart";
 import { toast } from "sonner";
+import { Button } from "@/components/ui/button";
 
 const CONDITION_LABEL: Record<string, string> = {
   new: "جديد بالعلاقة",
@@ -28,7 +29,7 @@ export function ProductCard({ p }: { p: DBProduct & { brand?: string | null; con
 
   return (
     <article className="group relative bg-card border border-border/60 overflow-hidden card-hover-gold">
-      <Link to="/product/$id" params={{ id: p.id }} className="block">
+      <Link to="/product/$id" params={{ id: p.id }} className="block elastic-press-soft">
         <div className="relative aspect-[4/5] overflow-hidden bg-secondary">
           <img
             src={img}
@@ -39,7 +40,7 @@ export function ProductCard({ p }: { p: DBProduct & { brand?: string | null; con
             decoding="async"
             width={400}
             height={500}
-            className="w-full h-full object-cover group-hover:scale-105 transition-transform duration-500"
+            className="w-full h-full object-cover "
           />
           <div className="absolute top-2 right-2 flex flex-col gap-1 items-end">
             {condLabel && (
@@ -58,25 +59,28 @@ export function ProductCard({ p }: { p: DBProduct & { brand?: string | null; con
           {viewsToday >= 5 && (
             <span className="absolute bottom-2 right-2 bg-black/70 text-white text-[10px] font-medium px-2 py-0.5 flex items-center gap-1"><Eye className="w-3 h-3" /> {viewsToday}</span>
           )}
-          <button
+          <Button
             onClick={(e) => { e.preventDefault(); toggleWish(p.id); }}
+            variant="ghost"
+            size="icon"
             className={`absolute bottom-2 left-2 w-8 h-8 rounded-full flex items-center justify-center transition ${wished ? "bg-primary text-primary-foreground" : "bg-background/90 backdrop-blur hover:bg-primary hover:text-primary-foreground"}`}
             aria-label="wishlist"
+            aria-pressed={wished}
           >
-            <Heart className={`w-4 h-4 ${wished ? "fill-current" : ""}`} />
-          </button>
+            <Heart key={String(wished)} className={`elastic-bump w-4 h-4 ${wished ? "fill-current" : ""}`} />
+          </Button>
         </div>
       </Link>
-      <button
+      <Button
         onClick={(e) => {
           e.preventDefault();
           add({ id: p.id, name_ar: p.name_ar, price: effective, image_url: p.image_url, quantity: 1 });
           toast.success("انضافت للسلة 🛍️", { description: p.name_ar });
         }}
-        className="w-full bg-primary text-primary-foreground py-2 text-xs font-bold tracking-wider hover:bg-deep transition"
+        className="w-full h-auto rounded-none bg-primary text-primary-foreground py-2 text-xs font-bold tracking-wider hover:bg-deep transition"
       >
         أضيفيها للسلة +
-      </button>
+      </Button>
       <div className="p-3 space-y-1">
         {p.brand && <div className="text-[10px] uppercase tracking-wider text-muted-foreground font-bold">{p.brand}</div>}
         <h3 className="text-sm leading-snug line-clamp-2 min-h-[2.5rem]">{p.name_ar}</h3>

@@ -29,9 +29,9 @@ function CartPage() {
     <div className="min-h-screen pb-16 md:pb-0">
       <TopBar /><Header />
       <main className="max-w-5xl mx-auto px-4 py-8">
-        <h1 className="font-display text-3xl font-bold mb-6">سلتي ({items.length})</h1>
+        <h1 className="font-display text-3xl font-bold mb-6">سلتي (<span key={items.length} className="elastic-bump inline-block">{items.length}</span>)</h1>
         {items.length === 0 ? (
-          <div className="text-center py-16">
+          <div className="settle-in text-center py-16">
             <p className="text-muted-foreground mb-4">سلتك فاضية</p>
             <Link to="/shop" className="bg-primary text-primary-foreground px-8 py-3 font-bold">تسوقي الآن</Link>
           </div>

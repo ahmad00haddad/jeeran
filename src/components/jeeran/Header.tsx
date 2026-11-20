@@ -77,13 +77,13 @@ export function Header() {
             <Link to="/wishlist" aria-label="المفضلة" data-tour="wishlist" className="p-2 hover:text-primary transition relative">
               <Heart className="w-5 h-5" />
               {wishlist.length > 0 && (
-                <span className="absolute -top-0.5 -right-0.5 bg-gold text-gold-foreground text-[10px] w-4 h-4 rounded-full flex items-center justify-center font-bold">{wishlist.length}</span>
+                <span key={wishlist.length} className="elastic-bump absolute -top-0.5 -right-0.5 bg-gold text-gold-foreground text-[10px] w-4 h-4 rounded-full flex items-center justify-center font-bold">{wishlist.length}</span>
               )}
             </Link>
             <button aria-label="السلة" data-tour="cart" onClick={() => setCartOpen(true)} className="p-2 hover:text-primary transition relative">
               <ShoppingBag className="w-5 h-5" />
               {count > 0 && (
-                <span className="absolute -top-0.5 -right-0.5 bg-primary text-primary-foreground text-[10px] w-4 h-4 rounded-full flex items-center justify-center font-bold">{count}</span>
+                <span key={count} className="elastic-bump absolute -top-0.5 -right-0.5 bg-primary text-primary-foreground text-[10px] w-4 h-4 rounded-full flex items-center justify-center font-bold">{count}</span>
               )}
             </button>
           </div>
@@ -92,7 +92,7 @@ export function Header() {
 
       {/* Fullscreen search overlay for mobile */}
       {searchOpen && (
-        <div className="md:hidden fixed inset-0 z-50 bg-background safe-top flex flex-col animate-in fade-in duration-150">
+        <div className="md:hidden fixed inset-0 z-50 bg-background safe-top flex flex-col rise-in">
           <form
             onSubmit={(e) => {
               e.preventDefault();

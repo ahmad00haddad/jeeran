@@ -68,7 +68,7 @@ export function OfferDialog({ open, onClose, productId, productName, type, curre
 
   return (
     <div className="fixed inset-0 z-50 bg-black/60 flex items-center justify-center p-4" onClick={tryClose}>
-      <div className="bg-card w-full max-w-md p-6 border border-border relative" onClick={(e) => e.stopPropagation()}>
+      <div className="elastic-modal bg-card w-full max-w-md p-6 border border-border relative" onClick={(e) => e.stopPropagation()}>
         <button onClick={tryClose} aria-label="إغلاق" className="absolute top-3 left-3 p-1"><X className="w-5 h-5" /></button>
         <h3 className="font-display text-xl font-bold mb-1">
           {isOffer ? "اعرضي سعرك" : "احجزيها 24 ساعة"}

@@ -41,7 +41,7 @@ export function MobileNav() {
                 strokeWidth={active ? 2.4 : 1.8}
               />
               {it.badge ? (
-                <span className="absolute -top-1.5 -right-2 bg-primary text-primary-foreground text-[10px] min-w-[16px] h-4 px-1 rounded-full flex items-center justify-center font-bold">
+                <span key={it.badge} className="elastic-bump absolute -top-1.5 -right-2 bg-primary text-primary-foreground text-[10px] min-w-[16px] h-4 px-1 rounded-full flex items-center justify-center font-bold">
                   {it.badge > 9 ? "9+" : it.badge}
                 </span>
               ) : null}

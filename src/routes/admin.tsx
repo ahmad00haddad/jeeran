@@ -222,6 +222,7 @@ function Admin() {
         </div>
 
 
+        <div key={tab} className="rise-in">
         {tab === "stats" && (
           <div className="space-y-6">
             <div className="grid grid-cols-2 md:grid-cols-4 gap-4">
@@ -470,6 +471,7 @@ function Admin() {
           </div>
         )}
         {tab === "fonts" && <FontsPanel />}
+        </div>
       </main>
 
       <ConfirmDialog
