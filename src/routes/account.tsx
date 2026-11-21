@@ -10,7 +10,7 @@ import { Package, LogOut, Shield } from "lucide-react";
 
 export const Route = createFileRoute("/account")({
   component: Account,
-  head: () => ({ meta: [{ title: "حسابي — جيران" }, { name: "description", content: "تفاصيل حسابك وطلباتك في جيران." }, { name: "robots", content: "noindex" }] }),
+  head: () => ({ meta: [{ title: "حسابي — جيران" }, { name: "description", content: "تفاصيل حسابك وطلباتك في جيران." }, { name: "robots", content: "noindex" }, { property: "og:title", content: "حسابي — جيران" }, { property: "og:description", content: "تفاصيل حسابك وطلباتك في جيران." }, { property: "og:type", content: "website" }, { name: "twitter:card", content: "summary" }] }),
 });
 
 function Account() {

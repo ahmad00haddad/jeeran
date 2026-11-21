@@ -8,6 +8,15 @@ import { Footer } from "@/components/jeeran/Footer";
 export const Route = createFileRoute("/order-success")({
   validateSearch: (s: Record<string, unknown>) => ({ id: (s.id as string) || "" }),
   component: Success,
+  head: () => ({ meta: [
+    { title: "تم استلام طلبك — جيران" },
+    { name: "description", content: "تأكيد استلام طلبك في جيران ومعلومات متابعة التوصيل." },
+    { property: "og:title", content: "تم استلام طلبك — جيران" },
+    { property: "og:description", content: "تأكيد طلبك ومتابعة التوصيل من جيران." },
+    { property: "og:type", content: "website" },
+    { name: "twitter:card", content: "summary" },
+    { name: "robots", content: "noindex" },
+  ] }),
 });
 
 function Success() {

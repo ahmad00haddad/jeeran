@@ -13,7 +13,7 @@ import { uploadProductImage } from "@/lib/uploadImage";
 
 export const Route = createFileRoute("/admin")({
   component: Admin,
-  head: () => ({ meta: [{ title: "لوحة الإدارة — جيران" }, { name: "description", content: "إدارة القطع والطلبات وطلبات الإيجار في متجر جيران." }, { name: "robots", content: "noindex" }] }),
+  head: () => ({ meta: [{ title: "لوحة الإدارة — جيران" }, { name: "description", content: "إدارة القطع والطلبات وطلبات الإيجار في متجر جيران." }, { name: "robots", content: "noindex" }, { property: "og:title", content: "لوحة الإدارة — جيران" }, { property: "og:description", content: "إدارة القطع والطلبات وطلبات الإيجار في متجر جيران." }, { property: "og:type", content: "website" }, { name: "twitter:card", content: "summary" }] }),
 });
 
 

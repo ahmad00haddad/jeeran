@@ -9,7 +9,7 @@ import { toast } from "sonner";
 
 export const Route = createFileRoute("/auth")({
   component: Auth,
-  head: () => ({ meta: [{ title: "دخول / تسجيل — جيران" }, { name: "description", content: "سجّلي دخولك أو أنشئي حساب جديد في جيران." }, { name: "robots", content: "noindex" }] }),
+  head: () => ({ meta: [{ title: "دخول / تسجيل — جيران" }, { name: "description", content: "سجّلي دخولك أو أنشئي حساب جديد في جيران." }, { name: "robots", content: "noindex" }, { property: "og:title", content: "دخول / تسجيل — جيران" }, { property: "og:description", content: "سجّلي دخولك أو أنشئي حساب جديد في جيران." }, { property: "og:type", content: "website" }, { name: "twitter:card", content: "summary" }] }),
 });
 
 function Auth() {

@@ -17,7 +17,7 @@ const cities = ["عمّان","الزرقاء","إربد","العقبة","الك�
 
 export const Route = createFileRoute("/checkout")({
   component: Checkout,
-  head: () => ({ meta: [{ title: "إتمام الطلب — جيران" }, { name: "description", content: "أكملي بيانات الشحن والدفع عند الاستلام في جيران." }, { name: "robots", content: "noindex" }] }),
+  head: () => ({ meta: [{ title: "إتمام الطلب — جيران" }, { name: "description", content: "أكملي بيانات الشحن والدفع عند الاستلام في جيران." }, { name: "robots", content: "noindex" }, { property: "og:title", content: "إتمام الطلب — جيران" }, { property: "og:description", content: "أكملي بيانات الشحن والدفع عند الاستلام في جيران." }, { property: "og:type", content: "website" }, { name: "twitter:card", content: "summary" }] }),
 });
 
 function Checkout() {

@@ -10,8 +10,7 @@ export const Route = createFileRoute("/install")({
   head: () => ({
     meta: [
       { title: "تثبيت تطبيق جيران — إضافة إلى الشاشة الرئيسية" },
-      { name: "description", content: "تعلّمي كيفية تنزيل تطبيق جيران على جوالك (آيفون أو أندرويد) لتصفّح أسهل وأسرع." },
-    ],
+      { name: "description", content: "تعلّمي كيفية تنزيل تطبيق جيران على جوالك (آيفون أو أندرويد) لتصفّح أسهل وأسرع." }, { property: "og:title", content: "تثبيت تطبيق جيران — إضافة إلى الشاشة الرئيسية" }, { property: "og:description", content: "تعلّمي كيفية تنزيل تطبيق جيران على جوالك (آيفون أو أندرويد) لتصفّح أسهل وأسرع." }, { property: "og:type", content: "website" }, { name: "twitter:card", content: "summary" }],
   }),
 });
 

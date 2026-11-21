@@ -8,7 +8,7 @@ import { toast } from "sonner";
 
 export const Route = createFileRoute("/reset-password")({
   component: ResetPassword,
-  head: () => ({ meta: [{ title: "إعادة تعيين كلمة المرور — جيران" }, { name: "description", content: "اختاري كلمة مرور جديدة لحسابك في جيران." }, { name: "robots", content: "noindex" }] }),
+  head: () => ({ meta: [{ title: "إعادة تعيين كلمة المرور — جيران" }, { name: "description", content: "اختاري كلمة مرور جديدة لحسابك في جيران." }, { name: "robots", content: "noindex" }, { property: "og:title", content: "إعادة تعيين كلمة المرور — جيران" }, { property: "og:description", content: "اختاري كلمة مرور جديدة لحسابك في جيران." }, { property: "og:type", content: "website" }, { name: "twitter:card", content: "summary" }] }),
 });
 
 function ResetPassword() {

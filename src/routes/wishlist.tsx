@@ -11,7 +11,7 @@ import type { DBProduct } from "@/types/db";
 
 export const Route = createFileRoute("/wishlist")({
   component: Wishlist,
-  head: () => ({ meta: [{ title: "مفضلتي — جيران" }, { name: "description", content: "قائمة القطع اللي حفظتيها في جيران." }] }),
+  head: () => ({ meta: [{ title: "مفضلتي — جيران" }, { name: "description", content: "قائمة القطع اللي حفظتيها في جيران." }, { property: "og:title", content: "مفضلتي — جيران" }, { property: "og:description", content: "قائمة القطع اللي حفظتيها في جيران." }, { property: "og:type", content: "website" }, { name: "twitter:card", content: "summary" }] }),
 });
 
 function Wishlist() {

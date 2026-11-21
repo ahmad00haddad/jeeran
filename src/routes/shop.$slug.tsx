@@ -13,8 +13,7 @@ export const Route = createFileRoute("/shop/$slug")({
   head: ({ params }) => ({
     meta: [
       { title: `${params.slug} — جيران` },
-      { name: "description", content: `تصفّحي قطع فئة ${params.slug} في جيران — ملابس محتشمة مستعملة بسعر يناسب جيبك.` },
-    ],
+      { name: "description", content: `تصفّحي قطع فئة ${params.slug} في جيران — ملابس محتشمة مستعملة بسعر يناسب جيبك.` }, { property: "og:title", content: `${params.slug} — جيران` }, { property: "og:description", content: `تصفّحي قطع فئة ${params.slug} في جيران — ملابس محتشمة مستعملة بسعر يناسب جيبك.` }, { property: "og:type", content: "website" }, { name: "twitter:card", content: "summary" }],
   }),
 });
 

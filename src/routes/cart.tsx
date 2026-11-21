@@ -10,7 +10,7 @@ import { toast } from "sonner";
 
 export const Route = createFileRoute("/cart")({
   component: CartPage,
-  head: () => ({ meta: [{ title: "السلة — جيران" }, { name: "description", content: "استعرضي القطع اللي في سلتك قبل ما تكملي الطلب." }, { name: "robots", content: "noindex" }] }),
+  head: () => ({ meta: [{ title: "السلة — جيران" }, { name: "description", content: "استعرضي القطع اللي في سلتك قبل ما تكملي الطلب." }, { name: "robots", content: "noindex" }, { property: "og:title", content: "السلة — جيران" }, { property: "og:description", content: "استعرضي القطع اللي في سلتك قبل ما تكملي الطلب." }, { property: "og:type", content: "website" }, { name: "twitter:card", content: "summary" }] }),
 });
 
 function CartPage() {

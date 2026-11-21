@@ -17,7 +17,7 @@ const PAGE_SIZE = 24;
 export const Route = createFileRoute("/shop")({
   validateSearch: (s: Record<string, unknown>): { q?: string; sort?: string } => ({ q: (s.q as string) || "", sort: (s.sort as string) || "new" }),
   component: ShopPage,
-  head: () => ({ meta: [{ title: "تسوّقي — جيران" }, { name: "description", content: "تشكيلة جيران الكاملة من الملابس المحتشمة" }] }),
+  head: () => ({ meta: [{ title: "تسوّقي — جيران" }, { name: "description", content: "تشكيلة جيران الكاملة من الملابس المحتشمة" }, { property: "og:title", content: "تسوّقي — جيران" }, { property: "og:description", content: "تشكيلة جيران الكاملة من الملابس المحتشمة" }, { property: "og:type", content: "website" }, { name: "twitter:card", content: "summary" }] }),
 });
 
 function ShopPage() {
