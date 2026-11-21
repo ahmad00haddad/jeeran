@@ -33,9 +33,9 @@ export function MobileNav() {
             aria-current={active ? "page" : undefined}
           >
             {active && (
-              <span className="absolute top-0 left-1/2 -translate-x-1/2 h-0.5 w-8 bg-primary rounded-full" />
+              <span className="elastic-dot absolute top-0 left-1/2 -translate-x-1/2 h-0.5 w-8 bg-primary rounded-full" />
             )}
-            <div className="relative">
+            <div key={`${it.to}-${active}`} className={`relative ${active ? "elastic-icon-swap" : ""}`}>
               <it.icon
                 className={`w-6 h-6 transition-colors ${active ? "text-primary" : "text-muted-foreground"}`}
                 strokeWidth={active ? 2.4 : 1.8}

@@ -396,3 +396,19 @@
   .home-motion *, .home-motion *::before, .home-motion *::after { animation: none !important; transition: none !important; scroll-behavior: auto !important; }
   .home-motion [data-tour="categories"] a:active { scale: none; }
 }
+
+/* Additional user-triggered feedback: selection, search and navigation. */
+.elastic-choice {
+  translate: 0 0;
+  transition: translate 500ms var(--ease-elastic-soft), scale 500ms var(--ease-elastic), background-color 180ms ease, color 180ms ease, border-color 180ms ease;
+}
+.elastic-choice[aria-pressed="true"] { translate: 0 -2px; }
+.elastic-dot { animation: elastic-dot-in 400ms var(--ease-elastic), elastic-fade 180ms ease; }
+@keyframes elastic-dot-in { from { scale: 0.94; } to { scale: 1; } }
+.elastic-icon-swap, .elastic-result { animation: elastic-feedback-in 450ms var(--ease-elastic-soft), elastic-fade 180ms ease; }
+@keyframes elastic-feedback-in { from { translate: 0 3px; } to { translate: 0 0; } }
+input[type="search"]::-webkit-search-cancel-button { -webkit-appearance: none; }
+@media (prefers-reduced-motion: reduce) {
+  .elastic-choice, .elastic-choice[aria-pressed="true"] { transition: none !important; translate: none; }
+  .elastic-dot, .elastic-icon-swap, .elastic-result { animation: none; }
+}

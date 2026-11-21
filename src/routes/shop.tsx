@@ -1,5 +1,6 @@
 import { createFileRoute, useSearch } from "@tanstack/react-router";
 import { useEffect, useRef, useState, useCallback } from "react";
+import { Button } from "@/components/ui/button";
 import { SlidersHorizontal } from "lucide-react";
 import { TopBar } from "@/components/jeeran/TopBar";
 import { Header } from "@/components/jeeran/Header";
@@ -94,6 +95,8 @@ function ShopPage() {
     return () => io.disconnect();
   }, [loadMore]);
 
+  const filterCount = [maxPrice, verifiedOnly, onSale].filter(Boolean).length;
+
   return (
     <div className="min-h-screen pb-16 md:pb-0">
       <TopBar />
@@ -104,48 +107,48 @@ function ShopPage() {
         {/* Sticky filter chips (categories) — horizontally scrollable on mobile */}
         <div className="sticky top-14 md:top-0 z-20 -mx-4 px-4 py-2 bg-background/95 backdrop-blur border-b border-border">
           <div className="flex gap-2 overflow-x-auto no-scrollbar snap-x">
-            <button onClick={() => setActiveCat(null)} className={`shrink-0 snap-start px-4 py-1.5 text-sm rounded-full border tap ${!activeCat ? "bg-primary text-primary-foreground border-primary" : "border-border bg-background"}`}>الكل</button>
+            <Button variant="ghost" onClick={() => setActiveCat(null)} aria-pressed={!activeCat} className={`elastic-choice h-auto hover:bg-secondary hover:text-foreground shrink-0 snap-start px-4 py-1.5 text-sm rounded-full border tap ${!activeCat ? "bg-primary text-primary-foreground border-primary" : "border-border bg-background"}`}>الكل</Button>
             {cats.map((c) => (
-              <button key={c.id} onClick={() => setActiveCat(c.id)} className={`shrink-0 snap-start px-4 py-1.5 text-sm rounded-full border tap ${activeCat === c.id ? "bg-primary text-primary-foreground border-primary" : "border-border bg-background"}`}>{c.name_ar}</button>
+              <Button variant="ghost" key={c.id} onClick={() => setActiveCat(c.id)} aria-pressed={activeCat === c.id} className={`elastic-choice h-auto hover:bg-secondary hover:text-foreground shrink-0 snap-start px-4 py-1.5 text-sm rounded-full border tap ${activeCat === c.id ? "bg-primary text-primary-foreground border-primary" : "border-border bg-background"}`}>{c.name_ar}</Button>
             ))}
           </div>
         </div>
 
         {/* Desktop-only inline filters */}
         <div className="hidden md:flex flex-wrap gap-2 my-4">
-          <button onClick={() => setMaxPrice(maxPrice === 5 ? null : 5)} className={`px-3 py-1.5 text-xs font-bold border ${maxPrice === 5 ? "bg-primary text-primary-foreground border-primary" : "border-border"}`}>تحت 5 د.أ</button>
-          <button onClick={() => setMaxPrice(maxPrice === 10 ? null : 10)} className={`px-3 py-1.5 text-xs font-bold border ${maxPrice === 10 ? "bg-primary text-primary-foreground border-primary" : "border-border"}`}>تحت 10 د.أ</button>
-          <button onClick={() => setMaxPrice(maxPrice === 20 ? null : 20)} className={`px-3 py-1.5 text-xs font-bold border ${maxPrice === 20 ? "bg-primary text-primary-foreground border-primary" : "border-border"}`}>تحت 20 د.أ</button>
-          <button onClick={() => setVerifiedOnly(!verifiedOnly)} className={`px-3 py-1.5 text-xs font-bold border ${verifiedOnly ? "bg-green-700 text-white border-green-700" : "border-border"}`}>✓ موثّقة نظيفة</button>
-          <button onClick={() => setOnSale(!onSale)} className={`px-3 py-1.5 text-xs font-bold border ${onSale ? "bg-gold text-gold-foreground border-gold" : "border-border"}`}>تخفيضات فقط</button>
+          <Button variant="ghost" onClick={() => setMaxPrice(maxPrice === 5 ? null : 5)} aria-pressed={maxPrice === 5} className={`elastic-choice h-auto rounded-none hover:bg-secondary hover:text-foreground px-3 py-1.5 text-xs font-bold border ${maxPrice === 5 ? "bg-primary text-primary-foreground border-primary" : "border-border"}`}>تحت 5 د.أ</Button>
+          <Button variant="ghost" onClick={() => setMaxPrice(maxPrice === 10 ? null : 10)} aria-pressed={maxPrice === 10} className={`elastic-choice h-auto rounded-none hover:bg-secondary hover:text-foreground px-3 py-1.5 text-xs font-bold border ${maxPrice === 10 ? "bg-primary text-primary-foreground border-primary" : "border-border"}`}>تحت 10 د.أ</Button>
+          <Button variant="ghost" onClick={() => setMaxPrice(maxPrice === 20 ? null : 20)} aria-pressed={maxPrice === 20} className={`elastic-choice h-auto rounded-none hover:bg-secondary hover:text-foreground px-3 py-1.5 text-xs font-bold border ${maxPrice === 20 ? "bg-primary text-primary-foreground border-primary" : "border-border"}`}>تحت 20 د.أ</Button>
+          <Button variant="ghost" onClick={() => setVerifiedOnly(!verifiedOnly)} aria-pressed={verifiedOnly} className={`elastic-choice h-auto rounded-none hover:bg-secondary hover:text-foreground px-3 py-1.5 text-xs font-bold border ${verifiedOnly ? "bg-primary text-primary-foreground border-primary" : "border-border"}`}>✓ موثّقة نظيفة</Button>
+          <Button variant="ghost" onClick={() => setOnSale(!onSale)} aria-pressed={onSale} className={`elastic-choice h-auto rounded-none hover:bg-secondary hover:text-foreground px-3 py-1.5 text-xs font-bold border ${onSale ? "bg-gold text-gold-foreground border-gold" : "border-border"}`}>تخفيضات فقط</Button>
         </div>
 
         {/* Mobile filter trigger */}
         <div className="md:hidden flex items-center justify-between mt-3 mb-2">
-          <button
+          <Button variant="ghost"
             onClick={() => setFiltersOpen(true)}
             className="flex items-center gap-2 px-4 py-2 rounded-full border border-border bg-background text-sm font-bold tap"
           >
             <SlidersHorizontal className="w-4 h-4" /> فلاتر
             {(maxPrice || verifiedOnly || onSale) && (
-              <span className="bg-primary text-primary-foreground text-[10px] w-5 h-5 rounded-full flex items-center justify-center">
-                {[maxPrice, verifiedOnly, onSale].filter(Boolean).length}
+              <span key={filterCount} className="elastic-bump bg-primary text-primary-foreground text-[10px] w-5 h-5 rounded-full flex items-center justify-center">
+                {filterCount}
               </span>
             )}
-          </button>
-          <div className="text-xs text-muted-foreground">
+          </Button>
+          <div key={`${loading}-${products.length}-${total}`} className="elastic-result text-xs text-muted-foreground">
             {loading ? "جارٍ التحميل..." : `${products.length}${total ? `/${total}` : ""}`}
           </div>
         </div>
 
-        <div className="hidden md:block text-sm text-muted-foreground mb-4">
+        <div key={`${loading}-${products.length}-${total}`} className="elastic-result hidden md:block text-sm text-muted-foreground mb-4">
           {loading ? "جارٍ تحميل القطع..." : `${products.length}${total ? ` من ${total}` : ""} منتج`}
         </div>
 
         {loading ? (
           <ProductGridSkeleton count={8} />
         ) : products.length === 0 ? (
-          <div className="text-center py-20 text-muted-foreground">
+          <div className="settle-in text-center py-20 text-muted-foreground">
             <p className="text-lg mb-2">ما لقينا قطع تطابق فلترك 🔍</p>
             <p className="text-sm">جرّبي تخفّفي الفلاتر أو تبحثي بكلمة تانية</p>
           </div>
@@ -171,14 +174,14 @@ function ShopPage() {
         title="فلاتر البحث"
         footer={
           <div className="flex gap-2">
-            <button
+            <Button variant="ghost"
               onClick={() => { setMaxPrice(null); setVerifiedOnly(false); setOnSale(false); }}
               className="flex-1 py-3 border border-border rounded-full font-bold text-sm tap"
-            >مسح الفلاتر</button>
-            <button
+            >مسح الفلاتر</Button>
+            <Button variant="ghost"
               onClick={() => setFiltersOpen(false)}
               className="flex-1 py-3 bg-primary text-primary-foreground rounded-full font-bold text-sm tap"
-            >عرض النتائج</button>
+            >عرض النتائج</Button>
           </div>
         }
       >
@@ -187,25 +190,26 @@ function ShopPage() {
             <h3 className="font-bold mb-3 text-sm">السعر</h3>
             <div className="flex flex-wrap gap-2">
               {[5, 10, 20].map((v) => (
-                <button
+                <Button variant="ghost"
                   key={v}
                   onClick={() => setMaxPrice(maxPrice === v ? null : v)}
-                  className={`px-4 py-2 text-sm rounded-full border tap ${maxPrice === v ? "bg-primary text-primary-foreground border-primary" : "border-border"}`}
-                >تحت {v} د.أ</button>
+                  aria-pressed={maxPrice === v}
+                  className={`elastic-choice h-auto hover:bg-secondary hover:text-foreground px-4 py-2 text-sm rounded-full border tap ${maxPrice === v ? "bg-primary text-primary-foreground border-primary" : "border-border"}`}
+                >تحت {v} د.أ</Button>
               ))}
             </div>
           </section>
           <section>
             <h3 className="font-bold mb-3 text-sm">الحالة</h3>
             <div className="flex flex-wrap gap-2">
-              <button
-                onClick={() => setVerifiedOnly(!verifiedOnly)}
-                className={`px-4 py-2 text-sm rounded-full border tap ${verifiedOnly ? "bg-green-700 text-white border-green-700" : "border-border"}`}
-              >✓ موثّقة نظيفة</button>
-              <button
-                onClick={() => setOnSale(!onSale)}
-                className={`px-4 py-2 text-sm rounded-full border tap ${onSale ? "bg-gold text-gold-foreground border-gold" : "border-border"}`}
-              >تخفيضات فقط</button>
+              <Button variant="ghost"
+                onClick={() => setVerifiedOnly(!verifiedOnly)} aria-pressed={verifiedOnly}
+                className={`elastic-choice h-auto hover:bg-secondary hover:text-foreground px-4 py-2 text-sm rounded-full border tap ${verifiedOnly ? "bg-primary text-primary-foreground border-primary" : "border-border"}`}
+              >✓ موثّقة نظيفة</Button>
+              <Button variant="ghost"
+                onClick={() => setOnSale(!onSale)} aria-pressed={onSale}
+                className={`elastic-choice h-auto hover:bg-secondary hover:text-foreground px-4 py-2 text-sm rounded-full border tap ${onSale ? "bg-gold text-gold-foreground border-gold" : "border-border"}`}
+              >تخفيضات فقط</Button>
             </div>
           </section>
         </div>

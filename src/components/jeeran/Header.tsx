@@ -5,6 +5,8 @@ import { Logo } from "./Logo";
 import { CartDrawer } from "./CartDrawer";
 import { useCart, cartTotals } from "@/store/cart";
 import { ThemeToggle } from "./ThemeToggle";
+import { Button } from "@/components/ui/button";
+import { useRef } from "react";
 
 export function Header() {
   const navigate = useNavigate();
@@ -13,6 +15,8 @@ export function Header() {
   const [cartOpen, setCartOpen] = useState(false);
   const [searchOpen, setSearchOpen] = useState(false);
   const [q, setQ] = useState("");
+  const desktopSearch = useRef<HTMLInputElement>(null);
+  const mobileSearch = useRef<HTMLInputElement>(null);
   const { items, wishlist } = useCart();
   const { count } = cartTotals(items);
 
@@ -64,12 +68,18 @@ export function Header() {
             <Search className="absolute right-4 w-4 h-4 text-muted-foreground" aria-hidden="true" />
             <input
               id="site-search"
+              ref={desktopSearch}
               value={q}
               onChange={(e) => setQ(e.target.value)}
               type="search"
               placeholder="دوّر على قطعة، براند، أو نوع..."
-              className="w-full bg-secondary border border-border rounded-full pr-11 pl-4 py-2.5 text-sm focus:outline-none focus:border-primary transition"
+              className="w-full bg-secondary border border-border rounded-full pr-11 pl-12 py-2.5 text-sm focus:outline-none focus:border-primary transition"
             />
+            {q && (
+              <Button type="button" variant="ghost" size="icon" aria-label="مسح البحث" className="elastic-dot absolute left-2 rounded-full" onClick={() => { setQ(""); desktopSearch.current?.focus(); }}>
+                <X />
+              </Button>
+            )}
           </form>
           <div className="flex items-center gap-3 mr-auto">
             <ThemeToggle />
@@ -108,13 +118,20 @@ export function Header() {
             <div className="flex-1 relative">
               <Search className="absolute right-3 top-1/2 -translate-y-1/2 w-4 h-4 text-muted-foreground" />
               <input
+                ref={mobileSearch}
+                aria-label="بحث عن قطعة"
                 autoFocus
                 value={q}
                 onChange={(e) => setQ(e.target.value)}
                 type="search"
                 placeholder="دوّري على قطعة، براند، لون..."
-                className="w-full bg-secondary border border-border rounded-full pr-10 pl-4 py-3 text-sm focus:outline-none focus:border-primary"
+                className="w-full bg-secondary border border-border rounded-full pr-10 pl-12 py-3 text-sm focus:outline-none focus:border-primary"
               />
+              {q && (
+                <Button type="button" variant="ghost" size="icon" aria-label="مسح البحث" className="elastic-dot absolute left-2 top-1/2 -translate-y-1/2 rounded-full" onClick={() => { setQ(""); mobileSearch.current?.focus(); }}>
+                  <X />
+                </Button>
+              )}
             </div>
           </form>
           <div className="p-4 text-sm text-muted-foreground">
