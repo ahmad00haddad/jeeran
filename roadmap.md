@@ -4,5 +4,5 @@
 - [x] Verify desktop/mobile interactions, reduced motion and preview status.
 
 # More Elastic Motion
-- [ ] Add search clearing, selected filters, result counts, theme icons and mobile navigation feedback.
-- [ ] Verify desktop/mobile, both directions and reduced motion.
+- [x] Add search clearing, selected filters, result counts, theme icons and mobile navigation feedback.
+- [x] Verify desktop/mobile, both directions and reduced motion.
