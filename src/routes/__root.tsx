@@ -11,6 +11,7 @@ import { Toaster } from "sonner";
 import { useEffect } from "react";
 import { loadSavedFont } from "@/lib/customFont";
 import { installErrorMonitoring } from "@/lib/errorMonitor";
+import { trackVisitSource, installWhatsappClickTracking } from "@/lib/visitSource";
 import { themeInitScript } from "@/lib/theme";
 import { supabase } from "@/integrations/supabase/client";
 import { useCart } from "@/store/cart";
@@ -135,7 +136,7 @@ function RootShell({ children }: { children: React.ReactNode }) {
 
 function RootComponent() {
   const { queryClient } = Route.useRouteContext();
-  useEffect(() => { loadSavedFont(); installErrorMonitoring(); }, []);
+  useEffect(() => { loadSavedFont(); installErrorMonitoring(); trackVisitSource(); installWhatsappClickTracking(); }, []);
 
   useEffect(() => {
     const { mergeLocalWishlistToDB, hydrateWishlistFromDB } = useCart.getState();

@@ -27,7 +27,8 @@ const CONDITIONS = [
 function Admin() {
   const { user, isAdmin, loading } = useAuth();
   const nav = useNavigate();
-  const [tab, setTab] = useState<"stats" | "products" | "orders" | "offers" | "rentals" | "fonts" | "errors">("stats");
+  const [tab, setTab] = useState<"stats" | "products" | "orders" | "offers" | "rentals" | "fonts" | "errors" | "sources">("stats");
+  const [sources, setSources] = useState<any[]>([]);
   const [products, setProducts] = useState<any[]>([]);
   const [orders, setOrders] = useState<any[]>([]);
   const [offers, setOffers] = useState<any[]>([]);
@@ -65,6 +66,7 @@ function Admin() {
       supabase.from("offers").select("*, products(name_ar, price, image_url)").order("created_at", { ascending: false }).limit(200).then(({ data }) => setOffers(data || []));
       supabase.from("rental_requests").select("*, products(name_ar, rental_price, image_url)").order("created_at", { ascending: false }).limit(200).then(({ data }: any) => setRentals(data || []));
       supabase.from("client_errors").select("*").order("created_at", { ascending: false }).limit(100).then(({ data }: any) => setErrors(data || []));
+      supabase.from("visit_sources").select("*").order("created_at", { ascending: false }).limit(5000).then(({ data }: any) => setSources(data || []));
     }
   }, [isAdmin]);
 
@@ -217,6 +219,7 @@ function Admin() {
           <button onClick={() => setTab("orders")} className={`px-4 py-2 font-bold whitespace-nowrap ${tab === "orders" ? "border-b-2 border-primary text-primary" : "text-muted-foreground"}`}><ShoppingCart className="w-4 h-4 inline ml-1" /> الطلبات ({orders.length})</button>
           <button onClick={() => setTab("offers")} className={`px-4 py-2 font-bold whitespace-nowrap ${tab === "offers" ? "border-b-2 border-primary text-primary" : "text-muted-foreground"}`}>🏷️ العروض ({offers.filter(o => o.status === "pending").length})</button>
           <button onClick={() => setTab("rentals")} className={`px-4 py-2 font-bold whitespace-nowrap ${tab === "rentals" ? "border-b-2 border-primary text-primary" : "text-muted-foreground"}`}>✨ الإيجار ({rentals.filter(r => r.status === "pending").length})</button>
+          <button onClick={() => setTab("sources")} className={`px-4 py-2 font-bold whitespace-nowrap ${tab === "sources" ? "border-b-2 border-primary text-primary" : "text-muted-foreground"}`}>🧭 مصادر الزوار</button>
           <button onClick={() => setTab("errors")} className={`px-4 py-2 font-bold whitespace-nowrap ${tab === "errors" ? "border-b-2 border-primary text-primary" : "text-muted-foreground"}`}><Bug className="w-4 h-4 inline ml-1" /> الأخطاء ({errors.length})</button>
           <button onClick={() => setTab("fonts")} className={`px-4 py-2 font-bold whitespace-nowrap ${tab === "fonts" ? "border-b-2 border-primary text-primary" : "text-muted-foreground"}`}><Type className="w-4 h-4 inline ml-1" /> الخطوط</button>
         </div>
@@ -470,6 +473,7 @@ function Admin() {
             ))}
           </div>
         )}
+        {tab === "sources" && <SourcesPanel rows={sources} />}
         {tab === "fonts" && <FontsPanel />}
         </div>
       </main>
@@ -597,6 +601,59 @@ function FontsPanel() {
           <p className="text-sm text-muted-foreground">١٢٣٤٥٦٧٨٩٠ — 1234567890 — د.أ — ٪</p>
         </div>
       </div>
+    </div>
+  );
+}
+
+
+const SOURCE_LABELS: Record<string, string> = {
+  direct: "مباشر / رابط منسوخ", facebook: "فيسبوك", instagram: "انستغرام", whatsapp: "واتساب",
+  telegram: "تيليغرام", tiktok: "تيك توك", google: "بحث جوجل", bing: "بحث Bing", x: "إكس (تويتر)",
+  snapchat: "سناب شات", lovable: "Lovable",
+};
+
+function SourcesPanel({ rows }: { rows: any[] }) {
+  const [days, setDays] = useState(30);
+  const since = Date.now() - days * 86400000;
+  const inRange = rows.filter((r) => new Date(r.created_at).getTime() >= since);
+  const visits = inRange.filter((r) => r.kind === "visit");
+  const wa = inRange.filter((r) => r.kind === "whatsapp");
+  const bySource = new Map<string, { v: number; w: number }>();
+  for (const r of inRange) {
+    const e = bySource.get(r.source) || { v: 0, w: 0 };
+    if (r.kind === "visit") e.v++; else e.w++;
+    bySource.set(r.source, e);
+  }
+  const list = [...bySource.entries()].sort((a, b) => b[1].v + b[1].w - (a[1].v + a[1].w));
+  const max = Math.max(1, ...list.map(([, e]) => e.v));
+  const mobile = visits.filter((r) => r.device === "mobile").length;
+  return (
+    <div className="space-y-5">
+      <div className="flex gap-2 flex-wrap">
+        {[1, 7, 30, 365].map((d) => (
+          <button key={d} onClick={() => setDays(d)} className={`px-3 py-1 text-sm border ${days === d ? "bg-primary text-primary-foreground border-primary" : "border-border"}`}>
+            {d === 1 ? "اليوم" : d === 365 ? "سنة" : `${d} يوم`}
+          </button>
+        ))}
+      </div>
+      <div className="grid grid-cols-3 gap-3">
+        <div className="border border-border bg-card p-4"><div className="text-2xl font-bold text-primary">{visits.length}</div><div className="text-xs text-muted-foreground">زيارة</div></div>
+        <div className="border border-border bg-card p-4"><div className="text-2xl font-bold text-primary">{wa.length}</div><div className="text-xs text-muted-foreground">ضغطة على واتساب</div></div>
+        <div className="border border-border bg-card p-4"><div className="text-2xl font-bold text-primary">{visits.length ? Math.round((mobile / visits.length) * 100) : 0}%</div><div className="text-xs text-muted-foreground">من الموبايل</div></div>
+      </div>
+      {list.length === 0 && <p className="text-muted-foreground">لسا ما في زيارات مسجّلة بهالفترة.</p>}
+      <div className="space-y-2">
+        {list.map(([src, e]) => (
+          <div key={src} className="border border-border bg-card p-3 text-sm">
+            <div className="flex justify-between gap-3 mb-1">
+              <span className="font-bold">{SOURCE_LABELS[src] || src}</span>
+              <span className="text-muted-foreground">{e.v} زيارة · {e.w} واتساب</span>
+            </div>
+            <div className="h-1.5 bg-muted"><div className="h-full bg-primary" style={{ width: `${(e.v / max) * 100}%` }} /></div>
+          </div>
+        ))}
+      </div>
+      <p className="text-xs text-muted-foreground">نصيحة: لما تنشر الرابط بمكان معيّن أضف له مثلاً <span dir="ltr">?utm_source=instagram</span> حتى يظهر المصدر بدقّة.</p>
     </div>
   );
 }

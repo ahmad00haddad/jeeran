@@ -8,6 +8,13 @@
       "when": 1795091290257,
       "tag": "0000_restrict_client_errors_insert",
       "breakpoints": true
+    },
+    {
+      "idx": 1,
+      "version": "7",
+      "when": 1795451423864,
+      "tag": "0001_migration",
+      "breakpoints": true
     }
   ]
 }

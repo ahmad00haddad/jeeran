@@ -420,6 +420,45 @@ export type Database = {
         }
         Relationships: []
       }
+      visit_sources: {
+        Row: {
+          created_at: string
+          device: string | null
+          id: string
+          kind: string
+          landing_path: string | null
+          referrer: string | null
+          source: string
+          utm_campaign: string | null
+          utm_medium: string | null
+          utm_source: string | null
+        }
+        Insert: {
+          created_at?: string
+          device?: string | null
+          id?: string
+          kind?: string
+          landing_path?: string | null
+          referrer?: string | null
+          source?: string
+          utm_campaign?: string | null
+          utm_medium?: string | null
+          utm_source?: string | null
+        }
+        Update: {
+          created_at?: string
+          device?: string | null
+          id?: string
+          kind?: string
+          landing_path?: string | null
+          referrer?: string | null
+          source?: string
+          utm_campaign?: string | null
+          utm_medium?: string | null
+          utm_source?: string | null
+        }
+        Relationships: []
+      }
       wishlists: {
         Row: {
           created_at: string | null
